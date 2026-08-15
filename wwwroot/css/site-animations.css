@@ -1,0 +1,44 @@
+/* Global animation and utility classes - non-intrusive, respects prefers-reduced-motion */
+:root{--anim-ease:cubic-bezier(.2,.9,.2,1);--anim-accent-delay:0.08s}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .anim, .stagger > * { animation: none !important; transition: none !important; }
+}
+
+/* Keyframes */
+@keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+@keyframes slideLeft{ from{opacity:0; transform:translateX(18px);} to{opacity:1; transform:none;} }
+@keyframes pop{ from{opacity:0; transform:scale(.96);} to{opacity:1; transform:scale(1);} }
+
+/* Utility animation classes */
+.anim{opacity:0; transform:translateY(8px); animation-fill-mode:both; animation-duration:.8s; animation-timing-function:var(--anim-ease);}
+.fade-up{animation-name:fadeUp}
+.fade-in{animation-name:fadeIn}
+.slide-left{animation-name:slideLeft}
+.pop{animation-name:pop}
+
+/* Stagger container; children get increasing delays */
+.stagger > *{opacity:0; transform:translateY(8px); animation-fill-mode:both; animation-duration:.7s; animation-timing-function:var(--anim-ease)}
+.stagger > *:nth-child(1){animation-delay:calc(var(--anim-accent-delay) * 1)}
+.stagger > *:nth-child(2){animation-delay:calc(var(--anim-accent-delay) * 2)}
+.stagger > *:nth-child(3){animation-delay:calc(var(--anim-accent-delay) * 3)}
+.stagger > *:nth-child(4){animation-delay:calc(var(--anim-accent-delay) * 4)}
+.stagger > *:nth-child(5){animation-delay:calc(var(--anim-accent-delay) * 5)}
+
+/* When page loads, trigger simple fade-ins for elements with anim class */
+body .anim{animation-play-state:running}
+
+/* Responsive helpers */
+.container{max-width:1100px;margin:0 auto;padding:0 20px}
+.img-responsive{max-width:100%;height:auto;display:block}
+
+/* Breakpoints */
+@media (max-width:900px){
+  .cols-4{grid-template-columns:1fr !important}
+  .container{padding:0 14px}
+}
+@media (max-width:600px){
+  .hide-mobile{display:none}
+}

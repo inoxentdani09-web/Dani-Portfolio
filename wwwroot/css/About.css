@@ -1,0 +1,478 @@
+﻿.About-Content {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #FFFFFF;
+    padding: 40px 75px;
+    opacity: 0;
+    animation: About-slideLeft 1s ease forwards;
+    animation-delay: .3s;
+    background-image: url(/Images/Project-bg.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size:cover;
+}
+
+.About-Right {
+    width: 50%;
+}
+
+    .About-Right img {
+        width: 85%;
+        position: relative;
+        border-radius: 20%;
+        opacity: 0;
+        animation: About-slideRight 1s ease forwards;
+        margin-top:30px;
+    }
+
+.About-Left {
+    width: 40%;
+}
+
+
+.about-p-2 {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.About-Left h3 {
+    font-weight: 600;
+}
+
+.bord {
+    border-bottom: 2px solid #F97316;
+    width: 10%;
+}
+
+.card-about {
+    opacity: 0;
+    animation: fadeUp .8s ease forwards;
+}
+
+    .card-about:nth-child(1) {
+        animation-delay: .5s;
+    }
+
+    .card-about:nth-child(2) {
+        animation-delay: .5s;
+    }
+
+    .card-about:nth-child(3) {
+        animation-delay: .5s;
+    }
+
+    .card-about:nth-child(4) {
+        animation-delay: .5s;
+    }
+
+.About-Card {
+    display: flex;
+    align-items: center;
+    /*    justify-content:center;*/
+    gap: 10px;
+    margin: 15px 0px 0px 0px;
+}
+
+.About-card-pic {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px
+}
+
+.About-icon {
+    width: 50px;
+    height: 40px;
+    border: 1px solid #F97316;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(249,115,22,0.3);
+    transition: 0.4s ease;
+}
+
+    .About-icon:hover {
+        transform: rotate(360deg);
+    }
+
+.About-Card-Text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .About-Card-Text h5 {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .About-Card-Text p {
+        margin: 4px 0 0;
+        font-size: 10px;
+        color: #ccc;
+    }
+
+.icon {
+    color: #F97316;
+    font-size: 18px;
+    transition: 0.4s ease;
+}
+
+.card-1 {
+    width: 45%;
+    height: 80px;
+    border-radius: 8px;
+    border: 1px solid #F97316;
+    padding: 10px;
+}
+
+    .card-1:hover .icon {
+        transform: translateY(-8px);
+        transition: 0.5s ease;
+        box-shadow: 0 10px 30px rgba(249,115,22,25);
+    }
+
+    .card-1:hover {
+        box-shadow: 0 10px 30px rgba(249,115,22,25);
+    }
+
+.animate{
+    opacity:0;
+    transform:translateY(40px);
+    transition:all .8s ease;
+
+}
+.animate.show{
+    opacity:1;
+    transform:translateY(0)
+}
+.main-stats-Section {
+    width: 100%;
+    height: 40vh;
+    padding: 48px;
+    background-image: url(/Images/Project-bg.jpeg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color:
+}
+.stats-Section {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-top: 1px solid #CCC;
+    border-bottom: 1px solid #CCC;
+    padding: 8px;
+    height:80px;
+    margin-top:30px;
+}
+.About-stats-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    line-height:0.95;
+}
+
+    .About-stats-text h5 {
+        color: #F97316;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .About-stats-text p {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #fff;
+    }
+.About-stats-pic {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-right:1px solid #ccc;
+    padding:10px;
+}
+.icons {
+    color: #F97316;
+    font-size: 30px;
+    transition: 0.4s ease;
+}
+.stats-btn {
+    background:transparent;
+    color: #F97316;
+    padding: 3px 28px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    display: inline-block;
+    transition: 0.3s ease;
+    font-size: 13px;
+    border: 1px solid #F97316;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+}
+    .stats-btn:hover {
+        background-color: #EA580C;
+        transform: translateY(-3px);
+        color:white;
+    }
+.stats-icon {
+    font-size: 13px;
+    color: #F97316;
+}
+.about-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #F97316;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: flex-start;
+}
+
+    .about-title::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: #F97316;
+        border-radius: 50%;
+    }
+
+/* =========================
+   Tablet (992px)
+========================= */
+@media (max-width:992px) {
+
+    .About-Content {
+        height:100vh;
+        padding: 80px 40px;
+        gap: 40px;
+    }
+
+    .About-Right,
+    .About-Left {
+        width: 48%;
+    }
+
+        .About-Right img {
+            width: 100%;
+        }
+
+        .About-Left h3 {
+            font-size: 32px;
+        }
+
+    .about-p-2 {
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .card-1 {
+        width: 48%;
+        height: auto;
+        min-height: 90px;
+    }
+
+    .main-stats-Section {
+        height: auto;
+        padding: 40px 20px;
+    }
+
+    .stats-Section {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        height: auto;
+        padding: 25px;
+    }
+
+    .About-stats-pic {
+        width: 45%;
+        border: none;
+        background: #0F172A;
+        border-radius: 10px;
+        padding: 18px;
+    }
+
+    .stats-btn {
+        width: 220px;
+        height: 45px;
+    }
+}
+
+/* =========================
+   Mobile (768px)
+========================= */
+
+@media (max-width:768px) {
+
+    .About-Content {
+        height: auto;
+        flex-direction: column;
+        padding: 70px 20px;
+        text-align: center;
+    }
+
+    .About-Right,
+    .About-Left {
+        width: 100%;
+    }
+
+    .About-image {
+        display: flex;
+        justify-content: center;
+    }
+
+    .About-Right img {
+        margin: 0 auto;
+    }
+
+    .about-title {
+        justify-content: center;
+    }
+
+    .About-Left h3 {
+        font-size: 30px;
+        margin: 12px 0;
+    }
+
+    .about-p-2 {
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .bord {
+        width: 70px;
+        margin: 20px auto;
+    }
+
+    .About-Card {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .card-1 {
+        width: 100%;
+        height: auto;
+        min-height: 90px;
+    }
+
+    .About-card-pic {
+        align-items: center;
+    }
+
+    .main-stats-Section {
+        height: auto;
+        padding: 25px 20px;
+    }
+
+    .stats-Section {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 15px;
+        border: none;
+        height: auto;
+        margin-top: 0;
+    }
+
+    .About-stats-pic {
+        width: 100%;
+        border: none;
+        background: #0F172A;
+        border-radius: 10px;
+        justify-content: flex-start;
+    }
+
+    .stats-btn {
+        grid-column: 1/-1;
+        width: 100%;
+        height: 48px;
+    }
+}
+
+/* =========================
+   Small Mobile (480px)
+========================= */
+
+@media (max-width:480px) {
+
+    .About-Content {
+        padding: 60px 15px;
+    }
+
+    .About-Right img {
+        width: 360px;
+    }
+
+    .About-Left h3 {
+        font-size: 26px;
+    }
+
+    .about-title {
+        font-size: 15px;
+    }
+
+    .about-p-2 {
+        font-size: 14px;
+    }
+
+    .About-card-pic {
+        gap: 12px;
+    }
+
+    .About-icon {
+        width: 45px;
+        height: 45px;
+    }
+
+    .About-Card-Text h5 {
+        font-size: 14px;
+    }
+
+    .About-Card-Text p {
+        font-size: 12px;
+    }
+
+    .stats-Section {
+        grid-template-columns: 1fr;
+    }
+
+    .About-stats-text h5 {
+        font-size: 18px;
+    }
+
+    .About-stats-text p {
+        font-size: 13px;
+    }
+
+    .stats-btn {
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   Extra Small (360px)
+========================= */
+
+@media (max-width:360px) {
+
+    .About-Right img {
+        width: 300px;
+    }
+
+    .About-Left h3 {
+        font-size: 22px;
+    }
+
+    .about-p-2 {
+        font-size: 13px;
+    }
+
+    .card-1 {
+        padding: 12px;
+    }
+}

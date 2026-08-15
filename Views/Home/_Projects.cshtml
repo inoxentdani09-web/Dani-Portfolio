@@ -1,0 +1,40 @@
+﻿@{
+    var projects = ViewBag.Projects as List<DaniPortfolio.Models.Projects> ?? new();
+}
+<Section id="Projects">
+    <div class="project-bg">
+        <div class="project-content animate">
+            <h1 class="section-title">My Projects</h1>
+            <h1>Projects I've <span>Built</span></h1>
+            <p>From responsive websites to desktop applications, each project reflects my passion for creating efficient, user-friendly, and high-quality software.</p>
+        </div>
+       
+        <div class="project-container">
+            @foreach (var project in projects)
+            {
+                <div class="project-card">
+
+                    <img src="/images/@project.Image" alt="@project.Title - Full Stack Developer Project">
+                    <div class="project-info">
+                        <h3>@project.Title</h3>
+
+                        <p>@project.Description</p>
+                    </div>
+
+                    <div class="project-btns">
+                        <a href="@project.LiveDemo" class="live-btn">Live Demo</a>
+
+                        <a href="@project.GitHub" class="github-btn">GitHub</a>
+                    </div>
+
+             
+                </div>
+            }
+        </div>
+        <div class="project-view">
+            <button class="view-btn">View More</button>
+        </div>
+    </div>
+   
+
+</Section>

@@ -1,0 +1,461 @@
+@model DaniPortfolio.ViewModals.SkillViewModal
+<!-- ================= SKILLS PAGE ================= -->
+<section class="admin-page skills-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Skills</h1>
+            <p>Manage and track all your technical skills in one place</p>
+        </div>
+
+        <div class="breadcrumb">
+            Dashboard / <span>Skills</span>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="overview-cards">
+
+        <!-- Total Skills -->
+        <div class="overview-card">
+            <div class="card-icon orange">
+                <i class="fa-solid fa-code"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Total Skills</span>
+                <strong>@ViewBag.SkillsCount</strong>
+                <small>View all skills →</small>
+            </div>
+        </div>
+
+        <!-- Technical Skills -->
+        <div class="overview-card">
+            <div class="card-icon purple">
+                <i class="fa-solid fa-laptop-code"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Technical Skills</span>
+                <strong>@ViewBag.TechnicalSkillsCount</strong>
+                <small>View technical skills →</small>
+            </div>
+        </div>
+
+        <!-- Learning -->
+        <div class="overview-card">
+            <div class="card-icon green">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Currently Learning</span>
+                <strong>@ViewBag.LearningSkillsCount</strong>
+                <small>View learning skills →</small>
+            </div>
+        </div>
+
+        <!-- Published -->
+        <div class="overview-card">
+            <div class="card-icon blue">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Published Skills</span>
+                <strong>@ViewBag.PublishedSkillsCount</strong>
+                <small>Live on portfolio →</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Search / Filters -->
+    <div class="skills-toolbar">
+
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text"
+                   id="skillSearch"
+                   placeholder="Search skills..." />
+        </div>
+
+        <select id="skillCategoryFilter">
+            <option value="">Category</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Database">Database</option>
+            <option value="Tools">Tools</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <select id="skillLevelFilter">
+            <option value="">Level</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+        </select>
+
+        <select id="skillSort">
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="level">Level</option>
+            <option value="date">Created Date</option>
+        </select>
+
+        <button class="export-btn" id="exportSkills">
+            <i class="fa-solid fa-file-export"></i>
+            Export
+        </button>
+
+        <button type="button" class="add-skill-btn" id="openAddSkill">
+            <i class="fa-solid fa-plus"></i>
+            Add Skill
+        </button>
+  
+    </div>
+
+
+    <!-- Main Skills Content -->
+    <div class="skills-content">
+
+        <!-- Skills Table -->
+        <div class="skills-table-card">
+
+            <div class="table-header">
+                <div>
+                    <h3>All Skills</h3>
+                    <p>Manage your portfolio skills</p>
+                </div>
+
+                <span class="skills-total">
+                    @ViewBag.SkillsCount Skills
+                </span>
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="skills-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Skill</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="skillsTableBody">
+
+                        @if (Model != null)
+                        {
+                            foreach (var skill in Model.skills)
+                            {
+                                <tr class="skill-row"
+                                    data-id="@skill.Id"
+                                    data-name="@skill.Name"
+                                    data-category="@skill.Category"
+                                    data-level="@skill.Level"
+                                    data-desc="@skill.Description"
+                                    data-status="@skill.Status"
+                                    data-created="@skill.CreateDate.ToString("yyyy-MM-dd")">
+
+                                    <!-- ID -->
+                                    <td>
+                                        @skill.Id
+                                    </td>
+
+                                    <!-- Skill -->
+                                    <td>
+                                        <div class="skill-name-cell">
+
+                                            <div class="skill-icon">
+                                                <i class="fa-solid fa-code"></i>
+                                            </div>
+
+                                            <div>
+                                                <strong>
+                                                    @skill.Name
+                                                </strong>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                    <!-- Category -->
+                                    <td>
+                                        <span class="category-text">
+                                            @skill.Category
+                                        </span>
+                                    </td>
+
+                                    <!-- Description -->
+                                    <td>
+                                        <div class="skill-description">
+                                            @skill.Description
+                                        </div>
+                                    </td>
+
+                                    <!-- Level -->
+                                    <td>
+
+                                        @if (skill.Level == "Beginner")
+                                        {
+                                            <span class="level-badge beginner">
+                                                Beginner
+                                            </span>
+                                        }
+                                        else if (skill.Level == "Intermediate")
+                                        {
+                                            <span class="level-badge intermediate">
+                                                Intermediate
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="level-badge advanced">
+                                                Advanced
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td>
+
+                                        @if (skill.Status == "Published")
+                                        {
+                                            <span class="status-badge published">
+                                                Published
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge draft">
+                                                Draft
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <!-- Created -->
+                                    <td>
+                                        <div class="created-date">
+                                            @skill.CreateDate.ToString("MM/dd/yyyy")
+                                            <small>
+                                                @skill.CreateDate.ToString("hh:mm tt")
+                                            </small>
+                                        </div>
+                                    </td>
+
+                                    <!-- Actions -->
+                                    <td>
+
+                                        <div class="skill-actions">
+
+                                            <button type="button"
+                                                    class="action-btn skill-edit"
+                                                    title="Edit Skill"
+                                                    data-id="@skill.Id">
+
+                                                <i class="fa-solid fa-pen"></i>
+
+                                            </button>
+
+                                            <button type="button"
+                                                    class="action-btn skill-delete"
+                                                    title="Delete Skill"
+                                                    data-id="@skill.Id">
+
+                                                <i class="fa-solid fa-trash"></i>
+
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Table Footer -->
+            <div class="table-footer">
+
+                <span>
+                    Showing
+                    <strong id="visibleSkillsCount">
+                        @(Model.skills?.Count ?? 0)
+                    </strong>
+                    of
+                    <strong>
+                        @(Model.skills?.Count ?? 0)
+                    </strong>
+                    skills
+                </span>
+
+                <div class="pagination">
+
+                    <button class="pagination-btn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <button class="pagination-btn active">
+                        1
+                    </button>
+
+                    <button class="pagination-btn">
+                        2
+                    </button>
+
+                    <button class="pagination-btn">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Right Side -->
+        <div class="skills-sidebar">
+
+            <!-- Skill Distribution -->
+            <div class="side-card">
+
+                <div class="side-card-header">
+                    <h3>Skill Level</h3>
+                </div>
+
+                <div class="skill-chart">
+
+                    <div class="donut-chart">
+                        <div class="donut-inner">
+                            <strong>@ViewBag.SkillsCount</strong>
+                            <span>Skills</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="chart-legend">
+
+                    <div>
+                        <span class="legend-dot beginner-dot"></span>
+                        <span>Beginner</span>
+                        <strong>@ViewBag.BeginnerSkillsCount</strong>
+                    </div>
+
+                    <div>
+                        <span class="legend-dot intermediate-dot"></span>
+                        <span>Intermediate</span>
+                        <strong>@ViewBag.IntermediateSkillsCount</strong>
+                    </div>
+
+                    <div>
+                        <span class="legend-dot advanced-dot"></span>
+                        <span>Advanced</span>
+                        <strong>@ViewBag.AdvancedSkillsCount</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Recent Skills -->
+            <div class="side-card">
+
+                <div class="side-card-header">
+                    <h3>Recent Skills</h3>
+
+                    <a href="javascript:void(0)">
+                        View All
+                    </a>
+                </div>
+
+                <div class="recent-skills">
+
+                    @if (Model != null)
+                    {
+                        foreach (var skill in Model.skills
+                            .OrderByDescending(x => x.CreateDate)
+                            .Take(5))
+                        {
+                            <div class="recent-skill-item">
+
+                                <div class="recent-skill-icon">
+                                    <i class="fa-solid fa-code"></i>
+                                </div>
+
+                                <div class="recent-skill-info">
+                                    <strong>
+                                        @skill.Name
+                                    </strong>
+
+                                    <small>
+                                        @skill.CreateDate.ToString("dd MMM yyyy")
+                                    </small>
+                                </div>
+
+                            </div>
+                        }
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- Quick Actions -->
+            <div class="side-card quick-actions-card">
+
+                <h3>Quick Actions</h3>
+
+                <div class="quick-actions">
+
+                    <button id="quickAddSkill">
+                        <i class="fa-solid fa-plus"></i>
+                        Add New Skill
+                    </button>
+
+                    <button>
+                        <i class="fa-solid fa-file-export"></i>
+                        Export Skills
+                    </button>
+
+                </div>
+
+            </div>
+     
+        </div>
+
+    </div>
+
+
+    <!-- Footer -->
+    <div class="admin-page-footer">
+        © 2026 Daniyal Developer. All rights reserved.
+    </div>
+   
+</section>
+<!-- ================= SKILL MODAL ================= -->
+
+

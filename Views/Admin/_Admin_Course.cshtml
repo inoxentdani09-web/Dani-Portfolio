@@ -1,0 +1,415 @@
+﻿@model List<DaniPortfolio.Models.Course>
+<!-- ================= COURSES PAGE ================= -->
+<section class="admin-page courses-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Courses</h1>
+            <p>Manage and track all your learning courses in one place</p>
+        </div>
+
+        <div class="breadcrumb">
+            Dashboard / <span>Courses</span>
+        </div>
+    </div>
+
+
+    <!-- ================= OVERVIEW CARDS ================= -->
+    <div class="overview-cards">
+
+        <!-- Total Courses -->
+        <div class="overview-card">
+            <div class="card-icon orange">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Total Courses</span>
+                <strong>@ViewBag.CourseCount</strong>
+                <small>
+                    <i class="fa-solid fa-layer-group"></i>
+                    All courses
+                </small>
+            </div>
+        </div>
+
+
+        <!-- Completed -->
+        <div class="overview-card">
+            <div class="card-icon green">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Completed</span>
+                <strong>
+                    @Model.Count(x => x.Status == "Completed")
+                </strong>
+                <small>
+                    <i class="fa-solid fa-check"></i>
+                    Finished courses
+                </small>
+            </div>
+        </div>
+
+
+        <!-- In Progress -->
+        <div class="overview-card">
+            <div class="card-icon blue">
+                <i class="fa-solid fa-spinner"></i>
+            </div>
+
+            <div class="card-content">
+                <span>In Progress</span>
+                <strong>
+                    @Model.Count(x => x.Status == "In Progress")
+                </strong>
+                <small>
+                    <i class="fa-solid fa-clock"></i>
+                    Currently learning
+                </small>
+            </div>
+        </div>
+
+
+        <!-- Certificates -->
+        <div class="overview-card">
+            <div class="card-icon purple">
+                <i class="fa-solid fa-certificate"></i>
+            </div>
+
+            <div class="card-content">
+                <span>Certificates</span>
+                <strong>
+                    @Model.Count(x => x.Certificate)
+                </strong>
+                <small>
+                    <i class="fa-solid fa-award"></i>
+                    Earned certificates
+                </small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= COURSE MANAGEMENT PANEL ================= -->
+    <div class="panel course-management-panel">
+
+        <!-- Panel Header -->
+        <div class="panel-header">
+
+            <div>
+                <h2>Course Management</h2>
+                <p>View, update and manage your courses</p>
+            </div>
+
+            <button class="primary-btn" onclick="openCourseModal()">
+                <i class="fa-solid fa-plus"></i>
+                Add Course
+            </button>
+
+        </div>
+
+
+        <!-- ================= TOOLBAR ================= -->
+        <div class="table-toolbar">
+
+            <!-- Search -->
+            <div class="search-box">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input type="text"
+                       id="courseSearch"
+                       placeholder="Search courses..." />
+
+            </div>
+
+
+            <!-- Status Filter -->
+            <select id="courseStatusFilter" class="filter-select">
+
+                <option value="all">All Status</option>
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Planned">Planned</option>
+
+            </select>
+
+
+            <!-- Category Filter -->
+            <select id="courseCategoryFilter" class="filter-select">
+
+                <option value="all">All Categories</option>
+
+                @{
+                    var categories = Model
+                        .Select(x => x.Category)
+                        .Where(x => !string.IsNullOrEmpty(x))
+                        .Distinct()
+                        .OrderBy(x => x);
+                }
+
+                @foreach (var category in categories)
+                {
+                    <option value="@category">@category</option>
+                }
+
+            </select>
+
+        </div>
+
+
+        <!-- ================= COURSE TABLE ================= -->
+        <div class="table-container">
+
+            <table class="data-table" id="coursesTable">
+
+                <thead>
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Course</th>
+
+                        <th>Platform</th>
+
+                        <th>Category</th>
+
+                        <th>Technology</th>
+
+                        <th>Level</th>
+
+                        <th>Progress</th>
+
+                        <th>Status</th>
+
+                        <th>Certificate</th>
+
+                        <th>Start Date</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var course in Model)
+                        {
+                            <tr>
+
+                                <!-- ID -->
+                                <td>
+                                    <span class="table-id">
+                                        #@course.CourseID
+                                    </span>
+                                </td>
+
+
+                                <!-- Course -->
+                                <td>
+                                    <div class="course-info">
+
+                                        <div class="course-icon">
+                                            <i class="fa-solid fa-book-open"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                @course.CourseName
+                                            </strong>
+
+                                            <small>
+                                                @course.Instructor
+                                            </small>
+                                        </div>
+
+                                    </div>
+                                </td>
+
+
+                                <!-- Platform -->
+                                <td>
+                                    <span class="platform-badge">
+                                        @course.Platform
+                                    </span>
+                                </td>
+
+
+                                <!-- Category -->
+                                <td>
+                                    <span class="category-badge">
+                                        @course.Category
+                                    </span>
+                                </td>
+
+
+                                <!-- Technology -->
+                                <td>
+                                    <span class="technology-text">
+                                        @course.Technology
+                                    </span>
+                                </td>
+
+
+                                <!-- Level -->
+                                <td>
+                                    <span class="level-badge">
+                                        @course.Level
+                                    </span>
+                                </td>
+
+
+                                <!-- Progress -->
+                                <td>
+
+                                    <div class="progress-wrapper">
+
+                                        <div class="progress-info">
+                                            <span>@course.Progress%</span>
+                                        </div>
+
+                                        <div class="progress-bar">
+                                            <div class="progress-fill"
+                                                 style="width:@course.Progress%">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    @if (course.Status == "Completed")
+                                    {
+                                        <span class="status-badge completed">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            Completed
+                                        </span>
+                                    }
+                                    else if (course.Status == "In Progress")
+                                    {
+                                        <span class="status-badge progress">
+                                            <i class="fa-solid fa-spinner"></i>
+                                            In Progress
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge planned">
+                                            <i class="fa-solid fa-clock"></i>
+                                            Planned
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- Certificate -->
+                                <td>
+
+                                    @if (course.Certificate)
+                                    {
+                                        <span class="certificate-yes">
+                                            <i class="fa-solid fa-certificate"></i>
+                                            Yes
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="certificate-no">
+                                            No
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- Start Date -->
+                                <td>
+                                    <span class="date-text">
+                                        @course.StartDate.ToString("dd MMM yyyy")
+                                    </span>
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="action-buttons">
+
+                                        <button class="action-btn edit"
+                                                onclick="editCourse(@course.CourseID)"
+                                                title="Edit Course">
+
+                                            <i class="fa-solid fa-pen"></i>
+
+                                        </button>
+
+
+                                        <button class="action-btn delete"
+                                                onclick="deleteCourse(@course.CourseID)"
+                                                title="Delete Course">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="11">
+
+                                <div class="empty-state">
+
+                                    <div class="empty-icon">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+
+                                    <h3>No Courses Found</h3>
+
+                                    <p>
+                                        You haven't added any courses yet.
+                                    </p>
+
+                                    <button class="primary-btn"
+                                            onclick="openCourseModal()">
+
+                                        <i class="fa-solid fa-plus"></i>
+                                        Add Your First Course
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>

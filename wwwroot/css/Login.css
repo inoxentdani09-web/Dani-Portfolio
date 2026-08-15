@@ -1,0 +1,396 @@
+﻿/* Admin Login styles - follows project color palette */
+:root{
+  --bg:#020617;
+  --card:#0F172A;
+  --primary:#F97316;
+  --hover:#EA580C;
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,0.55);
+}
+
+*{box-sizing:border-box}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+body{
+    background:var(--bg);color:var(--text);
+    font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+
+}
+
+.login-page {
+    display: grid;
+    grid-template-columns: 1fr 1px 520px;
+    min-height: 100vh;
+    align-items: center;
+}
+.promo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(255,255,255,.02), transparent);
+    padding: 40px;
+    text-align: center;
+}
+.promo-inner {
+    max-width: 480px;
+    width: 100%;
+    margin: 0 auto;
+}
+.promo-icon{
+    width:56px;
+    height:56px;
+    border-radius:12px;
+    border:1px solid rgba(249,115,22,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--primary);
+    font-weight:700;
+    margin:0 auto;
+
+}
+.promo-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 20px 0 18px;
+    line-height: 1.2;
+}
+.promo-title span{
+    color:var(--primary)
+
+}
+.promo-desc {
+    max-width: 420px;
+    margin: 0 auto 35px;
+    line-height: 1.8;
+    font-size: 14px;
+    color:#CCC;
+}
+.promo-art{
+    margin-top:18px
+
+}
+.laptop {
+    width: 100%;
+    max-width: 470px;
+    height: 250px;
+    margin: 0 auto;
+    border-radius: 14px;
+    overflow: hidden;
+}
+.laptop .screen{
+    position:absolute;
+    inset:18px;
+    border-radius:6px;
+    background:linear-gradient(180deg,#0b1116,#071018);
+}
+.screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.laptop .mug {
+    position: absolute;
+    right: -1px;
+   bottom:-1px;
+    background: var(--card);
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: var(--primary);
+    box-shadow: 0 6px 20px rgba(2,6,23,0.6)
+}
+
+.divider {
+    width: 1px;
+    height: 75%;
+    background: rgba(249,115,22,.18);
+}
+
+.card-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px
+}
+.card {
+    width: 100%;
+    max-width: 440px;
+    border: 1px solid rgba(249,115,22,.08);
+    backdrop-filter: blur(12px);
+}
+.card-badge{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:-50px;
+    background:var(--card);width:64px;
+    height:64px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--primary);
+    font-size:22px;
+    border:1px solid rgba(255,255,255,0.02);
+    box-shadow:0 6px 18px rgba(2,6,23,0.6)
+
+}
+.card-title{
+    text-align:center;
+    font-size:22px;
+    margin-top:20px
+
+}
+.card-sub{
+    text-align:center;
+    color:var(--muted);
+    margin:8px 0 22px
+
+}
+
+.login-form{
+    display:block;
+
+}
+.field{
+    display:block;
+    margin-bottom:16px;
+
+}
+.label{
+    display:block;
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:8px
+
+}
+.input-wrap{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.04);
+    padding:12px;
+    border-radius:8px
+
+}
+.input-wrap i{
+    color:var(--muted);
+    min-width:18px
+
+}
+.input-wrap input{
+    flex:1;
+    background:transparent;
+    border:0;
+    color:var(--text);
+    outline:none;
+    font-size:15px
+
+}
+.input-wrap button.eye{
+    background:transparent;
+    border:0;
+    color:var(--muted);
+    cursor:pointer
+
+}
+.input-wrap input::placeholder{
+    color:rgba(255,255,255,0.35)
+
+}
+.input-wrap:focus-within{
+    border-color:rgba(249,115,22,0.22);
+    box-shadow:0 6px 18px rgba(15,23,42,0.6)
+
+}
+
+.form-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px
+
+}
+.remember{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    color:var(--muted);
+    font-size:14px
+
+}
+.remember input{
+    width:16px;
+    height:16px
+
+}
+.forgot{
+    color:var(--primary);
+    text-decoration:none;
+    font-size:14px
+
+}
+.forgot:hover{
+    color:var(--hover)
+
+}
+
+.btn-primary{
+    width:100%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(90deg,var(--primary),var(--primary));
+    color:#fff;
+    padding:12px;
+    border-radius:8px;
+    border:0;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(249,115,22,0.12);
+    transition:all .18s ease
+
+}
+.btn-primary:hover{
+    background:linear-gradient(90deg,var(--hover),var(--hover));
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(234,88,12,0.12)
+
+}
+
+.or{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:20px 0;
+    color:var(--muted)
+
+}
+.or:before,.or:after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:rgba(255,255,255,0.03)
+
+}
+.or span{
+    font-size:13px
+
+}
+.back-link{
+    display:block;
+    text-align:center;
+    color:var(--muted);
+    text-decoration:none;
+    margin-top:6px
+
+}
+.back-link i{
+    color:var(--primary);
+    margin-left:8px
+
+}
+
+/* small animations */
+.card, .promo-inner, .laptop{
+    transform:translateY(6px);
+    opacity:0;
+    animation:fadeInUp .6s ease forwards
+
+}
+.card{
+    animation-delay:.08s
+
+}
+.promo-inner{
+    animation-delay:.02s
+
+}
+@keyframes fadeInUp{to{
+                        transform:none;opacity:1
+
+                    }
+
+}
+
+/* Responsive - collapse to single column on small screens */
+@media (max-width:992px) {
+
+    body {
+        overflow-y: auto;
+    }
+
+    .login-page {
+        grid-template-columns: 1fr;
+        padding: 40px 20px;
+    }
+
+    .promo,
+    .divider {
+        display: none;
+    }
+
+    .card-wrap {
+        padding: 0;
+    }
+
+    .card {
+        max-width: 500px;
+        margin: auto;
+    }
+}
+@media (max-width:480px){
+  .card{
+      padding:24px;
+      border-radius:10px
+
+  }
+  .card-badge{
+      width:56px;
+      height:56px;
+      top:-22px
+
+  }
+    .promo-title {
+        font-size: 22px
+    }
+}
+@media (max-width:576px) {
+
+    .login-page {
+        padding: 20px 15px;
+    }
+
+    .card {
+        padding: 28px 22px;
+    }
+
+    .card-title {
+        font-size: 30px;
+    }
+
+    .card-sub {
+        font-size: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .forgot {
+        margin-left: 24px;
+    }
+
+    .btn-primary {
+        height: 52px;
+    }
+}

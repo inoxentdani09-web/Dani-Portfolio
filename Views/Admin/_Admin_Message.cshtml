@@ -1,0 +1,344 @@
+﻿@model List<DaniPortfolio.Models.Message>
+
+<section class="admin-page messages-page">
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <div class="page-header">
+        <div>
+            <span class="page-label">COMMUNICATION</span>
+
+            <h1>Messages</h1>
+
+            <p>
+                Manage and review messages received from your portfolio contact form.
+            </p>
+        </div>
+
+        <div class="breadcrumb">
+            Dashboard / <span>Messages</span>
+        </div>
+    </div>
+
+
+    <!-- ================= OVERVIEW ================= -->
+
+    <div class="message-overview">
+
+        <div class="message-stat">
+            <div class="message-stat-icon orange">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+
+            <div>
+                <span>Total Messages</span>
+                <strong>@Model.Count</strong>
+            </div>
+        </div>
+
+
+        <div class="message-stat">
+            <div class="message-stat-icon blue">
+                <i class="fa-solid fa-envelope-open"></i>
+            </div>
+
+            <div>
+                <span>Unread</span>
+                <strong>
+                    @Model.Count(x => x.Status == "Unread")
+                </strong>
+            </div>
+        </div>
+
+
+        <div class="message-stat">
+            <div class="message-stat-icon green">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div>
+                <span>Read</span>
+                <strong>
+                    @Model.Count(x => x.Status == "Read")
+                </strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <div class="messages-table-wrapper">
+
+        <div class="messages-table-header">
+
+            <div>
+                <h3>Message Inbox</h3>
+
+                <span>
+                    @Model.Count message(s) received
+                </span>
+            </div>
+
+            <div class="message-tools">
+
+                <div class="message-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text"
+                           id="messageSearch"
+                           placeholder="Search messages..." />
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="messages-table-scroll">
+
+            <table class="messages-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>CONTACT</th>
+                        <th>SUBJECT</th>
+                        <th>MESSAGE</th>
+                        <th>STATUS</th>
+                        <th>DATE</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+
+
+                <tbody id="messagesTableBody">
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var message in Model)
+                        {
+                            <tr class="message-row">
+
+                                <!-- ID -->
+                                <td class="message-id">
+                                    #@message.MessageID
+                                </td>
+
+
+                                <!-- CONTACT -->
+                                <td>
+
+                                    <div class="message-contact">
+
+                                        <div class="message-avatar">
+                                            @message.Name.Substring(0, 1).ToUpper()
+                                        </div>
+
+                                        <div class="message-contact-info">
+
+                                            <strong>
+                                                @message.Name
+                                            </strong>
+
+                                            <span>
+                                                @message.Email
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- SUBJECT -->
+                                <td>
+
+                                    <div class="message-subject">
+
+                                        <strong title="@message.Subject">
+                                            @message.Subject
+                                        </strong>
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- MESSAGE -->
+                                <td>
+
+                                    <div class="message-preview"
+                                         title="@message.MessageText">
+
+                                        @message.MessageText
+
+                                    </div>
+
+                                </td>
+
+
+                                <!-- STATUS -->
+                                <td>
+
+                                    @if (message.Status?.ToLower() == "unread")
+                                    {
+                                        <span class="message-status unread">
+                                            <i class="fa-solid fa-circle"></i>
+                                            Unread
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="message-status read">
+                                            <i class="fa-solid fa-check"></i>
+                                            Read
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- DATE -->
+                                <td class="message-date">
+
+                                    <i class="fa-regular fa-calendar"></i>
+
+                                    @message.CreatedDate.ToString("dd MMM yyyy")
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+                                <td>
+
+                                    <div class="message-actions">
+
+                                        <button type="button"
+                                                class="message-action-btn view"
+                                                title="View Message"
+                                                onclick="viewMessage(@message.MessageID)">
+
+                                            <i class="fa-solid fa-eye"></i>
+
+                                        </button>
+
+
+                                        <button type="button"
+                                                class="message-action-btn delete"
+                                                title="Delete Message"
+                                                onclick="deleteMessage(@message.MessageID)">
+
+                                            <i class="fa-solid fa-trash"></i>
+
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7">
+
+                                <div class="messages-empty">
+
+                                    <div class="empty-icon">
+                                        <i class="fa-solid fa-envelope-open"></i>
+                                    </div>
+
+                                    <h3>No Messages Yet</h3>
+
+                                    <p>
+                                        Messages submitted through your contact form
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ================= TABLE FOOTER ================= -->
+
+        <div class="messages-table-footer">
+
+            <span>
+                Showing <strong>@Model.Count</strong> messages
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= VIEW MESSAGE MODAL ================= -->
+
+<div class="message-modal-overlay" id="messageViewModal">
+
+    <div class="message-modal">
+
+        <button type="button"
+                class="message-modal-close"
+                onclick="closeMessageModal()">
+
+            <i class="fa-solid fa-xmark"></i>
+
+        </button>
+
+
+        <div class="message-modal-header">
+
+            <div class="modal-avatar" id="modalAvatar">
+                D
+            </div>
+
+            <div>
+                <h2 id="modalName">Message</h2>
+                <span id="modalEmail"></span>
+            </div>
+
+        </div>
+
+
+        <div class="modal-content">
+
+            <div class="modal-field">
+                <span>Subject</span>
+                <strong id="modalSubject"></strong>
+            </div>
+
+
+            <div class="modal-field">
+                <span>Message</span>
+
+                <p id="modalMessage"></p>
+            </div>
+
+
+            <div class="modal-field">
+                <span>Date</span>
+                <strong id="modalDate"></strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

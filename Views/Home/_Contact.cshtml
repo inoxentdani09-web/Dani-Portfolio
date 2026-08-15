@@ -1,0 +1,105 @@
+﻿<section class="contact" id="Contact">
+    <div class="Learn-content animate">
+        <div class="section-title">
+            <span>Contact Me</span>
+        </div>
+
+        <h2>Let's Work <span>Together</span></h2>
+        <p>
+            Have a project in mind? I'm available for freelance full stack development work with clients
+            across Pakistan, India, and worldwide. Fill out the form below and I'll get back to you as soon as possible.
+        </p>
+    </div>
+
+    <div class="contact-container animate">
+        @if (TempData["MessageSuccess"] != null)
+        {
+            <div class="contact-success">
+                <div class="success-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <div class="success-content">
+                    <strong>Message Sent!</strong>
+                    <span>@TempData["MessageSuccess"]</span>
+                </div>
+
+                <div class="success-close" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+        }
+        <!-- Contact Form -->
+        <div class="contact-form animate">
+
+            <form asp-action="SendMessage" asp-controller="Home" method="post">
+
+                <div class="input-group">
+                    <input type="text"
+                           name="Name"
+                           placeholder="Your Name"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <input type="email"
+                           name="Email"
+                           placeholder="Your Email"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <input type="text"
+                           name="Subject"
+                           placeholder="Subject"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <textarea rows="6"
+                              name="MessageText"
+                              placeholder="Write your message..."
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Send Message
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-info animate">
+
+            <div class="info-box">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                    <h4>Email</h4>
+                    <p>inoxentdani09@gmail.com</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                    <h4>Phone</h4>
+                    <p>+92 318 2315238</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <h4>Location</h4>
+                    <p>Karachi, Pakistan</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

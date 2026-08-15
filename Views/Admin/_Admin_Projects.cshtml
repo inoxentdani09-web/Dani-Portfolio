@@ -1,0 +1,254 @@
+﻿@model DaniPortfolio.ViewModals.ProjectsViewModal;
+
+<main class="admin-project-page">
+    <div class="page-inner">
+        <div class="page-header">
+            <div>
+                <h1>Projects</h1>
+                <p class="subtitle">Manage and track all your projects in one place</p>
+            </div>
+            <nav class="breadcrumb">Dashboard / <span>Projects</span></nav>
+        </div>
+
+        <section class="overview-cards">
+            <div class="cards stat">
+                <div class="icon orange">📁</div>
+                <div class="meta">
+                    <div class="label">Total Projects</div>
+                    <div class="value">@ViewBag.ProjectsCount </div>
+                    <a class="muted" href="#">View all projects →</a>
+                </div>
+            </div>
+            <div class="cards stat">
+                <div class="icon purple">&lt;/&gt;</div>
+                <div class="meta">
+                    <div class="label">Total Skills Used</div>
+                    <div class="value">@ViewBag.SkillsCount</div>
+                    <a class="muted" href="#">View all skills →</a>
+                </div>
+            </div>
+            <div class="cards stat">
+                <div class="icon green"><i class="fa-solid fa-book"></i></div>
+                <div class="meta">
+                    <div class="label">Total Courses</div>
+                    <div class="value">@ViewBag.LearnCount</div>
+                    <a class="muted" href="#">View all courses →</a>
+                </div>
+            </div>
+            <div class="cards stat">
+                <div class="icon blue">✉️</div>
+                <div class="meta">
+                    <div class="label">Total Messages</div>
+                    <div class="value">24</div>
+                    <a class="muted" href="#">View all messages →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="controls-grid">
+            <div class="controls">
+                <div class="search">
+                    <input type="search" placeholder="Search projects..." />
+                    <button class="icon"><i class="fa-solid fa-search"></i></button>
+                </div>
+                <div class="filters">
+                    <select><option>Status</option></select>
+                    <select><option>Category</option></select>
+                    <select><option>Sort By</option></select>
+                </div>
+            </div>
+            <div class="actions"> 
+                <a asp-action="ExportProjects" asp-controller="Admin" class="btn ghost">Export  </a>
+                <button class="btn primary" onclick="openProjectModal()">+ Add Project</button>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <div class="table-card card">
+                <div class="table-card card">
+                    <table class="projects-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Project Name</th>
+                                <th>Description</th>
+                                <th>Technology</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>GitHub</th>
+                                <th>Live Demo</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model.projects)
+                            {
+                                <tr>
+
+                                    <td>@item.ProjectID</td>
+
+                                    <td>
+                                        <img src="~/Images/@item.Image" class="thumb" alt="@item.Title">
+                                    </td>
+
+                                    <td>
+                                        <div class="title">@item.Title</div>
+                                    </td>
+                                    <td>
+                                        <div class="desc">@item.Description</div>
+
+                                    </td>
+                                    <td>
+                                        <div class="desc">@item.Technalogy</div>
+                                    </td>
+
+                                    <td>
+                                        <div class="desc">@item.category</div>
+                                    </td>
+
+                                     
+
+                                    <td>
+                                        @if (@item.Status == "Published")
+                                        {
+                                            <span class="status published">Published</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status draft">Draft</span>
+
+                                        }
+
+                                    </td>
+
+                                    <td>
+                                        <a href="@item.GitHub" target="_blank" class="table-link">
+                                            GitHub
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="@item.LiveDemo" target="_blank" class="table-link">
+                                            Live Demo
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <div class="desc">@item.CreatedDate</div>
+                                    </td>
+
+                                    <td>
+                                        <button class="action-btn edit"
+                                                onclick="editProject(@item.ProjectID)">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <a asp-action="DeleteProject"
+                                           asp-controller="Admin"
+                                           asp-route-id="@item.ProjectID"
+                                           class="action-btn delete"
+                                           onclick="return confirm('Are you sure you want to delete this project?')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <div class="rows-info">Showing 1 to 7 of 12 projects</div>
+                    <div class="pager">
+                        <button class="pg">&lt;</button>
+                        <button class="pg active">1</button>
+                        <button class="pg">2</button>
+                        <button class="pg">&gt;</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="right-panel">
+                <div class="card status-card">
+                    <h3>Project Status</h3>
+                    @{
+                        int totalProjects = @ViewBag.ProjectsCount;
+                        int published = @ViewBag.publishedCount ?? 0;
+                        int draft = @ViewBag.draftCount ?? 0;
+                        double publishedPercentage = totalProjects > 0 ? Math.Round((double)published * 100 / totalProjects, 0) : 0;
+                        double draftPercentage = totalProjects > 0 ? Math.Round((double)draft * 100 / totalProjects, 0) : 0;
+                    }
+
+                    <div class="donut" aria-hidden>
+                        <svg viewBox="0 0 36 36">
+                            <circle class="bg" cx="18" cy="18" r="15"></circle>
+
+                            <circle class="c1"
+                                    cx="18"
+                                    cy="18"
+                                    r="15"
+                                    stroke-dasharray="@publishedPercentage @(100 - publishedPercentage)">
+                            </circle>
+                        </svg>
+                    </div>
+
+                    <ul class="legend">
+                        @* <li><span class="dot green"></span>Completed <span class="muted">4 (33%)</span></li> *@
+                        @* <li><span class="dot blue"></span>In Progress <span class="muted">3 (25%)</span></li> *@
+                        <li><span class="dot purple"></span>Published <span class="muted">@published (@publishedPercentage%)</span></li>
+                        @* <li><span class="dot orange"></span>On Hold <span class="muted">2 (17%)</span></li> *@
+                        <li><span class="dot grey"></span>Draft <span class="muted">@draft (@draftPercentage%)</span></li>
+                    </ul>
+                </div>
+
+                <div class="card activity-card">
+                    <div class="topline">
+                        <h3>Recent Activity</h3>
+                        <a class="muted" href="#">View All</a>
+                    </div>
+                    <ul class="activity">
+
+                        @foreach (var item in ViewBag.RecentProjects)
+                        {
+                            <li>
+                                <span class="act-dot @(item.Status == "Published" ? "green" : "grey")"></span>
+
+                                <div>
+                                    <div class="act-title">
+                                        <strong>@item.Title</strong> was @(item.Status == "Published" ? "published" : "saved as draft")
+                                    </div>
+
+                                    <div class="muted">
+                                        @item.CreatedDate.ToString("dd MMM yyyy")
+                                    </div>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+
+                <div class="card quick-card">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-grid">
+                        <button class="small primary" onclick="openProjectModal()">+ Add New Project</button>
+                        <button class="small ghost">+ Add New Skill</button>
+                        <button class="small dark">+ Add Course</button>
+                        <button class="small">View Messages</button>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <footer class="page-footer">© 2025 Daniyal Developer. All rights reserved.</footer>
+    </div>
+</main>
