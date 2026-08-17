@@ -24,18 +24,21 @@ namespace DaniPortfolio.Controllers
         {
             return View();
         }
+        private bool IsAjaxRequest()
+        {
+            return Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
         public IActionResult Dashboard()
         {
             var dashboard = _context.Projects.ToList();
             ViewBag.ProjectsCount = _context.Projects.Count();
             ViewBag.LearnCount = _context.Courses.Count();
             ViewBag.SkillsCount = _context.Skills.Count();
-
+            ViewBag.MessagesCount = _context.Messages.Count();
             ViewBag.publishedCount = _context.Projects.Count(x => x.Status == "Published");
             ViewBag.draftCount = _context.Projects.Count(x => x.Status == "Draft");
 
             ViewBag.RecentProjects = _context.Projects.OrderByDescending(x => x.CreatedDate).Take(5).ToList();
-
             return PartialView("_Dashboard", dashboard);
         }
         [HttpPost]
@@ -64,12 +67,18 @@ namespace DaniPortfolio.Controllers
             ViewBag.ProjectsCount = _context.Projects.Count();
             ViewBag.LearnCount = _context.Courses.Count();
             ViewBag.SkillsCount = _context.Skills.Count();
+            ViewBag.MessagesCount = _context.Messages.Count();
 
             ViewBag.publishedCount = _context.Projects.Count(x => x.Status == "Published");
             ViewBag.draftCount = _context.Projects.Count(x => x.Status == "Draft");
 
             ViewBag.RecentProjects = _context.Projects.OrderByDescending(x => x.CreatedDate).Take(5).ToList();
-            return PartialView("_Admin_Projects", vm);
+            if (IsAjaxRequest())
+            {
+                return PartialView("_Admin_Projects", vm);
+
+            }
+            return View("Dashboard", _context.Projects.ToList());
         }
 
         // Partial: Skills page
@@ -98,14 +107,24 @@ namespace DaniPortfolio.Controllers
             ViewBag.DraftCount =
                 _context.Skills.Count(x => x.Status == "Draft");
 
-            return PartialView("_Admin_Skills", vm);
+            if (IsAjaxRequest())
+            {
+                return PartialView("_Admin_Skills", vm);
+            }
+
+            return View("Dashboard", _context.Projects.ToList());
         }
         //Partial: Message page
         public IActionResult Message()
         {
             var message = _context.Messages.ToList();
-            ViewBag.SkillsCount = _context.Messages.Count();
-            return PartialView("_Admin_Message", message);
+            ViewBag.MessagesCount = _context.Messages.Count();
+            if (IsAjaxRequest())
+            {
+                return PartialView("_Admin_Message", message);
+            }
+
+            return View("Dashboard", _context.Projects.ToList());
         }
 
         public IActionResult ExportProjects()
@@ -305,7 +324,12 @@ namespace DaniPortfolio.Controllers
         {
             var course = _context.Courses.ToList();
             ViewBag.CourseCount = _context.Courses.Count();
-            return PartialView("_Admin_Course", course);
+            if (IsAjaxRequest())
+            {
+                return PartialView("_Admin_Course", course);
+            }
+
+            return View("Dashboard", _context.Projects.ToList());
         }
     }
 }

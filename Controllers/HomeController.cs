@@ -22,6 +22,7 @@ namespace DaniPortfolio.Controllers
             ViewBag.SkillsCount = _context.Skills.Count();
             ViewBag.ProjectsCount = _context.Projects.Count();
             ViewBag.CourseCount = _context.Courses.Count();
+            ViewBag.MessagesCount = _context.Messages.Count();
             return View();
         }
         public IActionResult Skills()

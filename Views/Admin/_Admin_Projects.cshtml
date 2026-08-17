@@ -1,5 +1,6 @@
 ﻿@model DaniPortfolio.ViewModals.ProjectsViewModal;
 
+
 <main class="admin-project-page">
     <div class="page-inner">
         <div class="page-header">
@@ -16,7 +17,7 @@
                 <div class="meta">
                     <div class="label">Total Projects</div>
                     <div class="value">@ViewBag.ProjectsCount </div>
-                    <a class="muted" href="#">View all projects →</a>
+                    <a class="muted" href="#" id="projectsLink">View all projects →</a>
                 </div>
             </div>
             <div class="cards stat">
@@ -39,7 +40,7 @@
                 <div class="icon blue">✉️</div>
                 <div class="meta">
                     <div class="label">Total Messages</div>
-                    <div class="value">24</div>
+                    <div class="value">@ViewBag.MessagesCount</div>
                     <a class="muted" href="#">View all messages →</a>
                 </div>
             </div>

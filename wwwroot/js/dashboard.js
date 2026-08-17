@@ -56,6 +56,48 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+
+// Called after an AJAX partial is loaded into #main-content
+window.onAdminPartialLoaded = function(){
+    try{
+        const ctx = document.getElementById("projectsChart");
+        if (ctx) {
+            const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 250);
+            gradient.addColorStop(0, "rgba(249,115,22,0.22)");
+            gradient.addColorStop(1, "rgba(249,115,22,0.02)");
+
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+                    datasets: [{
+                        label: "Projects",
+                        data: [1, 8, 5, 9, 12, 18],
+                        backgroundColor: gradient,
+                        borderColor: "#F97316",
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: "#F97316"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#9CA3AF" } },
+                        y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#9CA3AF" } }
+                    }
+                }
+            });
+        }
+    }catch(e){ console.warn('onAdminPartialLoaded error', e); }
+};
     }
 
     // ==========================
@@ -89,14 +131,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     projectsLink.addEventListener("click", function (e) {
         e.preventDefault();
-
-        fetch("/Admin/Projects")
+        const url = "/Admin/Projects";
+        fetch(url, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
             .then(response => response.text())
             .then(html => {
                 document.getElementById("main-content").innerHTML = html;
+                history.pushState({}, "", url);
             });
     });
-    
+
     const dashboardLink = document.getElementById("dashboardLink");
 
     dashboardLink.addEventListener("click", function (e) {
@@ -106,6 +153,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+    // ensure sidebar active state matches current URL on initial load
+    try { updateActiveSidebar(window.location.pathname); } catch(e) { console.warn('updateActiveSidebar error', e); }
 });
 const themeBtn = document.getElementById("themeToggle");
 const icon = themeBtn.querySelector("i");
@@ -212,36 +261,48 @@ const skillsLink = document.getElementById("skillLink");
 
 skillsLink.addEventListener("click", function (e) {
     e.preventDefault();
-
-    fetch("/Admin/Skills")
+    const url = "/Admin/Skills";
+    fetch(url, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
         .then(response => response.text())
         .then(html => {
             document.getElementById("main-content").innerHTML = html;
-
+            history.PushState({}, "", url);
         });
 });
 const courseLink = document.getElementById("courseLink");
 
 courseLink.addEventListener("click", function (e) {
     e.preventDefault();
-
-    fetch("/Admin/Course")
+    const url = "/Admin/Course";
+    fetch(url, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
         .then(response => response.text())
         .then(html => {
             document.getElementById("main-content").innerHTML = html;
-
+            history.pushState({}, "", url);
         });
 });
 const messagesLink = document.getElementById("messagesLink");
 
 messagesLink.addEventListener("click", function (e) {
     e.preventDefault();
-
-    fetch("/Admin/Message")
+    const url = "/Admin/Message";
+    fetch(url, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
         .then(response => response.text())
         .then(html => {
             document.getElementById("main-content").innerHTML = html;
-
+            history.pushState({}, "", url);
         });
 });
 
@@ -332,3 +393,44 @@ if (skillImageInput) {
     });
 
 }
+
+window.addEventListener("DOMContentLoaded", function () {
+
+    const path = window.location.pathname;
+
+    let url = null;
+
+    if (path === "/Admin/Projects") {
+        url = "/Admin/Projects";
+    }
+    else if (path === "/Admin/Skills") {
+        url = "/Admin/Skills";
+    }
+    else if (path === "/Admin/Course") {
+        url = "/Admin/Course";
+    }
+    else if (path === "/Admin/Message") {
+        url = "/Admin/Message";
+    }
+
+    if (!url) {
+        // still set active for dashboard
+        try{ updateActiveSidebar(window.location.pathname); }catch(e){}
+        return;
+    }
+
+    fetch(url, {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("main-content").innerHTML = html;
+            try{ updateActiveSidebar(window.location.pathname); }catch(e){}
+        })
+        .catch(error => {
+            console.error("Page loading error:", error);
+        });
+
+});

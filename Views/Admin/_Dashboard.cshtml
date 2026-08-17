@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 @model List<DaniPortfolio.Models.Projects>;
@@ -41,21 +41,21 @@
                 <nav class="nav-menu">
                     <ul>
                         <li class="active">
-                            <a href="#" id="dashboardLink">
+                            <a href="/Admin/Dashboard" id="dashboardLink">
                                 <i class="fa-solid fa-house"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
                         <li>
-                            <a href="#" id="projectsLink">
+                            <a href="/Admin/Projects" id="projectsLink">
                                 <i class="fa-solid fa-folder"></i>
                                 <span>Projects</span>
                             </a>
                         </li>
 
                         <li>
-                            <a href="#" id="skillLink">
+                            <a href="/Admin/Skill" id="skillLink">
 
                                 <i class="fa-solid fa-code"></i>
                                 <span>Skills</span>
@@ -63,19 +63,19 @@
                         </li>
 
                         <li>
-                            <a href="courseLink" id="courseLink">
+                            <a href="/Admin/Course" id="courseLink">
                                 <i class="fa-solid fa-book"></i>
                                 <span>Courses</span>
                             </a>
                         </li>
                         <li>
-                            <a href="messagesLink" id="messagesLink">
+                            <a href="/Admin/Message" id="messagesLink">
                                 <i class="fa-regular fa-envelope"></i>
                                 <span>Messages</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#" id="settingLink">
+                            <a href="/Admin/Setting" id="settingLink">
                                 <i class="fa-solid fa-gear"></i>
                                 <span>Settings</span>
                             </a>
@@ -153,7 +153,7 @@
                                 <div class="stat card-sm">
                                     <div class="blue"><i class="fa-regular fa-envelope"></i></div>
                                     <div class="stat-body">
-                                        <div class="stat-value">24</div>
+                                        <div class="stat-value">@ViewBag.MessagesCount</div>
                                         <div class="stat-label">Total Messages</div>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@
                             <div class="card panel">
                                 <div class="panel-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Recent Projects</h5>
-                                    <a href="#" class="small link">View All →</a>
+                                    <a href="#" class=" links">View All →</a>
                                 </div>
                                 <div class="panel-body">
                                     <ul class="list-unstyled recent-projects">
@@ -190,33 +190,6 @@
                                             </li>
                                         }
 
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-5">
-                            <div class="card panel">
-                                <div class="panel-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0">Recent Messages</h5>
-                                    <a href="#" class="small link">View All →</a>
-                                </div>
-                                <div class="panel-body">
-                                    <ul class="list-unstyled recent-messages">
-                                        <li class="msg-item d-flex align-items-center">
-                                            <div class="avatar-circle bg-primary">A</div>
-                                            <div class="msg-content flex-grow-1">
-                                                <div class="name">Ahmed Raza <span class="time text-muted">2m ago</span></div>
-                                                <div class="meta">I'm interested in working with you...</div>
-                                            </div>
-                                        </li>
-                                        <li class="msg-item d-flex align-items-center">
-                                            <div class="avatar-circle bg-success">S</div>
-                                            <div class="msg-content flex-grow-1">
-                                                <div class="name">Sarah Khan <span class="time text-muted">1h ago</span></div>
-                                                <div class="meta">Great work on your portfolio!..</div>
-                                            </div>
-                                        </li>
                                     </ul>
                                 </div>
                             </div>

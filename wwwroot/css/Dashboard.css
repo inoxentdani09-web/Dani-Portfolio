@@ -404,11 +404,22 @@ body {
 .panel-header {
     margin-bottom: 12px
 }
+.links {
+    color:var(--text);
+    background-color:var(--bg);
+    border:1px solid #F97316;
+    width:100px;
+    height:20px;
+    border-radius:5px;
+    font-size:12px;
+    text-align:center;
+    text-decoration:none;
+}
 
-    .panel-header .link {
-        color: #F97316;
-        text-decoration: none;
-    }
+.panel-header {
+    color: #F97316;
+    text-decoration: none;
+}
 
 .panel-body {
     padding-top: 6px
@@ -426,12 +437,13 @@ body {
     height: 48px;
     background: #0b0f15;
     border-radius: 8px;
-    margin-right: 12px
+    margin-right: 12px;
 }
 
     .proj-item .thumb.small {
         width: 56px;
-        height: 36px
+        height: 36px;
+      
     }
 .thumb img {
     width: 72px;
