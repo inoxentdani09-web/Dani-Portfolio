@@ -1,0 +1,119 @@
+<Section id="About">
+    <div class="About-Content animate">
+        <div class="About-Right">
+            <div class="About-image animate">
+                <img src="/Images/AboutME.png" alt="<%= (locals.admin && admin.name) || 'Daniyal' %> - About Me" onerror="this.src='/Images/AboutMe.png'" />
+            </div>
+        </div>
+
+        <div class="About-Left animate">
+            <div>
+                <p class="about-title">About Me</p>
+            </div>
+            <div>
+                <h3><%= (locals.settings && settings.aboutHeading) || 'Who I Am' %></h3>
+            </div>
+            <p class="about-p-2 animate">
+                <%= (locals.settings && settings.aboutDescription) || (locals.admin && admin.bio) || "I'm Daniyal, a Full Stack Developer with a strong passion for building complete, real-world digital solutions. On the front end, I craft clean and responsive interfaces using HTML5, CSS3, Tailwind CSS, JavaScript, and React. On the back end, I build reliable, secure applications using ASP.NET MVC, .NET Core, Entity Framework, and SQL Server." %>
+            </p>
+            <div class="bord"></div>
+            <div class="card-about animate">
+                <div class="About-Card animate">
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-palette icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>UI/UX & Frontend</h5>
+                                <p>Modern React, Tailwind & Responsive Interfaces</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-server icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Backend Architecture</h5>
+                                <p>ASP.NET Core, Node.js & RESTful Microservices</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="About-Card animate">
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-database icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Database Modeling</h5>
+                                <p>SQL Server, PostgreSQL & Optimized Queries</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-laptop-code icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Desktop & Tools</h5>
+                                <p>C# Windows Applications & ERP Systems</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Section>
+
+<div class="main-stats-Section">
+    <div class="stats-Section">
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-graduation-cap icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5><%= stats.coursesCount %>+</h5>
+                <p>Learning Courses</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-diagram-project icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5><%= (locals.settings && settings.completedProjects) ? settings.completedProjects : stats.projectsCount %>+</h5>
+                <p>Projects Completed</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-briefcase icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5><%= (locals.settings && settings.yearsExperience) || '2+' %></h5>
+                <p>Years Of Experience</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-code icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5><%= stats.skillsCount %>+</h5>
+                <p>Tech Frameworks</p>
+            </div>
+        </div>
+        <div>
+            <a href="#Contact" class="stats-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-envelope"></i> Hire Me Now
+            </a>
+        </div>
+    </div>
+</div>

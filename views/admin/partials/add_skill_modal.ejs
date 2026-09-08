@@ -1,0 +1,88 @@
+<div class="skill-modal-overlay" id="skillModalOverlay">
+    <div class="skill-modal">
+        <!-- Header -->
+        <div class="skill-modal-header">
+            <div>
+                <span>TECHNICAL SKILLS</span>
+                <h2 id="skillModalTitle">Add Technical Skill</h2>
+            </div>
+            <button type="button" class="skill-modal-close" onclick="closeSkillModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form action="/Admin/SaveSkill" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="Id" id="SkillId" value="0" />
+
+            <div class="skill-modal-body">
+                <div class="modal-form-grid">
+                    <!-- Name -->
+                    <div class="modal-form-group">
+                        <label>Skill / Technology Name *</label>
+                        <input type="text" name="Name" id="SkillName" placeholder="e.g. ASP.NET Core, C#, SQL" required />
+                    </div>
+
+                    <!-- Icon -->
+                    <div class="modal-form-group">
+                        <label>Icon File Identifier *</label>
+                        <input type="text" name="Icon" id="SkillIcon" placeholder="e.g. C-sharap.png, HTML.png" required />
+                    </div>
+                </div>
+
+                <div class="modal-form-grid grid-3">
+                    <!-- Category -->
+                    <div class="modal-form-group">
+                        <label>Category *</label>
+                        <select name="Category" id="SkillCategory" required>
+                            <option value="Frontend">Frontend</option>
+                            <option value="Backend">Backend</option>
+                            <option value="Database">Database</option>
+                            <option value="Tools">Tools & DevOps</option>
+                        </select>
+                    </div>
+
+                    <!-- Level -->
+                    <div class="modal-form-group">
+                        <label>Proficiency Level *</label>
+                        <select name="Level" id="SkillLevel" required>
+                            <option value="Expert">Expert (95%)</option>
+                            <option value="Advanced">Advanced (88%)</option>
+                            <option value="Intermediate">Intermediate (75%)</option>
+                            <option value="Beginner">Beginner (60%)</option>
+                        </select>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="modal-form-group">
+                        <label>Status *</label>
+                        <select name="Status" id="SkillStatus" required>
+                            <option value="Published">Published</option>
+                            <option value="Draft">Draft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="modal-form-group">
+                    <label>Description / Stack Context</label>
+                    <textarea name="Description" id="SkillDescription" rows="2" placeholder="Experience details and production capabilities..."></textarea>
+                </div>
+
+                <!-- Optional File Upload -->
+                <div class="modal-form-group">
+                    <label>Skill Icon Image File (Optional)</label>
+                    <input type="file" name="SkillImage" id="SkillImage" accept="image/*" />
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="skill-modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeSkillModal()">Cancel</button>
+                <button type="submit" class="btn-modal-submit">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span id="skillSaveText">Save Skill</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

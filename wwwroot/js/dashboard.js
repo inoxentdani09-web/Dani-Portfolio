@@ -1,436 +1,367 @@
+// =========================================================
+// DANIYAL CMS - ADMIN DASHBOARD JS
+// Dark/Light Mode, Universal Modal Centering, AJAX Handlers
+// =========================================================
+
 document.addEventListener("DOMContentLoaded", function () {
+    // Theme Initializer
+    initThemeState();
 
-    // ==========================
-    // Projects Overview Chart
-    // ==========================
-    const ctx = document.getElementById("projectsChart");
+    // Mobile sidebar toggle
+    const toggle = document.getElementById("sidebarToggle");
+    const sidebar = document.getElementById("adminSidebar");
+    const backdrop = document.getElementById("sidebarBackdrop");
 
-    if (ctx) {
-        const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 250);
-        gradient.addColorStop(0, "rgba(249,115,22,0.22)");
-        gradient.addColorStop(1, "rgba(249,115,22,0.02)");
+    if (toggle && sidebar) {
+        toggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle("mobile-open");
+            if (backdrop) backdrop.classList.toggle("active");
+        });
+    }
 
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                datasets: [{
-                    label: "Projects",
-                    data: [1, 8, 5, 9, 12, 18],
-                    backgroundColor: gradient,
-                    borderColor: "#F97316",
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: "#F97316"
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: "rgba(255,255,255,0.05)"
-                        },
-                        ticks: {
-                            color: "#9CA3AF"
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: "rgba(255,255,255,0.05)"
-                        },
-                        ticks: {
-                            color: "#9CA3AF"
-                        }
-                    }
-                }
+    // Modal Escape key support
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeProjectModal();
+            closeSkillModal();
+            closeCourseModal();
+            const viewModal = document.getElementById("viewMessageModal");
+            if (viewModal) viewModal.classList.remove("show");
+            const replyModal = document.getElementById("replyMessageModal");
+            if (replyModal) replyModal.classList.remove("show");
+            const proofModal = document.getElementById("proofViewModalOverlay");
+            if (proofModal) proofModal.classList.remove("show");
+        }
+    });
+
+    // Close modal on backdrop click
+    document.querySelectorAll(".add-project-modal, .skill-modal-overlay, .custom-admin-modal-overlay").forEach(overlay => {
+        overlay.addEventListener("click", function (e) {
+            if (e.target === this) {
+                this.classList.remove("show");
+                document.body.style.overflow = "";
             }
         });
-
-// Called after an AJAX partial is loaded into #main-content
-window.onAdminPartialLoaded = function(){
-    try{
-        const ctx = document.getElementById("projectsChart");
-        if (ctx) {
-            const gradient = ctx.getContext("2d").createLinearGradient(0, 0, 0, 250);
-            gradient.addColorStop(0, "rgba(249,115,22,0.22)");
-            gradient.addColorStop(1, "rgba(249,115,22,0.02)");
-
-            new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                    datasets: [{
-                        label: "Projects",
-                        data: [1, 8, 5, 9, 12, 18],
-                        backgroundColor: gradient,
-                        borderColor: "#F97316",
-                        borderWidth: 3,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: "#F97316"
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#9CA3AF" } },
-                        y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#9CA3AF" } }
-                    }
-                }
-            });
-        }
-    }catch(e){ console.warn('onAdminPartialLoaded error', e); }
-};
-    }
-
-    // ==========================
-    // Sidebar Toggle
-    // ==========================
-    const toggle = document.getElementById("sidebarToggle");
-    const sidebar = document.querySelector(".sidebar");
-    const main = document.querySelector(".main");
-
-    toggle.addEventListener("click", (e) => {
-        e.stopPropagation(); // document click ko rok de
-
-        if (window.innerWidth <= 768) {
-            sidebar.classList.toggle("active");
-        } else {
-            sidebar.classList.toggle("collapsed");
-            main.classList.toggle("expanded");
-        }
     });
-
-    sidebar.addEventListener("click", (e) => {
-        e.stopPropagation(); // sidebar ke andar click par band na ho
-    });
-
-    document.addEventListener("click", () => {
-        if (window.innerWidth <= 768) {
-            sidebar.classList.remove("active");
-        }
-    });
-    const projectsLink = document.getElementById("projectsLink");
-
-    projectsLink.addEventListener("click", function (e) {
-        e.preventDefault();
-        const url = "/Admin/Projects";
-        fetch(url, {
-            headers: {
-                "X-Requested-With": "XMLHttpRequest"
-            }
-        })
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById("main-content").innerHTML = html;
-                history.pushState({}, "", url);
-            });
-    });
-
-    const dashboardLink = document.getElementById("dashboardLink");
-
-    dashboardLink.addEventListener("click", function (e) {
-        e.preventDefault();
-
-        location.href = "/Admin/Dashboard";
-    });
-
-
-    // ensure sidebar active state matches current URL on initial load
-    try { updateActiveSidebar(window.location.pathname); } catch(e) { console.warn('updateActiveSidebar error', e); }
 });
-const themeBtn = document.getElementById("themeToggle");
-const icon = themeBtn.querySelector("i");
 
-// Refresh ke baad theme yaad rakho
-if (localStorage.getItem("theme") === "light") {
-    document.body.classList.add("light-theme");
-    icon.className = "fa-solid fa-moon";
-} else {
-    icon.className = "fa-solid fa-sun";
+// ==========================================
+// DARK / LIGHT THEME TOGGLE
+// ==========================================
+function initThemeState() {
+    const savedTheme = localStorage.getItem('daniyal_admin_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeUI(savedTheme);
 }
 
-themeBtn.addEventListener("click", function () {
+function toggleAdminTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('daniyal_admin_theme', nextTheme);
+    updateThemeUI(nextTheme);
 
-    document.body.classList.toggle("light-theme");
-
-    if (document.body.classList.contains("light-theme")) {
-
-        localStorage.setItem("theme", "light");
-        icon.className = "fa-solid fa-moon";
-
-    } else {
-
-        localStorage.setItem("theme", "dark");
-        icon.className = "fa-solid fa-sun";
-
+    // Re-render dashboard skills chart if exists
+    if (typeof initDashboardSkillsChart === 'function') {
+        initDashboardSkillsChart();
     }
+}
 
-});
+function updateThemeUI(theme) {
+    const icon = document.getElementById('themeToggleIcon');
+    const text = document.getElementById('themeToggleText');
+    if (icon) {
+        if (theme === 'light') {
+            icon.className = 'fa-solid fa-sun';
+            icon.style.color = '#ea580c';
+            if (text) text.innerText = 'Light';
+        } else {
+            icon.className = 'fa-solid fa-moon';
+            icon.style.color = '#38bdf8';
+            if (text) text.innerText = 'Dark';
+        }
+    }
+}
+
+// ==========================================
+// MOBILE SIDEBAR TOGGLE
+// ==========================================
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('adminSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar) sidebar.classList.toggle('mobile-open');
+    if (backdrop) backdrop.classList.toggle('active');
+}
+
+// ==========================================
+// PROJECT MODAL FUNCTIONS
+// ==========================================
 function openProjectModal() {
+    const form = document.querySelector("#addProjectModal form");
+    if (form) form.reset();
+    
+    const idEl = document.getElementById("ProjectID");
+    if (idEl) idEl.value = 0;
 
-    document.querySelector("#addProjectModal form").reset();
-    document.getElementById("ProjectID").value = 0;
-    document.getElementById("ImageFile").value = "";
-    const preview = document.getElementById("imagePreview");
+    const titleEl = document.getElementById("projectModalHeading");
+    if (titleEl) titleEl.innerText = "Add New Project";
+
+    const preview = document.getElementById("ProjectImagePreview");
     if (preview) {
         preview.src = "";
         preview.style.display = "none";
     }
 
-    // Modal open
     const modal = document.getElementById("addProjectModal");
-    modal.classList.add("show");
-    document.body.style.overflow = "hidden";
-}
-// function openProjectModal() {
-//     const modal = document.getElementById("addProjectModal");
-
-//     console.log(modal);
-
-//     modal.style.display = "flex";
-// }
-function closeProjectModal() {
-   
-    const modal = document.getElementById("addProjectModal");
-
     if (modal) {
-        
-        modal.classList.remove("show");
-        document.body.style.overflow = "auto";
-    }
-}
-function editProject(id) {
-    fetch(`/Admin/GetProject?id=${id}`)
-        .then(response => response.json())
-        .then(data => {
-
-            document.getElementById("ProjectID").value = data.projectID;
-
-            document.getElementById("Title").value = data.title;
-
-            document.getElementById("Description").value = data.description;
-
-            document.getElementById("Category").value = data.category;
-
-            document.getElementById("Technalogy").value = data.technalogy;
-
-            document.getElementById("Status").value = data.status;
-
-            document.getElementById("GitHub").value = data.gitHub;
-
-            document.getElementById("LiveDemo").value = data.liveDemo;
-
-            //Image Preview
-            document.getElementById("ProjectImagePreview").src = "/Images/" + data.image;
-            document.getElementById("ProjectImagePreview").style.display = "block";
-
-            // Modal open
-            document.getElementById("addProjectModal").style.display = "flex";
-
-        })
-        .catch(error => {
-            console.log(error);
-        });
-}
-// const SkillLink = document.getElementById("skillsLink");
-
-// SkillLink.addEventListener("click", function (e) {
-//     e.preventDefault();
-
-//     location.href = "/Admin/Dashboard/Skills";
-// });
-const skillsLink = document.getElementById("skillLink");
-
-skillsLink.addEventListener("click", function (e) {
-    e.preventDefault();
-    const url = "/Admin/Skills";
-    fetch(url, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("main-content").innerHTML = html;
-            history.PushState({}, "", url);
-        });
-});
-const courseLink = document.getElementById("courseLink");
-
-courseLink.addEventListener("click", function (e) {
-    e.preventDefault();
-    const url = "/Admin/Course";
-    fetch(url, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("main-content").innerHTML = html;
-            history.pushState({}, "", url);
-        });
-});
-const messagesLink = document.getElementById("messagesLink");
-
-messagesLink.addEventListener("click", function (e) {
-    e.preventDefault();
-    const url = "/Admin/Message";
-    fetch(url, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("main-content").innerHTML = html;
-            history.pushState({}, "", url);
-        });
-});
-
-document.addEventListener("click", function (e) {
-
-    // Add Skill button
-    if (e.target.closest("#openAddSkill")) {
-
-        const modal = document.getElementById("skillModalOverlay");
-
-        if (!modal) return;
-
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
     }
+}
 
-
-    // Close button
-    if (e.target.closest("#skillModalClose")) {
-
-        closeSkillModal();
+function closeProjectModal() {
+    const modal = document.getElementById("addProjectModal");
+    if (modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
     }
+}
 
+async function editProject(id) {
+    try {
+        const response = await fetch(`/Admin/GetProject?id=${id}`);
+        const data = await response.json();
 
-    // Cancel button
-    if (e.target.closest("#skillModalCancel")) {
+        document.getElementById("ProjectID").value = data.projectID;
+        document.getElementById("Title").value = data.title || '';
+        document.getElementById("Description").value = data.description || '';
+        document.getElementById("Category").value = data.category || 'Portfolio';
+        document.getElementById("Technalogy").value = data.technalogy || '';
+        document.getElementById("Status").value = data.status || 'Published';
+        document.getElementById("GitHub").value = data.gitHub || '';
+        document.getElementById("LiveDemo").value = data.liveDemo || '';
 
-        closeSkillModal();
+        const titleEl = document.getElementById("projectModalHeading");
+        if (titleEl) titleEl.innerText = "Edit Project: " + data.title;
+
+        const preview = document.getElementById("ProjectImagePreview");
+        if (preview && data.image) {
+            preview.src = "/Images/" + data.image;
+            preview.style.display = "block";
+        }
+
+        const modal = document.getElementById("addProjectModal");
+        if (modal) {
+            modal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+    } catch (error) {
+        alert("Failed to load project: " + error.message);
     }
+}
 
-});
+async function deleteProject(id) {
+    if (!confirm("Are you sure you want to delete this project?")) return;
 
+    try {
+        const res = await fetch("/Admin/DeleteProject", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert("Delete failed: " + (result.message || "Error"));
+        }
+    } catch (err) {
+        alert("Failed to delete project: " + err.message);
+    }
+}
+
+// ==========================================
+// SKILL MODAL FUNCTIONS
+// ==========================================
+function openSkillModal() {
+    const form = document.querySelector("#skillModalOverlay form");
+    if (form) form.reset();
+
+    const idEl = document.getElementById("SkillId");
+    if (idEl) idEl.value = 0;
+
+    const titleEl = document.getElementById("skillModalTitle");
+    if (titleEl) titleEl.innerText = "Add Technical Skill";
+
+    const modal = document.getElementById("skillModalOverlay");
+    if (modal) {
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+    }
+}
 
 function closeSkillModal() {
-
     const modal = document.getElementById("skillModalOverlay");
-
-    if (!modal) return;
-
-    modal.classList.remove("show");
-
-    document.body.style.overflow = "";
+    if (modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+    }
 }
 
+async function editSkill(id) {
+    try {
+        const response = await fetch(`/Admin/GetSkill?id=${id}`);
+        const data = await response.json();
 
-// Click outside modal
-document.addEventListener("click", function (e) {
+        document.getElementById("SkillId").value = data.id;
+        document.getElementById("SkillName").value = data.name || '';
+        document.getElementById("SkillIcon").value = data.icon || '';
+        document.getElementById("SkillCategory").value = data.category || 'Frontend';
+        document.getElementById("SkillLevel").value = data.level || 'Advanced';
+        document.getElementById("SkillStatus").value = data.status || 'Published';
+        document.getElementById("SkillDescription").value = data.description || '';
 
-    const modal = document.getElementById("skillModalOverlay");
+        const titleEl = document.getElementById("skillModalTitle");
+        if (titleEl) titleEl.innerText = "Edit Skill: " + data.name;
 
-    if (!modal) return;
-
-    if (e.target === modal) {
-        closeSkillModal();
-    }
-
-});
-
-const skillImageInput = document.getElementById("SkillImage");
-const skillImagePreview = document.getElementById("skillImagePreview");
-
-if (skillImageInput) {
-
-    skillImageInput.addEventListener("change", function () {
-
-        const file = this.files[0];
-
-        if (!file) {
-            skillImagePreview.innerHTML = `
-                <i class="fa-regular fa-image"></i>
-                <span>Preview</span>
-            `;
-            return;
+        const modal = document.getElementById("skillModalOverlay");
+        if (modal) {
+            modal.classList.add("show");
+            document.body.style.overflow = "hidden";
         }
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-
-            skillImagePreview.innerHTML = `
-                <img src="${e.target.result}" alt="Skill Preview">
-            `;
-
-        };
-
-        reader.readAsDataURL(file);
-
-    });
-
+    } catch (error) {
+        alert("Failed to load skill: " + error.message);
+    }
 }
 
-window.addEventListener("DOMContentLoaded", function () {
+async function deleteSkill(id) {
+    if (!confirm("Are you sure you want to delete this skill?")) return;
 
-    const path = window.location.pathname;
-
-    let url = null;
-
-    if (path === "/Admin/Projects") {
-        url = "/Admin/Projects";
-    }
-    else if (path === "/Admin/Skills") {
-        url = "/Admin/Skills";
-    }
-    else if (path === "/Admin/Course") {
-        url = "/Admin/Course";
-    }
-    else if (path === "/Admin/Message") {
-        url = "/Admin/Message";
-    }
-
-    if (!url) {
-        // still set active for dashboard
-        try{ updateActiveSidebar(window.location.pathname); }catch(e){}
-        return;
-    }
-
-    fetch(url, {
-        headers: {
-            "X-Requested-With": "XMLHttpRequest"
-        }
-    })
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById("main-content").innerHTML = html;
-            try{ updateActiveSidebar(window.location.pathname); }catch(e){}
-        })
-        .catch(error => {
-            console.error("Page loading error:", error);
+    try {
+        const res = await fetch("/Admin/DeleteSkill", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id })
         });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert("Delete failed: " + (result.message || "Error"));
+        }
+    } catch (err) {
+        alert("Failed to delete skill: " + err.message);
+    }
+}
 
-});
+// ==========================================
+// COURSE MODAL FUNCTIONS
+// ==========================================
+function openCourseModal() {
+    const form = document.querySelector("#courseModalOverlay form");
+    if (form) form.reset();
+
+    const idEl = document.getElementById("CourseID");
+    if (idEl) idEl.value = 0;
+
+    const titleEl = document.getElementById("courseModalTitle");
+    if (titleEl) titleEl.innerText = "Add Course";
+
+    if (typeof toggleCoursePriceFields === 'function') toggleCoursePriceFields();
+
+    const modal = document.getElementById("courseModalOverlay");
+    if (modal) {
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+    }
+}
+
+function closeCourseModal() {
+    const modal = document.getElementById("courseModalOverlay");
+    if (modal) {
+        modal.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+}
+
+async function editCourse(id) {
+    try {
+        const response = await fetch(`/Admin/GetCourse?id=${id}`);
+        const data = await response.json();
+
+        document.getElementById("CourseID").value = data.courseID;
+        document.getElementById("CourseName").value = data.courseName || '';
+        
+        const isFree = data.price === 'Free' || data.priceType === 'free';
+        const priceTypeSelect = document.getElementById("CoursePriceType");
+        if (priceTypeSelect) {
+            priceTypeSelect.value = isFree ? 'free' : 'paid';
+        }
+
+        const priceInput = document.getElementById("CoursePrice");
+        if (priceInput) {
+            priceInput.value = data.price || 'PKR 3,500';
+        }
+
+        const origPriceInput = document.getElementById("CourseOriginalPrice");
+        if (origPriceInput) {
+            origPriceInput.value = data.originalPrice || 'PKR 6,000';
+        }
+
+        if (typeof toggleCoursePriceFields === 'function') toggleCoursePriceFields();
+
+        document.getElementById("CoursePlatform").value = data.platform || 'Daniyal Academy';
+        document.getElementById("CourseInstructor").value = data.instructor || 'Daniyal Khan';
+        document.getElementById("CourseCategory").value = data.category || 'Backend';
+        document.getElementById("CourseTechnology").value = data.technology || '';
+        document.getElementById("CourseLevel").value = data.level || 'Beginner';
+        document.getElementById("CourseDuration").value = data.duration || '20 Hours';
+        document.getElementById("CourseStatus").value = data.status || 'Completed';
+        document.getElementById("CourseUrl").value = data.courseUrl || '';
+        document.getElementById("CourseDescription").value = data.description || '';
+
+        const titleEl = document.getElementById("courseModalTitle");
+        if (titleEl) titleEl.innerText = "Edit Course: " + data.courseName;
+
+        const modal = document.getElementById("courseModalOverlay");
+        if (modal) {
+            modal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+    } catch (error) {
+        alert("Failed to load course details: " + error.message);
+    }
+}
+
+async function deleteCourse(id) {
+    if (!confirm("Are you sure you want to delete this course?")) return;
+
+    try {
+        const res = await fetch("/Admin/DeleteCourse", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        } else {
+            alert("Delete failed: " + (result.message || "Error"));
+        }
+    } catch (err) {
+        alert("Failed to delete course: " + err.message);
+    }
+}
+
+// ==========================================
+// SECURE LOGOUT HANDLER
+// ==========================================
+function adminLogout(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    document.cookie = "admin_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=None; Secure";
+    document.cookie = "admin_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    localStorage.removeItem('daniyal_admin_session');
+    sessionStorage.clear();
+    window.location.href = '/Admin/Logout?logged_out=true';
+}

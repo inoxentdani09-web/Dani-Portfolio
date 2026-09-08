@@ -1,0 +1,169 @@
+<div class="card-box">
+    <!-- Header -->
+    <div class="panel-header">
+        <div>
+            <h2>Technical Skills Matrix</h2>
+            <p>Manage programming languages, frameworks, databases, and proficiency percentages</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn-primary-action" onclick="openSkillModal()">
+                <i class="fa-solid fa-plus"></i> Add New Skill
+            </button>
+            <a href="/Admin/ExportSkills" class="btn-secondary-action">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
+    </div>
+
+    <!-- Mini Stats -->
+    <div class="stats-grid-row" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:16px;">
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Total Skills</span>
+                <div class="stat-box-val" style="font-size:18px;"><%= skills.length %></div>
+            </div>
+            <i class="fa-solid fa-code" style="color:var(--status-info); font-size:18px;"></i>
+        </div>
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Expert / Advanced</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--brand-primary);"><%= skills.filter(s => s.level === 'Expert' || s.level === 'Advanced').length %></div>
+            </div>
+            <i class="fa-solid fa-award" style="color:var(--brand-primary); font-size:18px;"></i>
+        </div>
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Frontend & Backend</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--status-success);"><%= skills.filter(s => s.category === 'Frontend' || s.category === 'Backend').length %></div>
+            </div>
+            <i class="fa-solid fa-layer-group" style="color:var(--status-success); font-size:18px;"></i>
+        </div>
+    </div>
+
+    <!-- Toolbar: Search & Category Filter -->
+    <div class="table-toolbar">
+        <div class="search-field-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="skillSearchInput" placeholder="Search skill name, level, category..." onkeyup="filterSkillsTable()" />
+        </div>
+
+        <div class="filter-selects-wrapper d-flex gap-2">
+            <select id="skillCategoryFilter" onchange="filterSkillsTable()">
+                <option value="all">All Categories</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="Database">Database</option>
+                <option value="Tools">Tools</option>
+            </select>
+
+            <select id="skillLevelFilter" onchange="filterSkillsTable()">
+                <option value="all">All Levels</option>
+                <option value="Expert">Expert</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Beginner">Beginner</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+        <table class="table-custom" id="skillsMainTable">
+            <thead>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th>Skill & Technology</th>
+                    <th>Category</th>
+                    <th>Proficiency / Level</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!skills || skills.length === 0) { %>
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">
+                            <i class="fa-solid fa-laptop-code mb-2" style="font-size:24px; display:block; opacity:0.5;"></i>
+                            No skills registered. Click "Add New Skill" to create one.
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <% skills.forEach(function(skill, index) { 
+                        const pct = skill.proficiency || (skill.level === 'Expert' ? 95 : skill.level === 'Advanced' ? 88 : skill.level === 'Intermediate' ? 75 : 60);
+                    %>
+                        <tr class="skill-table-row" data-category="<%= (skill.category || '').toLowerCase() %>" data-level="<%= (skill.level || '').toLowerCase() %>" data-search="<%= (skill.name + ' ' + skill.category + ' ' + skill.level).toLowerCase() %>">
+                            <td style="color:var(--text-muted); font-size:11px;"><%= index + 1 %></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:32px; height:32px; border-radius:6px; background:var(--bg-input); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; padding:4px;">
+                                        <img src="/Images/<%= skill.icon %>" alt="<%= skill.name %>" style="max-width:100%; max-height:100%; object-fit:contain;" onerror="this.src='/Images/HTML.png'" />
+                                    </div>
+                                    <div>
+                                        <strong style="color:var(--text-main); font-size:13px;"><%= skill.name %></strong>
+                                        <div style="font-size:11px; color:var(--text-muted); max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                            <%= skill.description || 'Core technology competency' %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="category-badge"><%= skill.category %></span>
+                            </td>
+                            <td>
+                                <div style="width:130px;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span style="font-size:11px; font-weight:700; color:var(--text-main);"><%= skill.level %></span>
+                                        <span style="font-size:10px; color:var(--brand-primary); font-weight:700;"><%= pct %>%</span>
+                                    </div>
+                                    <div style="width:100%; height:5px; background:var(--bg-input); border-radius:3px; overflow:hidden;">
+                                        <div style="width:<%= pct %>%; height:100%; background:var(--brand-primary); border-radius:3px;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge <%= skill.status === 'Published' ? 'status-active' : 'status-inactive' %>">
+                                    <%= skill.status || 'Published' %>
+                                </span>
+                            </td>
+                            <td style="text-align:right;">
+                                <div class="action-buttons-group">
+                                    <button type="button" class="btn-icon-action edit-btn" onclick="editSkill(<%= skill.id %>)" title="Edit Skill">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" class="btn-icon-action delete-btn" onclick="deleteSkill(<%= skill.id %>)" title="Delete Skill">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function filterSkillsTable() {
+    const search = (document.getElementById('skillSearchInput')?.value || '').toLowerCase().trim();
+    const cat = (document.getElementById('skillCategoryFilter')?.value || 'all').toLowerCase();
+    const level = (document.getElementById('skillLevelFilter')?.value || 'all').toLowerCase();
+
+    const rows = document.querySelectorAll('.skill-table-row');
+    rows.forEach(row => {
+        const rowSearch = row.getAttribute('data-search') || '';
+        const rowCat = row.getAttribute('data-category') || '';
+        const rowLevel = row.getAttribute('data-level') || '';
+
+        const matchSearch = !search || rowSearch.includes(search);
+        const matchCat = (cat === 'all') || (rowCat === cat);
+        const matchLevel = (level === 'all') || (rowLevel === level);
+
+        if (matchSearch && matchCat && matchLevel) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>

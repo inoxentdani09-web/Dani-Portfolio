@@ -1,0 +1,172 @@
+<div class="card-box">
+    <!-- Header -->
+    <div class="panel-header">
+        <div>
+            <h2>Courses & Masterclass Academy</h2>
+            <p>Manage free & paid programming masterclasses, pricing tiers, and curriculum access</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn-primary-action" onclick="openCourseModal()">
+                <i class="fa-solid fa-plus"></i> Add New Course
+            </button>
+            <a href="/Admin/ExportCourses" class="btn-secondary-action">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
+    </div>
+
+    <!-- Mini Stats -->
+    <div class="stats-grid-row" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:16px;">
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Total Courses</span>
+                <div class="stat-box-val" style="font-size:18px;"><%= courses.length %></div>
+            </div>
+            <i class="fa-solid fa-graduation-cap" style="color:var(--status-success); font-size:18px;"></i>
+        </div>
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Free Foundation</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--status-info);"><%= courses.filter(c => c.price === 'Free' || c.priceType === 'free').length %></div>
+            </div>
+            <i class="fa-solid fa-gift" style="color:var(--status-info); font-size:18px;"></i>
+        </div>
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Paid Masterclasses</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--brand-primary);"><%= courses.filter(c => c.price !== 'Free' && c.priceType !== 'free').length %></div>
+            </div>
+            <i class="fa-solid fa-crown" style="color:var(--brand-primary); font-size:18px;"></i>
+        </div>
+    </div>
+
+    <!-- Toolbar: Search & Pricing Filter -->
+    <div class="table-toolbar">
+        <div class="search-field-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="courseSearchInput" placeholder="Search course name, technology, platform..." onkeyup="filterCoursesTable()" />
+        </div>
+
+        <div class="filter-selects-wrapper d-flex gap-2">
+            <select id="courseTypeFilter" onchange="filterCoursesTable()">
+                <option value="all">All Tiers (Free & Paid)</option>
+                <option value="free">Free Courses</option>
+                <option value="paid">Paid Masterclasses</option>
+            </select>
+
+            <select id="courseCategoryFilter" onchange="filterCoursesTable()">
+                <option value="all">All Categories</option>
+                <option value="Backend">Backend</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Database">Database</option>
+                <option value="Full Stack">Full Stack</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+        <table class="table-custom" id="coursesMainTable">
+            <thead>
+                <tr>
+                    <th style="width:40px;">#</th>
+                    <th>Course Title</th>
+                    <th>Pricing Tier</th>
+                    <th>Technology & Category</th>
+                    <th>Platform & Instructor</th>
+                    <th>Duration & Level</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!courses || courses.length === 0) { %>
+                    <tr>
+                        <td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">
+                            <i class="fa-solid fa-graduation-cap mb-2" style="font-size:24px; display:block; opacity:0.5;"></i>
+                            No courses available. Click "Add New Course" to create one.
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <% courses.forEach(function(course, index) { 
+                        const isFree = course.price === 'Free' || course.priceType === 'free';
+                    %>
+                        <tr class="course-table-row" data-type="<%= isFree ? 'free' : 'paid' %>" data-category="<%= (course.category || '').toLowerCase() %>" data-search="<%= (course.courseName + ' ' + course.technology + ' ' + course.platform + ' ' + (course.instructor || '')).toLowerCase() %>">
+                            <td style="color:var(--text-muted); font-size:11px;"><%= index + 1 %></td>
+                            <td>
+                                <div>
+                                    <strong style="color:var(--text-main); font-size:13px;"><%= course.courseName %></strong>
+                                    <div style="font-size:11px; color:var(--text-muted); max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                        <%= course.description || 'Comprehensive programming course' %>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <% if (isFree) { %>
+                                    <span class="status-badge status-active" style="font-size:11px;">
+                                        <i class="fa-solid fa-tag me-1"></i> FREE
+                                    </span>
+                                <% } else { %>
+                                    <span class="status-badge" style="background:var(--brand-primary-soft); color:var(--brand-primary); border:1px solid rgba(249,115,22,0.3); font-size:11px;">
+                                        <i class="fa-solid fa-crown me-1"></i> <%= course.price || 'PKR 3,500' %>
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <span class="category-badge"><%= course.technology || course.category %></span>
+                            </td>
+                            <td>
+                                <div style="font-size:12px; color:var(--text-soft); font-weight:600;"><%= course.platform %></div>
+                                <small style="color:var(--text-muted); font-size:10.5px;"><%= course.instructor || 'Daniyal Khan' %></small>
+                            </td>
+                            <td>
+                                <div style="font-size:11.5px; color:var(--text-soft);"><%= course.duration || '20 Hours' %></div>
+                                <small style="color:var(--text-muted); font-size:10.5px;"><%= course.level || 'All Levels' %></small>
+                            </td>
+                            <td>
+                                <span class="status-badge <%= course.status === 'Completed' || course.status === 'Published' ? 'status-active' : 'status-inactive' %>">
+                                    <%= course.status || 'Active' %>
+                                </span>
+                            </td>
+                            <td style="text-align:right;">
+                                <div class="action-buttons-group">
+                                    <button type="button" class="btn-icon-action edit-btn" onclick="editCourse(<%= course.courseID %>)" title="Edit Course">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button" class="btn-icon-action delete-btn" onclick="deleteCourse(<%= course.courseID %>)" title="Delete Course">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function filterCoursesTable() {
+    const search = (document.getElementById('courseSearchInput')?.value || '').toLowerCase().trim();
+    const type = (document.getElementById('courseTypeFilter')?.value || 'all').toLowerCase();
+    const cat = (document.getElementById('courseCategoryFilter')?.value || 'all').toLowerCase();
+
+    const rows = document.querySelectorAll('.course-table-row');
+    rows.forEach(row => {
+        const rowSearch = row.getAttribute('data-search') || '';
+        const rowType = row.getAttribute('data-type') || '';
+        const rowCat = row.getAttribute('data-category') || '';
+
+        const matchSearch = !search || rowSearch.includes(search);
+        const matchType = (type === 'all') || (rowType === type);
+        const matchCat = (cat === 'all') || (rowCat === cat);
+
+        if (matchSearch && matchType && matchCat) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+</script>

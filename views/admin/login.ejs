@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Sign In - Daniyal Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome & CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="/css/Login.css" />
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #090d16;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .login-card {
+            background: #111726;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .login-header .logo-badge {
+            display: inline-block;
+            font-size: 28px;
+            color: #f97316;
+            background: rgba(249, 115, 22, 0.12);
+            padding: 10px 18px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+        .login-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: #ffffff;
+        }
+        .login-header p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            color: #64748b;
+            font-size: 15px;
+        }
+        .input-wrapper input {
+            width: 100%;
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 12px 14px 12px 42px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+        }
+        .login-btn {
+            width: 100%;
+            background: #f97316;
+            color: #ffffff;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+            margin-top: 24px;
+        }
+        .login-btn:hover {
+            background: #ea580c;
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
+        }
+        .error-alert {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .credential-tip {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+        }
+        .credential-tip strong {
+            color: #f97316;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .back-link:hover {
+            color: #f97316;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="logo-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2>Admin Control Panel</h2>
+            <p>Sign in to manage portfolio content, projects, and client messages</p>
+        </div>
+
+        <% if (error) { %>
+            <div class="error-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span><%= error %></span>
+            </div>
+        <% } %>
+
+        <form action="/Admin/Login" method="post" id="adminLoginForm">
+            <div class="form-group">
+                <label for="email">Admin Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" name="email" id="email" value="<%= email || 'admin@gmail.com' %>" placeholder="admin@gmail.com" required autocomplete="username" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" id="password" value="<%= password || '' %>" placeholder="Enter password (e.g. admin1234)" required autocomplete="current-password" />
+                    <button type="button" id="togglePasswordBtn" style="position:absolute; right:12px; background:none; border:none; color:#94a3b8; cursor:pointer; padding:6px;">
+                        <i class="fa-solid fa-eye" id="passwordEyeIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; color:#94a3b8; margin-top:8px;">
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0;">
+                    <input type="checkbox" name="remember" value="true" checked style="accent-color:#f97316;" /> Remember Me
+                </label>
+                <span style="color:#10b981; font-size:12px;"><i class="fa-solid fa-lock me-1"></i> Secure SSL Session</span>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginSubmitBtn">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard
+            </button>
+        </form>
+
+        <div class="credential-tip">
+            <div style="margin-bottom:6px;">
+                Default Credentials: <strong>admin@gmail.com</strong> &bull; Password: <strong>admin1234</strong>
+            </div>
+            <button type="button" onclick="autoFillDemo()" style="background:rgba(249,115,22,0.15); border:1px solid rgba(249,115,22,0.4); color:#f97316; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s ease;">
+                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Auto-Fill Credentials
+            </button>
+        </div>
+
+        <a href="/" class="back-link">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Public Portfolio Website
+        </a>
+    </div>
+
+    <script>
+    function autoFillDemo() {
+        document.getElementById('email').value = 'admin@gmail.com';
+        document.getElementById('password').value = 'admin1234';
+    }
+
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const pwdInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('passwordEyeIcon');
+
+    if (toggleBtn && pwdInput) {
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = pwdInput.getAttribute('type') === 'password';
+            pwdInput.setAttribute('type', isPassword ? 'text' : 'password');
+            eyeIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+        });
+    }
+    </script>
+</body>
+</html>

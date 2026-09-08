@@ -1,0 +1,309 @@
+<div class="card-box">
+    <!-- Header -->
+    <div class="panel-header">
+        <div>
+            <h2>Course Enrollments & Student Access Control</h2>
+            <p>Verify payment transactions, view proof screenshots, and grant masterclass portal access</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/Admin/Settings" class="btn-primary-action" style="background:var(--status-info);">
+                <i class="fa-solid fa-credit-card"></i> Payment Accounts
+            </a>
+            <a href="/Admin/ExportEnrollments" class="btn-secondary-action">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Mini Bar -->
+    <div class="stats-grid-row" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:16px;">
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Total Applications</span>
+                <div class="stat-box-val" style="font-size:18px;"><%= (enrollments && enrollments.length) || 0 %></div>
+            </div>
+            <i class="fa-solid fa-graduation-cap" style="color:var(--status-info); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px; border-color:rgba(245,158,11,0.3); background:var(--status-warning-soft);">
+            <div>
+                <span class="stat-box-label" style="font-size:10px; color:var(--status-warning);">Pending Approval</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--status-warning);"><%= stats.pendingEnrollmentsCount || 0 %></div>
+            </div>
+            <i class="fa-solid fa-clock" style="color:var(--status-warning); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px; color:var(--status-success);">Approved / Active</span>
+                <div class="stat-box-val" style="font-size:18px; color:var(--status-success);"><%= stats.approvedEnrollmentsCount || 0 %></div>
+            </div>
+            <i class="fa-solid fa-circle-check" style="color:var(--status-success); font-size:18px;"></i>
+        </div>
+    </div>
+
+    <!-- Toolbar: Search & Status Filter -->
+    <div class="table-toolbar">
+        <div class="search-field-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="enrollmentSearchInput" placeholder="Search student name, email, phone, Trx ID..." onkeyup="filterEnrollmentsTable()" />
+        </div>
+
+        <div class="filter-selects-wrapper d-flex gap-2">
+            <select id="enrollmentStatusFilter" onchange="filterEnrollmentsTable()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending Approval (<%= stats.pendingEnrollmentsCount || 0 %>)</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+        <table class="table-custom" id="enrollmentsMainTable">
+            <thead>
+                <tr>
+                    <th>Student Details</th>
+                    <th>Course Applied</th>
+                    <th>Payment / Amount</th>
+                    <th>Transaction ID / Proof</th>
+                    <th>Access Key</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Access Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!enrollments || enrollments.length === 0) { %>
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">
+                            <i class="fa-solid fa-id-card-clip mb-2" style="font-size:24px; display:block; opacity:0.5;"></i>
+                            No enrollment applications yet.
+                        </td>
+                    </tr>
+                <% } else { %>
+                    <% enrollments.forEach(function(item) { 
+                        const isPending = item.status === 'Pending Approval';
+                        const isApproved = item.status === 'Approved';
+                    %>
+                        <tr class="enrollment-table-row" data-status="<%= item.status.toLowerCase() %>" data-search="<%= (item.studentName + ' ' + item.studentEmail + ' ' + (item.studentPhone || '') + ' ' + item.courseName + ' ' + (item.transactionId || '')).toLowerCase() %>" id="enrollment-row-<%= item.id %>">
+                            <td>
+                                <div>
+                                    <strong style="color:var(--text-main); font-size:13px;"><%= item.studentName %></strong>
+                                    <div style="color:var(--status-info); font-size:11px; margin-top:1px;">
+                                        <i class="fa-regular fa-envelope me-1"></i><%= item.studentEmail %>
+                                    </div>
+                                    <% if (item.studentPhone) { %>
+                                        <div style="color:var(--text-muted); font-size:10.5px;">
+                                            <i class="fa-solid fa-phone me-1"></i><%= item.studentPhone %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td>
+                                <strong style="color:var(--text-main); font-size:12.5px;"><%= item.courseName %></strong>
+                                <div style="color:var(--text-muted); font-size:10.5px;">
+                                    Applied: <%= new Date(item.submittedAt || Date.now()).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) %>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-size:12px; font-weight:700; color:var(--brand-primary);"><%= item.amountPaid || 'PKR 3,500' %></div>
+                                <span class="category-badge" style="font-size:10px; padding:1px 5px;"><%= item.paymentMethod || 'JazzCash' %></span>
+                            </td>
+                            <td>
+                                <div>
+                                    <code style="background:var(--bg-input); border:1px solid var(--border-color); color:var(--text-main); padding:2px 6px; border-radius:4px; font-size:11px; font-weight:700;">
+                                        <%= item.transactionId || 'N/A' %>
+                                    </code>
+                                    <% if (item.screenshotProof) { %>
+                                        <button type="button" class="btn btn-sm btn-outline-info ms-1" style="font-size:10.5px; padding:2px 6px;" onclick="viewProofScreenshot('/Images/<%= item.screenshotProof %>', '<%= item.studentName %>', '<%= item.transactionId %>')">
+                                            <i class="fa-solid fa-image me-1"></i> Proof
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td>
+                                <% if (isApproved && item.accessKey) { %>
+                                    <code style="background:var(--status-success-soft); border:1px solid rgba(16,185,129,0.3); color:var(--status-success); padding:2px 6px; border-radius:4px; font-size:11px; font-weight:700;">
+                                        <%= item.accessKey %>
+                                    </code>
+                                <% } else { %>
+                                    <span style="color:var(--text-muted); font-size:11px; font-style:italic;">Not granted</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (isPending) { %>
+                                    <span class="status-badge status-pending">
+                                        <i class="fa-solid fa-clock"></i> Pending
+                                    </span>
+                                <% } else if (isApproved) { %>
+                                    <span class="status-badge status-approved">
+                                        <i class="fa-solid fa-check-circle"></i> Approved
+                                    </span>
+                                <% } else { %>
+                                    <span class="status-badge status-danger">
+                                        <i class="fa-solid fa-ban"></i> Rejected
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td style="text-align:right;">
+                                <div class="action-buttons-group">
+                                    <% if (isPending) { %>
+                                        <button type="button" class="btn btn-sm btn-success" style="font-size:11px; padding:4px 8px; font-weight:700;" onclick="approveEnrollmentAction(<%= item.id %>, '<%= item.studentName.replace(/'/g, "\\'") %>', '<%= item.courseName.replace(/'/g, "\\'") %>')">
+                                            <i class="fa-solid fa-check me-1"></i> Approve
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" style="font-size:11px; padding:4px 8px;" onclick="rejectEnrollmentAction(<%= item.id %>)">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    <% } else if (isApproved) { %>
+                                        <button type="button" class="btn btn-sm btn-outline-info" style="font-size:11px; padding:4px 8px;" onclick="viewStudentCredentialsModal('<%= item.studentName %>', '<%= item.courseName %>', '<%= item.accessKey %>', '<%= item.portalUrl || '/#Courses' %>')">
+                                            <i class="fa-solid fa-key me-1"></i> Key
+                                        </button>
+                                        <button type="button" class="btn-icon-action delete-btn" onclick="deleteEnrollmentAction(<%= item.id %>)">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-sm btn-outline-success" style="font-size:11px; padding:4px 8px;" onclick="approveEnrollmentAction(<%= item.id %>, '<%= item.studentName.replace(/'/g, "\\'") %>', '<%= item.courseName.replace(/'/g, "\\'") %>')">
+                                            Re-Approve
+                                        </button>
+                                        <button type="button" class="btn-icon-action delete-btn" onclick="deleteEnrollmentAction(<%= item.id %>)">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- View Proof Screenshot Modal -->
+<div class="custom-admin-modal-overlay" id="proofViewModalOverlay">
+    <div class="custom-modal-card" style="max-width:500px;">
+        <div class="custom-modal-header">
+            <div>
+                <span>PAYMENT PROOF VERIFICATION</span>
+                <h2 id="proofModalStudentName">Payment Proof</h2>
+            </div>
+            <button type="button" class="custom-modal-close" onclick="closeProofModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="custom-modal-body text-center">
+            <div id="proofTrxBadge" style="margin-bottom:12px; font-size:12px; color:var(--text-soft); font-weight:600;"></div>
+            <div style="background:var(--bg-input); border-radius:8px; border:1px solid var(--border-color); padding:10px; min-height:220px; display:flex; align-items:center; justify-content:center;">
+                <img id="proofImageElement" src="" alt="Payment Proof" style="max-width:100%; max-height:380px; object-fit:contain; border-radius:6px;" onerror="this.src='/Images/Developer.png'" />
+            </div>
+        </div>
+        <div class="custom-modal-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeProofModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterEnrollmentsTable() {
+    const search = (document.getElementById('enrollmentSearchInput')?.value || '').toLowerCase().trim();
+    const status = (document.getElementById('enrollmentStatusFilter')?.value || 'all').toLowerCase();
+
+    const rows = document.querySelectorAll('.enrollment-table-row');
+    rows.forEach(row => {
+        const rowSearch = row.getAttribute('data-search') || '';
+        const rowStatus = row.getAttribute('data-status') || '';
+
+        const matchSearch = !search || rowSearch.includes(search);
+        let matchStatus = (status === 'all');
+        if (status === 'pending') matchStatus = rowStatus.includes('pending');
+        if (status === 'approved') matchStatus = rowStatus.includes('approved');
+        if (status === 'rejected') matchStatus = rowStatus.includes('rejected');
+
+        if (matchSearch && matchStatus) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function viewProofScreenshot(imgUrl, studentName, trxId) {
+    document.getElementById('proofModalStudentName').innerText = 'Proof: ' + studentName;
+    document.getElementById('proofTrxBadge').innerText = 'Transaction ID: ' + trxId;
+    document.getElementById('proofImageElement').src = imgUrl;
+    
+    const modal = document.getElementById('proofViewModalOverlay');
+    if (modal) {
+        modal.classList.add('show');
+    }
+}
+
+function closeProofModal() {
+    const modal = document.getElementById('proofViewModalOverlay');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+}
+
+async function approveEnrollmentAction(id, studentName, courseName) {
+    if (!confirm(`Are you sure you want to approve enrollment for "${studentName}" in "${courseName}"? This will generate their access key.`)) return;
+
+    try {
+        const res = await fetch('/Admin/ApproveEnrollment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+            alert(`Enrollment APPROVED!\nStudent: ${studentName}\nAccess Key: ${result.accessKey}\n\nStudent can now access their course.`);
+            window.location.reload();
+        } else {
+            alert('Approval failed: ' + (result.message || 'Error occurred'));
+        }
+    } catch (e) {
+        alert('Server connection error: ' + e.message);
+    }
+}
+
+async function rejectEnrollmentAction(id) {
+    const reason = prompt("Enter rejection reason (optional):", "Transaction ID could not be verified");
+    if (reason === null) return;
+
+    try {
+        const res = await fetch('/Admin/RejectEnrollment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, reason: reason })
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+async function deleteEnrollmentAction(id) {
+    if (!confirm('Are you sure you want to delete this enrollment record?')) return;
+    try {
+        const res = await fetch('/Admin/DeleteEnrollment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.reload();
+        }
+    } catch (e) {
+        alert('Error: ' + e.message);
+    }
+}
+
+function viewStudentCredentialsModal(student, course, key, url) {
+    alert(`STUDENT ACCESS CREDENTIALS\n\nStudent: ${student}\nCourse: ${course}\nAccess Key: ${key}\nPortal URL: ${url}`);
+}
+</script>

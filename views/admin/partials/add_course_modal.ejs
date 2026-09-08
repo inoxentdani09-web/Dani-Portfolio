@@ -1,0 +1,151 @@
+<div class="skill-modal-overlay" id="courseModalOverlay">
+    <div class="skill-modal" style="max-width: 650px;">
+        <!-- Header -->
+        <div class="skill-modal-header">
+            <div>
+                <span>COURSES & MASTERCLASSES</span>
+                <h2 id="courseModalTitle">Add Course</h2>
+            </div>
+            <button type="button" class="skill-modal-close" onclick="closeCourseModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form action="/Admin/SaveCourse" method="post">
+            <input type="hidden" name="CourseID" id="CourseID" value="0" />
+
+            <div class="skill-modal-body">
+                <!-- Course Name -->
+                <div class="modal-form-group">
+                    <label>Course Title *</label>
+                    <input type="text" name="CourseName" id="CourseName" placeholder="e.g. Master ASP.NET Core MVC & Web APIs" required />
+                </div>
+
+                <div class="modal-form-grid grid-3">
+                    <!-- Price Type -->
+                    <div class="modal-form-group">
+                        <label>Course Tier *</label>
+                        <select name="PriceType" id="CoursePriceType" onchange="toggleCoursePriceFields()" required>
+                            <option value="paid" selected>Paid Masterclass</option>
+                            <option value="free">Free Course</option>
+                        </select>
+                    </div>
+
+                    <!-- Current Price -->
+                    <div class="modal-form-group" id="priceInputGroup">
+                        <label>Fee (e.g. PKR 3,500)</label>
+                        <input type="text" name="Price" id="CoursePrice" value="PKR 3,500" placeholder="PKR 3,500" />
+                    </div>
+
+                    <!-- Original Price -->
+                    <div class="modal-form-group" id="origPriceInputGroup">
+                        <label>Original Fee (Before Off)</label>
+                        <input type="text" name="OriginalPrice" id="CourseOriginalPrice" value="PKR 6,000" placeholder="PKR 6,000" />
+                    </div>
+                </div>
+
+                <div class="modal-form-grid grid-3">
+                    <!-- Platform -->
+                    <div class="modal-form-group">
+                        <label>Platform / Academy *</label>
+                        <input type="text" name="Platform" id="CoursePlatform" placeholder="e.g. Daniyal Academy, Udemy" required />
+                    </div>
+
+                    <!-- Instructor -->
+                    <div class="modal-form-group">
+                        <label>Instructor *</label>
+                        <input type="text" name="Instructor" id="CourseInstructor" placeholder="e.g. Daniyal Khan" required />
+                    </div>
+
+                    <!-- Category -->
+                    <div class="modal-form-group">
+                        <label>Category *</label>
+                        <select name="Category" id="CourseCategory" required>
+                            <option value="Backend">Backend & .NET</option>
+                            <option value="Frontend">Frontend & Web</option>
+                            <option value="Database">Database & SQL</option>
+                            <option value="Full Stack">Full Stack Engineering</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-form-grid grid-3">
+                    <!-- Technology -->
+                    <div class="modal-form-group">
+                        <label>Core Tech *</label>
+                        <input type="text" name="Technology" id="CourseTechnology" placeholder="e.g. ASP.NET Core, C#" required />
+                    </div>
+
+                    <!-- Level -->
+                    <div class="modal-form-group">
+                        <label>Level *</label>
+                        <select name="Level" id="CourseLevel" required>
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="All Levels">All Levels</option>
+                        </select>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="modal-form-group">
+                        <label>Duration *</label>
+                        <input type="text" name="Duration" id="CourseDuration" placeholder="e.g. 40 Hours" required />
+                    </div>
+                </div>
+
+                <div class="modal-form-grid">
+                    <!-- Status -->
+                    <div class="modal-form-group">
+                        <label>Status *</label>
+                        <select name="Status" id="CourseStatus" required>
+                            <option value="Completed">Completed / Published</option>
+                            <option value="In Progress">In Progress</option>
+                        </select>
+                    </div>
+
+                    <!-- Portal URL -->
+                    <div class="modal-form-group">
+                        <label>Course Access / Portal Link</label>
+                        <input type="text" name="CourseUrl" id="CourseUrl" placeholder="https://..." />
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="modal-form-group">
+                    <label>Course Curriculum & Overview</label>
+                    <textarea name="Description" id="CourseDescription" rows="2" placeholder="Course highlights, key modules, project outcomes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="skill-modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closeCourseModal()">Cancel</button>
+                <button type="submit" class="btn-modal-submit">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Course
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleCoursePriceFields() {
+    const type = document.getElementById('CoursePriceType')?.value;
+    const priceGroup = document.getElementById('priceInputGroup');
+    const origPriceGroup = document.getElementById('origPriceInputGroup');
+    const priceInput = document.getElementById('CoursePrice');
+
+    if (type === 'free') {
+        if (priceInput) priceInput.value = 'Free';
+        if (priceGroup) priceGroup.style.display = 'none';
+        if (origPriceGroup) origPriceGroup.style.display = 'none';
+    } else {
+        if (priceInput && (priceInput.value === 'Free' || !priceInput.value)) {
+            priceInput.value = 'PKR 3,500';
+        }
+        if (priceGroup) priceGroup.style.display = '';
+        if (origPriceGroup) origPriceGroup.style.display = '';
+    }
+}
+</script>

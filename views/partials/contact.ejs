@@ -1,0 +1,161 @@
+<section class="contact" id="Contact">
+    <div class="Learn-content animate">
+        <div class="section-title">
+            <span>Get In Touch</span>
+        </div>
+
+        <h2>Let's Work <span>Together</span></h2>
+        <p>
+            Have an exciting web application, e-commerce platform, or custom software project? 
+            Fill out the form below or contact me directly. I will respond to your inquiry promptly.
+        </p>
+    </div>
+
+    <div class="contact-container animate">
+        <!-- Success Alert container -->
+        <div id="contactFormAlert" style="<%= locals.messageSuccess ? 'display:flex;' : 'display:none;' %> align-items:center; background:rgba(34, 197, 94, 0.15); border:1px solid #22c55e; border-radius:12px; padding:14px 18px; margin-bottom:24px; color:#fff; width:100%; box-shadow:0 8px 25px rgba(34,197,94,0.2);">
+            <div style="margin-right:14px; font-size:20px; color:#22c55e;">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div style="flex:1;">
+                <strong style="display:block; color:#22c55e; font-size:15px; margin-bottom:2px;">Message Received!</strong>
+                <span id="contactAlertText" style="font-size:13px; color:#cbd5e1;"><%= locals.messageSuccess || 'Your message has been sent successfully. Daniyal will contact you shortly!' %></span>
+            </div>
+            <div onclick="this.parentElement.style.display='none'" style="cursor:pointer; color:#94a3b8; font-size:16px;">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="contact-form animate">
+            <form id="portfolioContactForm" action="/Home/SendMessage" method="post">
+                <div class="input-group">
+                    <input type="text"
+                           name="name"
+                           id="contactName"
+                           placeholder="Your Full Name *"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <input type="email"
+                           name="email"
+                           id="contactEmail"
+                           placeholder="Your Email Address *"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <input type="tel"
+                           name="phone"
+                           id="contactPhone"
+                           placeholder="Your Phone Number (Optional)" />
+                </div>
+
+                <div class="input-group">
+                    <input type="text"
+                           name="subject"
+                           id="contactSubject"
+                           placeholder="Project Subject / Topic *"
+                           required />
+                </div>
+
+                <div class="input-group">
+                    <textarea rows="5"
+                              name="messageText"
+                              id="contactMessage"
+                              placeholder="Tell me about your project, timeline, and requirements... *"
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="contactSubmitBtn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span id="contactBtnText">Send Message</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="contact-info animate">
+            <div class="info-box">
+                <i class="fa-solid fa-envelope"></i>
+                <div>
+                    <h4>Direct Email</h4>
+                    <p><a href="mailto:<%= (locals.settings && settings.email) || 'inoxentdani09@gmail.com' %>" style="color:inherit; text-decoration:none;"><%= (locals.settings && settings.email) || 'inoxentdani09@gmail.com' %></a></p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-phone"></i>
+                <div>
+                    <h4>Phone & WhatsApp</h4>
+                    <p><a href="tel:<%= (locals.settings && settings.phone) || '+923182315238' %>" style="color:inherit; text-decoration:none;"><%= (locals.settings && settings.phone) || '+92 318 2315238' %></a></p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-location-dot"></i>
+                <div>
+                    <h4>Location</h4>
+                    <p><%= (locals.settings && settings.location) || 'Karachi, Pakistan' %></p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-clock"></i>
+                <div>
+                    <h4>Working Hours</h4>
+                    <p><%= (locals.settings && settings.workingHours) || 'Mon - Sat: 9:00 AM - 6:00 PM' %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('portfolioContactForm');
+    const alertBox = document.getElementById('contactFormAlert');
+    const alertText = document.getElementById('contactAlertText');
+    const btn = document.getElementById('contactSubmitBtn');
+    const btnText = document.getElementById('contactBtnText');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btn.disabled = true;
+            btnText.innerText = 'Sending...';
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/Home/SendMessage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alertText.innerText = result.message || 'Your message has been sent successfully!';
+                    alertBox.style.display = 'flex';
+                    form.reset();
+                    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    alert('Could not submit form: ' + (result.message || 'Please check your input.'));
+                }
+            } catch (err) {
+                // Fallback to standard form submission if fetch is interrupted
+                form.submit();
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = 'Send Message';
+            }
+        });
+    }
+});
+</script>

@@ -1,0 +1,135 @@
+<nav class="navbar" id="mainNavbar">
+    <div class="logoo">
+        <a href="#Home" class="logo-3d-container">
+            <span class="logo-3d-badge">&lt;/&gt;</span>
+            <span class="logo-3d-text">Daniyal<span class="logo-3d-dot">.</span></span>
+        </a>
+    </div>
+
+    <ul class="nav-links" id="navLinksList">
+        <li><a href="#Home" class="nav-item-link active"><i class="fa-solid fa-house"></i> Home</a></li> 
+        <li><a href="#About" class="nav-item-link"><i class="fa-solid fa-user"></i> About</a></li>
+        <li><a href="#Skills" class="nav-item-link"><i class="fa-solid fa-laptop-code"></i> Skills</a></li>
+        <li><a href="#Projects" class="nav-item-link"><i class="fa-solid fa-folder-open"></i> Projects</a></li> 
+        <li><a href="#courses" class="nav-item-link"><i class="fa-solid fa-graduation-cap"></i> Courses</a></li>
+        <li><a href="#Contact" class="nav-item-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+    </ul>
+
+    <div class="cta-area d-none d-md-flex align-items-center gap-2">
+        <button type="button" class="btn-sm btn-outline-warning" onclick="openStudentAccessModal()" style="border: 1px solid #f97316; color:#f97316; background: rgba(249,115,22,0.08); padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-key"></i> My Course Access
+        </button>
+        <a href="/Admin/Login" class="btn-explore" style="text-decoration:none;">
+            <i class="fa-solid fa-shield-halved me-1"></i> Admin Portal
+        </a>
+    </div>
+
+    <div class="menu-btn d-md-none" id="navMenuBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+</nav>
+
+<style>
+.logo-3d-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    perspective: 800px;
+}
+.logo-3d-badge {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+    color: #ffffff;
+    padding: 5px 9px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 15px;
+    box-shadow: 0 4px 0 #9a3412, 0 6px 14px rgba(249, 115, 22, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transform: rotateX(8deg) rotateY(-6deg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.5px;
+}
+.logo-3d-container:hover .logo-3d-badge {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.08);
+    box-shadow: 0 5px 0 #9a3412, 0 10px 20px rgba(249, 115, 22, 0.6);
+}
+.logo-3d-text {
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 40%, #fdba74 80%, #f97316 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 0 #9a3412) drop-shadow(0 4px 10px rgba(0,0,0,0.8));
+    position: relative;
+    display: inline-block;
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+.logo-3d-container:hover .logo-3d-text {
+    transform: translateY(-1px);
+    filter: drop-shadow(0 3px 0 #ea580c) drop-shadow(0 6px 16px rgba(249, 115, 22, 0.6));
+}
+.logo-3d-dot {
+    color: #f97316;
+    -webkit-text-fill-color: #f97316;
+    text-shadow: 0 0 12px #f97316;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const menuBtn = document.getElementById('navMenuBtn');
+    const navLinks = document.getElementById('navLinksList');
+    const backdrop = document.getElementById('navBackdrop');
+    const navItemLinks = document.querySelectorAll('.nav-item-link');
+
+    function toggleMenu() {
+        navLinks.classList.toggle('active');
+        if (backdrop) backdrop.classList.toggle('show');
+    }
+
+    function closeMenu() {
+        navLinks.classList.remove('active');
+        if (backdrop) backdrop.classList.remove('show');
+    }
+
+    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
+    if (backdrop) backdrop.addEventListener('click', closeMenu);
+
+    navItemLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            closeMenu();
+            navItemLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+
+    // Scrollspy active state
+    window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section, Section, header');
+        const scrollPos = window.scrollY + 120;
+
+        sections.forEach(sec => {
+            const id = sec.getAttribute('id');
+            if (id) {
+                const top = sec.offsetTop;
+                const height = sec.offsetHeight;
+                if (scrollPos >= top && scrollPos < top + height) {
+                    navItemLinks.forEach(l => {
+                        l.classList.remove('active');
+                        if (l.getAttribute('href') === `#${id}`) {
+                            l.classList.add('active');
+                        }
+                    });
+                }
+            }
+        });
+    });
+});
+</script>

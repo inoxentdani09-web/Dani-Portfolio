@@ -1,0 +1,383 @@
+<div class="card-box" style="padding: 16px;">
+    <div class="panel-header" style="margin-bottom: 12px; padding-bottom: 10px;">
+        <div>
+            <h2><i class="fa-solid fa-sliders text-warning me-2"></i>Portfolio & System Settings</h2>
+            <p>Configure personal profile, public website content, payment collection accounts, and database sync</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="status-badge status-active">
+                <i class="fa-solid fa-database"></i> PortfolioDB (SQL) Connected
+            </span>
+        </div>
+    </div>
+
+    <% if (locals.alert) { %>
+        <div class="alert alert-<%= alert.type === 'success' ? 'success' : 'danger' %> py-2 px-3 mb-3 d-flex align-items-center gap-2" style="font-size:12px; border-radius:8px;">
+            <i class="fa-solid fa-<%= alert.type === 'success' ? 'circle-check' : 'circle-exclamation' %>"></i>
+            <span><%= alert.message %></span>
+        </div>
+    <% } %>
+
+    <!-- Settings Navigation Tabs -->
+    <div class="settings-nav-tabs">
+        <button type="button" class="settings-tab-btn active" onclick="switchSettingsTab('profile', this)">
+            <i class="fa-solid fa-user-gear"></i> Personal Profile
+        </button>
+        <button type="button" class="settings-tab-btn" onclick="switchSettingsTab('site', this)">
+            <i class="fa-solid fa-globe"></i> Website Content & Stats
+        </button>
+        <button type="button" class="settings-tab-btn" onclick="switchSettingsTab('payment', this)">
+            <i class="fa-solid fa-money-bill-wave"></i> Payment Accounts
+        </button>
+        <button type="button" class="settings-tab-btn" onclick="switchSettingsTab('security', this)">
+            <i class="fa-solid fa-lock"></i> Security & Password
+        </button>
+        <button type="button" class="settings-tab-btn" onclick="switchSettingsTab('database', this)">
+            <i class="fa-solid fa-server"></i> SQL Database Status
+        </button>
+    </div>
+
+    <!-- TAB 1: PERSONAL PROFILE -->
+    <div id="settingsTab-profile" class="settings-tab-content">
+        <form action="/Admin/UpdateProfile" method="post" enctype="multipart/form-data">
+            <div style="display:flex; gap:16px; align-items:center; margin-bottom:14px; background:var(--bg-surface); padding:12px; border-radius:8px; border:1px solid var(--border-color);">
+                <img id="settingsProfilePreview" 
+                     src="<%= (locals.admin && admin.avatar) ? ((admin.avatar.startsWith('http') || admin.avatar.startsWith('/')) ? admin.avatar : '/images/' + admin.avatar) : '/images/Daniyal.png' %>" 
+                     alt="Avatar" 
+                     style="width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--brand-primary);" />
+                <div>
+                    <div style="font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:2px;">Profile Photo / Avatar</div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Upload a new headshot photo (JPG, PNG, WebP)</div>
+                    <input type="file" name="avatar" id="avatarFileInput" accept="image/*" onchange="previewAvatar(this)" style="font-size:11px; color:var(--text-soft);" />
+                </div>
+            </div>
+
+            <div class="modal-form-grid">
+                <div class="modal-form-group">
+                    <label>Full Display Name *</label>
+                    <input type="text" name="name" class="form-control-compact" value="<%= (locals.admin && admin.name) || 'Daniyal Khan' %>" required />
+                </div>
+                <div class="modal-form-group">
+                    <label>Professional Title *</label>
+                    <input type="text" name="title" class="form-control-compact" value="<%= (locals.admin && admin.title) || 'Full Stack Web Developer' %>" required />
+                </div>
+                <div class="modal-form-group">
+                    <label>Admin Login Email *</label>
+                    <input type="email" name="email" class="form-control-compact" value="<%= (locals.admin && admin.email) || 'admin@gmail.com' %>" required />
+                </div>
+                <div class="modal-form-group">
+                    <label>Contact Phone / WhatsApp</label>
+                    <input type="text" name="phone" class="form-control-compact" value="<%= (locals.admin && admin.phone) || '+92 318 2315238' %>" />
+                </div>
+                <div class="modal-form-group full">
+                    <label>Location / City</label>
+                    <input type="text" name="address" class="form-control-compact" value="<%= (locals.admin && admin.address) || 'Karachi, Pakistan' %>" />
+                </div>
+                <div class="modal-form-group full">
+                    <label>About / Bio Summary</label>
+                    <textarea name="bio" rows="3" class="form-control-compact"><%= (locals.admin && admin.bio) || '' %></textarea>
+                </div>
+
+                <div class="modal-form-group full" style="margin-top:6px; border-top:1px solid var(--border-color); padding-top:10px;">
+                    <div style="font-size:12px; font-weight:700; color:var(--brand-primary); margin-bottom:6px;">Social Profiles & GitHub</div>
+                </div>
+                <div class="modal-form-group">
+                    <label><i class="fa-brands fa-github me-1"></i> GitHub Profile URL</label>
+                    <input type="url" name="github" class="form-control-compact" value="<%= (locals.admin && admin.social && admin.social.github) || 'https://github.com/Daniyal-Khan-Official' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label><i class="fa-brands fa-linkedin me-1"></i> LinkedIn Profile URL</label>
+                    <input type="url" name="linkedin" class="form-control-compact" value="<%= (locals.admin && admin.social && admin.social.linkedin) || '' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label><i class="fa-brands fa-x-twitter me-1"></i> Twitter / X URL</label>
+                    <input type="url" name="twitter" class="form-control-compact" value="<%= (locals.admin && admin.social && admin.social.twitter) || '' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label><i class="fa-brands fa-facebook me-1"></i> Facebook Profile URL</label>
+                    <input type="url" name="facebook" class="form-control-compact" value="<%= (locals.admin && admin.social && admin.social.facebook) || '' %>" />
+                </div>
+            </div>
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Profile Details
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB 2: SITE CONTENT & STATS -->
+    <div id="settingsTab-site" class="settings-tab-content" style="display:none;">
+        <form action="/Admin/UpdateSiteSettings" method="post">
+            <div class="modal-form-grid">
+                <div class="modal-form-group">
+                    <label>Hero Main Heading</label>
+                    <input type="text" name="heroHeading" class="form-control-compact" value="<%= (locals.settings && settings.heroHeading) || '' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label>Hero Subheading / Tagline</label>
+                    <input type="text" name="heroSubheading" class="form-control-compact" value="<%= (locals.settings && settings.heroSubheading) || '' %>" />
+                </div>
+                <div class="modal-form-group full">
+                    <label>Hero Paragraph Description</label>
+                    <textarea name="heroDescription" rows="2" class="form-control-compact"><%= (locals.settings && settings.heroDescription) || '' %></textarea>
+                </div>
+                <div class="modal-form-group">
+                    <label>About Section Title</label>
+                    <input type="text" name="aboutHeading" class="form-control-compact" value="<%= (locals.settings && settings.aboutHeading) || '' %>" />
+                </div>
+                <div class="modal-form-group full">
+                    <label>About Detailed Description</label>
+                    <textarea name="aboutDescription" rows="2" class="form-control-compact"><%= (locals.settings && settings.aboutDescription) || '' %></textarea>
+                </div>
+
+                <div class="modal-form-group full" style="margin-top:6px; border-top:1px solid var(--border-color); padding-top:8px;">
+                    <div style="font-size:12px; font-weight:700; color:var(--brand-primary);">Live Counter Stats</div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Years of Experience</label>
+                    <input type="text" name="yearsExperience" class="form-control-compact" value="<%= (locals.settings && settings.yearsExperience) || '2+' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label>Completed Projects Count</label>
+                    <input type="number" name="completedProjects" class="form-control-compact" value="<%= (locals.settings && settings.completedProjects) || 15 %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label>Satisfied Clients Count</label>
+                    <input type="number" name="happyClients" class="form-control-compact" value="<%= (locals.settings && settings.happyClients) || 12 %>" />
+                </div>
+
+                <div class="modal-form-group full" style="margin-top:6px; border-top:1px solid var(--border-color); padding-top:8px;">
+                    <div style="font-size:12px; font-weight:700; color:var(--brand-primary);">Public Contact Footer</div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Public Contact Email</label>
+                    <input type="email" name="email" class="form-control-compact" value="<%= (locals.settings && settings.email) || 'inoxentdani09@gmail.com' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label>Public Contact Phone</label>
+                    <input type="text" name="phone" class="form-control-compact" value="<%= (locals.settings && settings.phone) || '+92 318 2315238' %>" />
+                </div>
+                <div class="modal-form-group">
+                    <label>Working Hours</label>
+                    <input type="text" name="workingHours" class="form-control-compact" value="<%= (locals.settings && settings.workingHours) || 'Mon - Sat: 9:00 AM - 6:00 PM' %>" />
+                </div>
+            </div>
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Website Content
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB 3: PAYMENT ACCOUNTS -->
+    <div id="settingsTab-payment" class="settings-tab-content" style="display:none;">
+        <form action="/Admin/UpdatePaymentAccounts" method="post">
+            <div style="background:var(--brand-primary-soft); border:1px solid rgba(249,115,22,0.25); border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:12px; color:var(--text-soft);">
+                <i class="fa-solid fa-circle-info me-1" style="color:var(--brand-primary);"></i>
+                <strong>Course Fee Collection Accounts:</strong> These payment account numbers will appear on the course enrollment checkout modal for students in Pakistan & abroad.
+            </div>
+
+            <!-- JazzCash -->
+            <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:12px; margin-bottom:10px;">
+                <div style="font-size:12px; font-weight:700; color:#ef4444; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                    <span style="background:#ef4444; color:#fff; font-size:10px; padding:2px 6px; border-radius:4px;">JazzCash</span> Mobile Account
+                </div>
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label>JazzCash Mobile Number *</label>
+                        <input type="text" name="jazzCashNumber" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.jazzCashNumber) || '0318-2315238' %>" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Account Title / Name *</label>
+                        <input type="text" name="jazzCashTitle" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.jazzCashTitle) || 'Daniyal Khan' %>" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- EasyPaisa -->
+            <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:12px; margin-bottom:10px;">
+                <div style="font-size:12px; font-weight:700; color:#10b981; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                    <span style="background:#10b981; color:#fff; font-size:10px; padding:2px 6px; border-radius:4px;">EasyPaisa</span> Mobile Account
+                </div>
+                <div class="modal-form-grid">
+                    <div class="modal-form-group">
+                        <label>EasyPaisa Mobile Number *</label>
+                        <input type="text" name="easyPaisaNumber" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.easyPaisaNumber) || '0318-2315238' %>" required />
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Account Title / Name *</label>
+                        <input type="text" name="easyPaisaTitle" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.easyPaisaTitle) || 'Daniyal Khan' %>" required />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bank Transfer -->
+            <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:12px; margin-bottom:10px;">
+                <div style="font-size:12px; font-weight:700; color:#38bdf8; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+                    <span style="background:#38bdf8; color:#0f172a; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:800;">Bank</span> Direct Bank Account & IBAN
+                </div>
+                <div class="modal-form-grid grid-3">
+                    <div class="modal-form-group">
+                        <label>Bank Name</label>
+                        <input type="text" name="bankName" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.bankName) || 'Meezan Bank' %>" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Account Number</label>
+                        <input type="text" name="bankAccountNumber" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.bankAccountNumber) || '0102-03182315238' %>" />
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Account Title</label>
+                        <input type="text" name="bankAccountTitle" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.bankAccountTitle) || 'Daniyal Khan' %>" />
+                    </div>
+                    <div class="modal-form-group full">
+                        <label>IBAN (International / Raast)</label>
+                        <input type="text" name="bankIban" class="form-control-compact" value="<%= (locals.settings && settings.paymentAccounts && settings.paymentAccounts.bankIban) || 'PK36MEZN00010203182315238' %>" />
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Payment Accounts
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TAB 4: SECURITY & PASSWORD -->
+    <div id="settingsTab-security" class="settings-tab-content" style="display:none;">
+        <div style="max-width:480px;">
+            <div id="passwordAlert" style="display:none;" class="alert py-2 px-3 mb-3"></div>
+
+            <form id="changePasswordForm" onsubmit="handlePasswordChange(event)">
+                <div class="modal-form-group">
+                    <label>Current Password *</label>
+                    <input type="password" id="currentPassword" class="form-control-compact" placeholder="Current password (default: admin1234)" required />
+                </div>
+                <div class="modal-form-group">
+                    <label>New Password *</label>
+                    <input type="password" id="newPassword" class="form-control-compact" placeholder="At least 4 characters" required />
+                </div>
+                <div class="modal-form-group">
+                    <label>Confirm New Password *</label>
+                    <input type="password" id="confirmPassword" class="form-control-compact" placeholder="Repeat new password" required />
+                </div>
+
+                <div style="margin-top:12px;">
+                    <button type="submit" class="btn-primary-action">
+                        <i class="fa-solid fa-key"></i> Update Admin Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TAB 5: SQL DATABASE STATUS -->
+    <div id="settingsTab-database" class="settings-tab-content" style="display:none;">
+        <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; padding:14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+                <div>
+                    <strong style="color:var(--text-main); font-size:13px;"><i class="fa-solid fa-database text-warning me-1"></i> Database: PortfolioDB</strong>
+                    <div style="font-size:11px; color:var(--text-muted);">Relational schema & table state synchronized in real-time</div>
+                </div>
+                <span class="status-badge status-active"><i class="fa-solid fa-circle-check"></i> Connected & Syncing</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-bottom:14px;">
+                <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Projects Table</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--brand-primary);"><%= (locals.stats && stats.projectsCount) || 0 %> Records</div>
+                </div>
+                <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Skills Table</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--status-info);"><%= (locals.stats && stats.skillsCount) || 0 %> Records</div>
+                </div>
+                <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Courses Table</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--status-success);"><%= (locals.stats && stats.coursesCount) || 0 %> Records</div>
+                </div>
+                <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Messages Table</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--status-warning);"><%= (locals.stats && stats.messagesCount) || 0 %> Inquiries</div>
+                </div>
+                <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color); text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Enrollments Table</div>
+                    <div style="font-size:16px; font-weight:800; color:var(--text-main);"><%= (locals.stats && stats.enrollmentsCount) || 0 %> Records</div>
+                </div>
+            </div>
+
+            <div style="font-size:11.5px; color:var(--text-soft); line-height:1.6;">
+                <strong>Relational Foreign Keys & Schema:</strong>
+                <ul style="margin:4px 0 0 16px; padding:0;">
+                    <li><code>Projects.categoryId &rarr; Categories.id</code> (Cascades / Updates dynamically)</li>
+                    <li><code>Skills.categoryId &rarr; Categories.id</code></li>
+                    <li><code>Courses.categoryId &rarr; Categories.id</code></li>
+                    <li><code>Enrollments.courseID &rarr; Courses.courseID</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchSettingsTab(tabName, btn) {
+    document.querySelectorAll('.settings-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.settings-tab-content').forEach(c => c.style.display = 'none');
+    
+    btn.classList.add('active');
+    const target = document.getElementById('settingsTab-' + tabName);
+    if (target) target.style.display = 'block';
+}
+
+function previewAvatar(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('settingsProfilePreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function handlePasswordChange(e) {
+    e.preventDefault();
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const alertEl = document.getElementById('passwordAlert');
+
+    if (newPassword !== confirmPassword) {
+        alertEl.className = 'alert alert-danger py-2 px-3 mb-3';
+        alertEl.innerText = 'New passwords do not match.';
+        alertEl.style.display = 'block';
+        return;
+    }
+
+    try {
+        const res = await fetch('/Admin/ChangePassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+        });
+        const result = await res.json();
+        if (result.success) {
+            alertEl.className = 'alert alert-success py-2 px-3 mb-3';
+            alertEl.innerText = result.message || 'Password changed successfully!';
+            alertEl.style.display = 'block';
+            document.getElementById('changePasswordForm').reset();
+        } else {
+            alertEl.className = 'alert alert-danger py-2 px-3 mb-3';
+            alertEl.innerText = result.message || 'Failed to update password.';
+            alertEl.style.display = 'block';
+        }
+    } catch (err) {
+        alertEl.className = 'alert alert-danger py-2 px-3 mb-3';
+        alertEl.innerText = 'Error: ' + err.message;
+        alertEl.style.display = 'block';
+    }
+}
+</script>

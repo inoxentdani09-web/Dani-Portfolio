@@ -1,0 +1,60 @@
+<Section id="Skills">
+    <div class="skill-bg">
+        <div class="Skill-content animate">
+            <h1 class="section-title">My Skills</h1>
+            <h1>Technologies I <span>Work With</span></h1>
+            <p>As a Full Stack Developer, I work across the entire software development lifecycle — from responsive front-end interfaces to secure backend servers and scalable databases.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <ul class="filter-tabs" id="skillFilterTabs">
+            <li><button class="filter-btn active" data-filter="all">All Tech</button></li>
+            <li><button class="filter-btn" data-filter="Frontend">Frontend</button></li>
+            <li><button class="filter-btn" data-filter="Backend">Backend</button></li>
+            <li><button class="filter-btn" data-filter="Database">Database</button></li>
+            <li><button class="filter-btn" data-filter="Tools">Tools & Desktop</button></li>
+        </ul>
+
+        <div class="Skills-Container" id="skillsGridContainer">
+            <% (skills || []).forEach(function(skill) { %>
+                <div class="skill-card animate" data-category="<%= skill.categoryName || skill.category %>">
+                    <div class="skill-icon">
+                        <img src="/Images/<%= skill.icon %>" alt="<%= skill.name %> icon" onerror="this.src='/Images/HTML.png'" />
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between w-100 mb-2">
+                        <h3 style="margin:0;"><%= skill.name %></h3>
+                        <span style="font-size:11px; font-weight:700; color:#f97316; background:rgba(249,115,22,0.1); padding:2px 8px; border-radius:12px;">
+                            <%= skill.level || 'Advanced' %>
+                        </span>
+                    </div>
+                    <p><%= skill.description %></p>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</Section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const filterBtns = document.querySelectorAll('#skillFilterTabs .filter-btn');
+    const skillCards = document.querySelectorAll('#skillsGridContainer .skill-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.getAttribute('data-filter').toLowerCase();
+
+            skillCards.forEach(card => {
+                const category = (card.getAttribute('data-category') || '').toLowerCase();
+                if (filter === 'all' || category.includes(filter)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
