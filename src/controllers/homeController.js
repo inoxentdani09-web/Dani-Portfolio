@@ -1,12 +1,15 @@
 import { db } from '../db/database.js';
+import { askDaniyalAI } from '../utils/aiMentor.js';
+import { sendEmailNotification } from '../utils/mailer.js';
 
 export const homeController = {
   // Render Main Portfolio Website
   getIndex: (req, res) => {
     try {
-      const skills = db.getSkills();
-      const projects = db.getProjects();
-      const courses = db.getCourses();
+      // Only show Published skills, projects, and active courses to the public
+      const skills = db.getSkills().filter(s => (s.status || 'Published').toLowerCase() === 'published');
+      const projects = db.getProjects().filter(p => (p.status || 'Published').toLowerCase() === 'published');
+      const courses = db.getCourses().filter(c => (c.status || 'Published').toLowerCase() !== 'draft');
       const categories = db.getCategories();
       const admin = db.getAdmin();
       const settings = db.getSettings();
@@ -45,10 +48,11 @@ export const homeController = {
   },
 
   // Submit Contact Message
-  postSendMessage: (req, res) => {
+  postSendMessage: async (req, res) => {
     try {
       const { name, email, phone, subject, messageText, message } = req.body;
-      if (!name || !email || (!messageText && !message)) {
+      const actualMsg = messageText || message;
+      if (!name || !email || !actualMsg) {
         if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
           return res.status(400).json({ success: false, message: 'Please fill in all required fields.' });
         }
@@ -60,8 +64,18 @@ export const homeController = {
         email,
         phone: phone || '',
         subject: subject || 'New Website Contact Inquiry',
-        messageText: messageText || message
+        messageText: actualMsg
       });
+
+      // Dispatch notification email to inoxentdani09@gmail.com
+      sendEmailNotification({
+        type: 'inquiry',
+        name,
+        email,
+        phone: phone || '',
+        subject: subject || 'New Website Contact Inquiry',
+        message: actualMsg
+      }).catch(err => console.warn('Email notify error:', err));
 
       if (req.xhr || req.headers['x-requested-with'] === 'XMLHttpRequest') {
         return res.json({ 
@@ -84,17 +98,20 @@ export const homeController = {
   // Public JSON APIs (compatible with original routes)
   getSkillsJson: (req, res) => {
     const category = req.query.category || null;
-    res.json(db.getSkills(category));
+    const skills = db.getSkills(category).filter(s => (s.status || 'Published').toLowerCase() === 'published');
+    res.json(skills);
   },
 
   getProjectsJson: (req, res) => {
     const category = req.query.category || null;
-    res.json(db.getProjects(category));
+    const projects = db.getProjects(category).filter(p => (p.status || 'Published').toLowerCase() === 'published');
+    res.json(projects);
   },
 
   getCoursesJson: (req, res) => {
     const filter = req.query.type || null;
-    res.json(db.getCourses(filter));
+    const courses = db.getCourses(filter).filter(c => (c.status || 'Published').toLowerCase() !== 'draft');
+    res.json(courses);
   },
 
   getCourseDetailsJson: (req, res) => {
@@ -104,7 +121,7 @@ export const homeController = {
     res.json({ success: true, course });
   },
 
-  postEnrollCourse: (req, res) => {
+  postEnrollCourse: async (req, res) => {
     try {
       const { courseId, courseID, studentName, studentEmail, studentPhone, paymentMethod, transactionId, trxId, screenshotProof } = req.body;
       const targetCourseId = courseId || courseID;
@@ -122,6 +139,18 @@ export const homeController = {
         transactionId: transactionId || trxId,
         screenshotProof: screenshotProof || ''
       });
+
+      // Notify admin email of new enrollment
+      sendEmailNotification({
+        type: 'enrollment',
+        name: studentName,
+        email: studentEmail,
+        phone: studentPhone,
+        courseName: enrollment.courseName,
+        amount: enrollment.amountPaid,
+        paymentMethod: enrollment.paymentMethod,
+        trxId: enrollment.transactionId
+      }).catch(err => console.warn('Enrollment email notify error:', err));
 
       return res.json({
         success: true,
@@ -150,6 +179,20 @@ export const homeController = {
     } catch (err) {
       console.error('Check Enrollment Error:', err);
       return res.status(500).json({ success: false, message: 'Failed to look up enrollment.' });
+    }
+  },
+
+  postAiChat: async (req, res) => {
+    try {
+      const { message, history } = req.body;
+      if (!message || !message.trim()) {
+        return res.status(400).json({ success: false, reply: 'Please provide a question or message.' });
+      }
+      const reply = await askDaniyalAI(message.trim(), history || []);
+      return res.json({ success: true, reply });
+    } catch (error) {
+      console.error('AI Chat Error:', error);
+      return res.status(500).json({ success: false, reply: 'AI service is temporarily busy. Please try again or ask on WhatsApp.' });
     }
   }
 };

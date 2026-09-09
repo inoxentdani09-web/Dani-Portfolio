@@ -1,0 +1,366 @@
+@model Portfolio.Models.ViewModels.HomeViewModel
+
+<section class="courses-section" id="courses">
+    <div class="courses-container">
+        <!-- Section Header -->
+        <div class="section-heading animate">
+            <span class="section-label">LEARNING ACADEMY & COURSES</span>
+            <h2>Master <span>Full-Stack Development</span></h2>
+            <p>Study foundational web technologies for free, or enroll in premium industry-grade .NET, SQL Server, and full-stack engineering masterclasses.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="courses-filter-tabs">
+            <button class="course-filter-btn active" data-filter="all" onclick="filterCourses('all', this)">
+                <i class="fa-solid fa-layer-group"></i> All Courses (<span id="totalCoursesCount">@Model.Courses.Count</span>)
+            </button>
+            <button class="course-filter-btn free-tab" data-filter="free" onclick="filterCourses('free', this)">
+                <i class="fa-solid fa-gift"></i> Free Courses (Learn Free)
+            </button>
+            <button class="course-filter-btn paid-tab" data-filter="paid" onclick="filterCourses('paid', this)">
+                <i class="fa-solid fa-crown"></i> Premium Paid Courses
+            </button>
+            <button class="course-filter-btn" data-filter="backend" onclick="filterCourses('backend', this)">
+                <i class="fa-solid fa-server"></i> Backend & .NET
+            </button>
+            <button class="course-filter-btn" data-filter="frontend" onclick="filterCourses('frontend', this)">
+                <i class="fa-brands fa-react"></i> Frontend
+            </button>
+            <button class="course-filter-btn" data-filter="database" onclick="filterCourses('database', this)">
+                <i class="fa-solid fa-database"></i> Database & ORM
+            </button>
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="courses-grid" id="coursesGridContainer">
+            @foreach (var course in Model.Courses)
+            {
+                var isFree = course.PriceType?.ToLower() == "free" || course.Price?.ToLower() == "free";
+                var catLower = (course.Category ?? "").ToLower();
+
+                <div class="course-card animate" 
+                     data-price-type="@(isFree ? "free" : "paid")"
+                     data-category="@catLower"
+                     id="course-card-@course.CourseID">
+                    
+                    <div class="course-card-top">
+                        <div class="course-icon @(isFree ? "icon-free" : "icon-paid")">
+                            <i class="@(isFree ? "fa-solid fa-book-open-reader" : "fa-solid fa-certificate")"></i>
+                        </div>
+                        
+                        <!-- Pricing Badge -->
+                        @if (isFree)
+                        {
+                            <span class="course-pricing-badge free">
+                                <i class="fa-solid fa-gift"></i> 100% Free
+                            </span>
+                        }
+                        else
+                        {
+                            <div class="course-price-wrap">
+                                <span class="original-price">@(course.OriginalPrice ?? "PKR 6,000")</span>
+                                <span class="course-pricing-badge paid">
+                                    <i class="fa-solid fa-crown"></i> @(course.Price ?? "PKR 3,500")
+                                </span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="course-content">
+                        <div class="course-meta-top">
+                            <span class="course-category-tag">@course.Category</span>
+                            <span class="course-level-tag"><i class="fa-solid fa-signal"></i> @course.Level</span>
+                        </div>
+
+                        <h3>@course.Title</h3>
+                        <p class="course-description">@course.Description</p>
+
+                        <div class="course-info">
+                            <div class="course-info-item">
+                                <i class="fa-solid fa-chalkboard-user"></i>
+                                <div>
+                                    <span>Instructor</span>
+                                    <strong>@(Model.Admin?.Name ?? "Daniyal Khan")</strong>
+                                </div>
+                            </div>
+                            <div class="course-info-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <div>
+                                    <span>Duration</span>
+                                    <strong>@course.Duration</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="course-technology">
+                            <span class="tech-label">Lectures:</span>
+                            <span class="tech-badge">@course.LecturesCount</span>
+                        </div>
+
+                        <!-- Progress Bar or Rating/Students -->
+                        <div class="course-progress">
+                            <div class="progress-header">
+                                <span><i class="fa-solid fa-star text-warning"></i> @course.Rating (@course.EnrolledStudents students)</span>
+                                <strong>@(isFree ? "Free Access" : "Verified Certificate")</strong>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Action Footer -->
+                    <div class="course-footer">
+                        @if (isFree)
+                        {
+                            <button type="button" class="course-action-btn free-btn" onclick="openFreeCourseReader(@course.CourseID)">
+                                <i class="fa-solid fa-book-open"></i> Read & Learn Free
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="course-action-btn paid-btn" onclick="openCourseEnrollmentModal(@course.CourseID)">
+                                <i class="fa-solid fa-cart-shopping"></i> Enroll Now &bull; @(course.Price ?? "PKR 3,500")
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- FREE COURSE READER MODAL -->
+<div class="course-modal-overlay" id="freeCourseReaderModal" style="display:none;">
+    <div class="course-modal-container reader-modal">
+        <div class="course-modal-header">
+            <div class="header-left">
+                <span class="modal-badge free"><i class="fa-solid fa-book-open"></i> Free Interactive Course Reader</span>
+                <h2 id="readerCourseTitle">HTML5 & Modern Web Development</h2>
+            </div>
+            <button type="button" class="course-modal-close" onclick="closeFreeCourseReader()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="reader-modal-body">
+            <div class="reader-syllabus">
+                <h4><i class="fa-solid fa-list-check me-2"></i>Curriculum Modules</h4>
+                <div id="readerCurriculumList" class="curriculum-accordion">
+                </div>
+            </div>
+
+            <div class="reader-content-pane">
+                <div class="lesson-header">
+                    <h3 id="readerLessonTitle">Module 1: Semantic HTML & Page Architecture</h3>
+                    <span class="lesson-badge"><i class="fa-solid fa-circle-check text-success"></i> 100% Free Access</span>
+                </div>
+
+                <div class="lesson-description" id="readerLessonExplanation">
+                    Learn the core principles of structuring modern websites using clean, semantic tags that boost SEO and accessibility.
+                </div>
+
+                <div class="code-editor-box">
+                    <div class="code-editor-header">
+                        <span><i class="fa-solid fa-code me-2"></i>Live Code Example</span>
+                        <button type="button" class="copy-code-btn" onclick="copyReaderCode()">
+                            <i class="fa-regular fa-copy"></i> <span id="copyCodeText">Copy Code</span>
+                        </button>
+                    </div>
+                    <pre class="code-snippet-pre"><code id="readerCodeSnippet" class="language-html"></code></pre>
+                </div>
+
+                <div class="interactive-preview-box">
+                    <div class="preview-header">
+                        <span><i class="fa-solid fa-play me-2"></i>Interactive Output Preview</span>
+                        <small style="color:#94a3b8;">Rendered live in sandbox</small>
+                    </div>
+                    <div class="preview-frame" id="readerLivePreview">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="course-modal-footer">
+            <button type="button" class="btn-modal-secondary" onclick="closeFreeCourseReader()">Close Reader</button>
+            <a href="#Contact" class="btn-modal-primary" onclick="closeFreeCourseReader()">
+                <i class="fa-solid fa-comments me-1"></i> Ask Daniyal a Question
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- PAID COURSE ENROLLMENT & CHECKOUT MODAL -->
+<div class="course-modal-overlay" id="courseEnrollModal" style="display:none;">
+    <div class="course-modal-container checkout-modal">
+        <div class="course-modal-header">
+            <div class="header-left">
+                <span class="modal-badge paid"><i class="fa-solid fa-crown"></i> Premium Course Enrollment</span>
+                <h2 id="checkoutCourseTitle">C# & Object-Oriented Programming Masterclass</h2>
+            </div>
+            <button type="button" class="course-modal-close" onclick="closeCourseEnrollModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="checkout-modal-body">
+            <div class="checkout-summary-pane">
+                <div class="price-banner">
+                    <span class="price-lbl">Special Enrolled Price:</span>
+                    <div class="price-values">
+                        <span class="current-price" id="checkoutCoursePrice">PKR 3,500</span>
+                        <span class="discount-price" id="checkoutCourseOriginal">PKR 6,000</span>
+                        <span class="discount-pill">SAVE 45%</span>
+                    </div>
+                </div>
+
+                <div class="benefits-list">
+                    <h4><i class="fa-solid fa-shield-halved text-warning me-2"></i>What's Included:</h4>
+                    <ul>
+                        <li><i class="fa-solid fa-circle-check text-success"></i> Full Lifetime Access to Video Masterclass</li>
+                        <li><i class="fa-solid fa-circle-check text-success"></i> Complete Source Code on Private GitHub Repo</li>
+                        <li><i class="fa-solid fa-circle-check text-success"></i> Industry-Recognized Completion Certificate</li>
+                        <li><i class="fa-solid fa-circle-check text-success"></i> 1-on-1 Direct Q&A Support with Daniyal Khan</li>
+                        <li><i class="fa-solid fa-circle-check text-success"></i> 5 Real-World Enterprise Portfolio Projects</li>
+                    </ul>
+                </div>
+
+                <div class="guarantee-box">
+                    <i class="fa-solid fa-award"></i>
+                    <div>
+                        <strong>100% Satisfaction Guarantee</strong>
+                        <p>Join over 1,500+ developers who upgraded their careers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-form-pane">
+                <form id="enrollmentCheckoutForm" onsubmit="handleCourseCheckout(event)">
+                    <input type="hidden" id="checkoutCourseId" value="0" />
+                    
+                    <h4 style="color:#fff; font-size:15px; margin:0 0 14px;"><i class="fa-solid fa-user-graduate me-2 text-warning"></i>1. Student Information</h4>
+
+                    <div class="form-input-row">
+                        <label>Your Full Name *</label>
+                        <input type="text" id="studentName" placeholder="e.g. Ali Ahmed" required />
+                    </div>
+
+                    <div class="form-input-row">
+                        <label>Email Address (For Portal Access Key) *</label>
+                        <input type="email" id="studentEmail" placeholder="e.g. ali@gmail.com" required />
+                    </div>
+
+                    <div class="form-input-row">
+                        <label>WhatsApp / Mobile Number *</label>
+                        <input type="tel" id="studentPhone" placeholder="e.g. +92 300 1234567" required />
+                    </div>
+
+                    <h4 style="color:#fff; font-size:15px; margin:18px 0 10px;"><i class="fa-solid fa-money-bill-transfer me-2 text-warning"></i>2. Transfer Fee to Daniyal's Account</h4>
+
+                    <div class="payment-methods-grid">
+                        <label class="payment-method-card active" onclick="selectPaymentMethodTab('JazzCash')">
+                            <input type="radio" name="paymentMethod" value="JazzCash" checked />
+                            <div class="pm-info">
+                                <strong style="color:#ef4444;"><i class="fa-solid fa-mobile-screen-button me-1"></i> JazzCash</strong>
+                                <span>@(Model.Settings?.JazzCashNumber ?? "0318-2315238")</span>
+                            </div>
+                        </label>
+                        <label class="payment-method-card" onclick="selectPaymentMethodTab('EasyPaisa')">
+                            <input type="radio" name="paymentMethod" value="EasyPaisa" />
+                            <div class="pm-info">
+                                <strong style="color:#10b981;"><i class="fa-solid fa-wallet me-1"></i> EasyPaisa</strong>
+                                <span>@(Model.Settings?.EasyPaisaNumber ?? "0318-2315238")</span>
+                            </div>
+                        </label>
+                        <label class="payment-method-card" onclick="selectPaymentMethodTab('Bank Transfer')">
+                            <input type="radio" name="paymentMethod" value="Bank Transfer" />
+                            <div class="pm-info">
+                                <strong style="color:#38bdf8;"><i class="fa-solid fa-building-columns me-1"></i> Bank / Raast</strong>
+                                <span>@(Model.Settings?.BankAccountNumber ?? "0102-03182315238")</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="account-instruction-card" id="accountInstructionBox" style="background:#0f172a; border:1px solid rgba(249,115,22,0.3); border-radius:10px; padding:14px; margin-bottom:16px;">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span style="color:#94a3b8; font-size:12px; font-weight:600;" id="accTypeLabel">JAZZCASH ACCOUNT</span>
+                            <button type="button" class="btn btn-sm" style="background:rgba(249,115,22,0.2); color:#f97316; border:none; padding:3px 10px; font-size:12px; border-radius:6px; font-weight:700;" onclick="copyCurrentPaymentNumber()">
+                                <i class="fa-regular fa-copy me-1"></i> Copy Number
+                            </button>
+                        </div>
+                        <div style="font-size:18px; font-weight:800; color:#fff; font-family:monospace; letter-spacing:1px;" id="accNumberVal">
+                            @(Model.Settings?.JazzCashNumber ?? "0318-2315238")
+                        </div>
+                        <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">
+                            Account Title: <strong id="accTitleVal" style="color:#f97316;">@(Model.Settings?.JazzCashTitle ?? "Daniyal Khan")</strong>
+                        </div>
+                    </div>
+
+                    <h4 style="color:#fff; font-size:15px; margin:16px 0 10px;"><i class="fa-solid fa-receipt me-2 text-warning"></i>3. Payment Verification Proof</h4>
+
+                    <div class="form-input-row">
+                        <label>Transaction ID / TID (From SMS / Bank App) *</label>
+                        <input type="text" id="transactionId" placeholder="e.g. JC-88392104 or Trx ID from receipt" required />
+                    </div>
+
+                    <div class="checkout-actions mt-3">
+                        <button type="submit" class="btn-complete-enroll" id="btnSubmitEnrollment">
+                            <i class="fa-solid fa-lock me-2"></i> Submit Application & Enroll
+                        </button>
+                    </div>
+                </form>
+
+                <div id="enrollmentSuccessState" style="display:none; text-align:center; padding:24px 10px;">
+                    <div style="width:64px; height:64px; border-radius:50%; background:rgba(16,185,129,0.15); color:#10b981; font-size:30px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:16px;">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3 style="color:#fff; margin-bottom:8px;">Application Submitted!</h3>
+                    <p style="color:#94a3b8; font-size:13px; line-height:1.6; margin-bottom:16px;">
+                        Thank you for applying for <strong id="successCourseName" style="color:#f97316;"></strong>! Your payment details and transaction proof have been sent to <strong>Daniyal Khan</strong>.
+                    </p>
+                    <div style="background:#0f172a; border:1px solid rgba(249,115,22,0.3); border-radius:10px; padding:12px; margin-bottom:16px; text-align:left;">
+                        <span style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Application Status</span>
+                        <div style="font-weight:700; color:#fbbf24; font-size:14px; margin-top:2px;">
+                            <i class="fa-solid fa-hourglass-half me-1"></i> Pending Admin Verification
+                        </div>
+                        <p style="font-size:12px; color:#cbd5e1; margin:6px 0 0;">
+                            As soon as Daniyal verifies your TID in the admin dashboard, your Access Key will be activated!
+                        </p>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <button type="button" class="btn btn-outline-secondary w-100" onclick="closeCourseEnrollModal()" style="border-radius:8px; color:#cbd5e1;">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Student Access Status Modal -->
+<div class="course-modal-overlay" id="studentAccessModal" style="display:none;">
+    <div class="course-modal-dialog" style="max-width:550px;">
+        <div class="course-modal-header">
+            <div>
+                <span class="modal-badge-label">STUDENT ACCESS PORTAL</span>
+                <h2 style="font-size:20px;">Lookup Your Enrolled Courses</h2>
+            </div>
+            <button type="button" class="course-modal-close" onclick="closeStudentAccessModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div style="padding:20px;">
+            <div class="form-input-row mb-3">
+                <label>Enter Your Email Address or Transaction ID *</label>
+                <div class="d-flex gap-2">
+                    <input type="text" id="studentLookupInput" placeholder="e.g. ali@gmail.com or JC-88392104" style="background:#0b1120; color:#fff; border:1px solid #334155; padding:10px 14px; border-radius:8px; flex:1;" />
+                    <button type="button" class="btn btn-warning" style="background:#f97316; border-color:#f97316; color:#fff; font-weight:700; border-radius:8px; padding:0 18px;" onclick="checkStudentAccessStatus()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Check
+                    </button>
+                </div>
+            </div>
+            <div id="studentLookupResult" style="margin-top:16px;"></div>
+        </div>
+    </div>
+</div>

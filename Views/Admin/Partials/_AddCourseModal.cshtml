@@ -1,0 +1,65 @@
+<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background:#111726; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:16px;">
+            <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.08);">
+                <h5 class="modal-title" id="addCourseModalLabel"><i class="fa-solid fa-plus-circle me-2 text-success"></i>Add New Course to SQL Server</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addCourseForm" onsubmit="handleAddCourse(event)">
+                <div class="modal-body" style="padding:24px;">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-8">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Course Title *</label>
+                            <input type="text" name="Title" class="form-control" placeholder="e.g. ASP.NET Core & SQL Server Enterprise Masterclass" required style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Category *</label>
+                            <select name="Category" class="form-select" required style="background:#090d16; border:1px solid #1e293b; color:#fff;">
+                                <option value="Backend">Backend</option>
+                                <option value="Frontend">Frontend</option>
+                                <option value="Database">Database</option>
+                                <option value="Fullstack">Fullstack</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Level</label>
+                            <select name="Level" class="form-select" style="background:#090d16; border:1px solid #1e293b; color:#fff;">
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                                <option value="All Levels">All Levels</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Price Type</label>
+                            <select name="PriceType" class="form-select" style="background:#090d16; border:1px solid #1e293b; color:#fff;">
+                                <option value="Paid">Paid Course</option>
+                                <option value="Free">Free Course</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Price (e.g. PKR 3,500)</label>
+                            <input type="text" name="Price" class="form-control" value="PKR 3,500" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Duration</label>
+                            <input type="text" name="Duration" class="form-control" value="12 Weeks" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Total Lectures</label>
+                            <input type="text" name="LecturesCount" class="form-control" value="45 Lectures" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" style="font-size:13px; font-weight:600;">Course Description *</label>
+                            <textarea name="Description" class="form-control" rows="3" placeholder="Overview of curriculum, learning objectives, and portfolio milestones..." required style="background:#090d16; border:1px solid #1e293b; color:#fff;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid rgba(255,255,255,0.08);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success" style="background:#10b981; border-color:#10b981; color:#fff; font-weight:700;">Save Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

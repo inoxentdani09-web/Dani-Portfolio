@@ -9,10 +9,12 @@
     "lint": "node --check server.js src/db/database.js src/controllers/homeController.js src/controllers/adminController.js"
   },
   "dependencies": {
+    "@google/genai": "^2.21.0",
     "cookie-parser": "^1.4.7",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
     "multer": "^2.3.0",
+    "nodemailer": "^10.0.1",
     "sql.js": "^1.14.2",
     "xlsx": "^0.18.5"
   }

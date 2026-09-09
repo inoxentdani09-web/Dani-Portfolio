@@ -1,0 +1,60 @@
+@model Portfolio.Models.ViewModels.AdminDashboardViewModel
+
+<div class="content-box mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="box-title m-0"><i class="fa-solid fa-graduation-cap me-2 text-success"></i>Courses Management</h4>
+            <p class="text-muted m-0" style="font-size:13px;">Manage interactive courses and certifications in SQL Server</p>
+        </div>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCourseModal" style="background:#10b981; border-color:#10b981; color:#fff; font-weight:700;">
+            <i class="fa-solid fa-plus me-1"></i> Add New Course
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Course Title</th>
+                    <th>Category</th>
+                    <th>Level</th>
+                    <th>Price Type</th>
+                    <th>Duration</th>
+                    <th>Rating / Students</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Courses)
+                {
+                    var isFree = c.PriceType?.ToLower() == "free" || c.Price?.ToLower() == "free";
+                    <tr id="course-row-@c.CourseID">
+                        <td>
+                            <strong style="color:var(--text-main); display:block;">@c.Title</strong>
+                            <small class="text-muted" style="max-width:240px; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@c.Description</small>
+                        </td>
+                        <td><span class="badge bg-secondary">@c.Category</span></td>
+                        <td><small>@c.Level</small></td>
+                        <td>
+                            @if (isFree)
+                            {
+                                <span class="badge bg-success"><i class="fa-solid fa-gift me-1"></i> Free</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark"><i class="fa-solid fa-crown me-1"></i> @c.Price</span>
+                            }
+                        </td>
+                        <td><small class="text-muted">@c.Duration</small></td>
+                        <td><small><i class="fa-solid fa-star text-warning"></i> @c.Rating (@c.EnrolledStudents)</small></td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteCourse(@c.CourseID)" title="Delete Course">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

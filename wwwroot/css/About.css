@@ -1,4 +1,4 @@
-﻿.About-Content {
+.About-Content {
     height: 100vh;
     display: flex;
     align-items: center;
@@ -200,26 +200,29 @@
     transition: 0.4s ease;
 }
 .stats-btn {
-    background:transparent;
+    background: transparent;
     color: #F97316;
-    padding: 3px 28px;
+    padding: 6px 20px;
     text-decoration: none;
-    border-radius: 8px;
-    font-weight: 500;
-    display: inline-block;
-    transition: 0.3s ease;
-    font-size: 13px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12.5px;
     border: 1px solid #F97316;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.15);
 }
-    .stats-btn:hover {
-        background-color: #EA580C;
-        transform: translateY(-3px);
-        color:white;
-    }
+
+.stats-btn:hover {
+    background: #F97316;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+}
 .stats-icon {
     font-size: 13px;
     color: #F97316;
@@ -390,7 +393,10 @@
     .stats-btn {
         grid-column: 1/-1;
         width: 100%;
-        height: 48px;
+        max-width: 220px;
+        margin: 10px auto 0;
+        height: 38px;
+        padding: 0 16px;
     }
 }
 

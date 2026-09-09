@@ -1,0 +1,103 @@
+<nav class="navbar" id="mainNavbar">
+    <div class="logoo">
+        <a href="#Home" class="logo-3d-container">
+            <span class="logo-3d-badge">&lt;/&gt;</span>
+            <span class="logo-3d-text">Daniyal<span class="logo-3d-dot">.</span></span>
+        </a>
+    </div>
+
+    <ul class="nav-links" id="navLinksList">
+        <!-- Sidebar Brand Header (Mobile Only) -->
+        <li class="sidebar-header d-md-none">
+            <div class="sidebar-logo">
+                <span class="logo-3d-badge" style="padding:4px 7px; font-size:13px;">&lt;/&gt;</span>
+                <span class="logo-3d-text" style="font-size:17px;">Daniyal<span class="logo-3d-dot">.</span></span>
+            </div>
+            <button type="button" class="sidebar-close-btn" onclick="closeSidebarMenu()" aria-label="Close menu">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </li>
+
+        <li><a href="#Home" class="nav-item-link active"><i class="fa-solid fa-house"></i> <span>Home</span></a></li> 
+        <li><a href="#About" class="nav-item-link"><i class="fa-solid fa-user"></i> <span>About</span></a></li>
+        <li><a href="#Skills" class="nav-item-link"><i class="fa-solid fa-laptop-code"></i> <span>Skills</span></a></li>
+        <li><a href="#Projects" class="nav-item-link"><i class="fa-solid fa-folder-open"></i> <span>Projects</span></a></li> 
+        <li><a href="#courses" class="nav-item-link"><i class="fa-solid fa-graduation-cap"></i> <span>Courses</span></a></li>
+        <li><a href="#Contact" class="nav-item-link"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a></li>
+
+        <!-- Sidebar Footer Action Buttons (Mobile Only) -->
+        <li class="sidebar-footer d-md-none">
+            <button type="button" class="btn-sidebar-access" onclick="openStudentAccessModal(); closeSidebarMenu();">
+                <i class="fa-solid fa-key"></i> My Course Access
+            </button>
+            <a asp-controller="Admin" asp-action="Login" class="btn-sidebar-admin">
+                <i class="fa-solid fa-shield-halved"></i> Admin Portal
+            </a>
+        </li>
+    </ul>
+
+    <div class="cta-area d-none d-md-flex align-items-center gap-2">
+        <button type="button" class="btn-nav-access" onclick="openStudentAccessModal()">
+            <i class="fa-solid fa-key"></i> My Course Access
+        </button>
+        <a asp-controller="Admin" asp-action="Login" class="btn-explore">
+            <i class="fa-solid fa-shield-halved"></i> Admin Portal
+        </a>
+    </div>
+
+    <div class="menu-btn d-md-none" id="navMenuBtn" onclick="if(window.toggleSidebarMenu){window.toggleSidebarMenu();}else{document.getElementById('navLinksList').classList.toggle('active');}" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+</nav>
+
+<style>
+.logo-3d-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    perspective: 800px;
+}
+.logo-3d-badge {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);
+    color: #ffffff;
+    padding: 5px 9px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 15px;
+    box-shadow: 0 4px 0 #9a3412, 0 6px 14px rgba(249, 115, 22, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transform: rotateX(8deg) rotateY(-6deg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.5px;
+}
+.logo-3d-container:hover .logo-3d-badge {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.08);
+    box-shadow: 0 5px 0 #9a3412, 0 10px 20px rgba(249, 115, 22, 0.6);
+}
+.logo-3d-text {
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    display: inline-flex;
+    align-items: baseline;
+}
+.logo-3d-dot {
+    color: #f97316;
+    font-size: 26px;
+    line-height: 0;
+    display: inline-block;
+    animation: dotGlow 2s infinite ease-in-out;
+}
+@@keyframes dotGlow {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(249,115,22,0.8)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 8px rgba(249,115,22,1)); transform: scale(1.2); }
+}
+</style>

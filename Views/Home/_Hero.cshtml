@@ -1,0 +1,33 @@
+@model Portfolio.Models.ViewModels.HomeViewModel
+
+<Section id="Home">
+    <div class="hero-content">
+        <div class="hero-right">
+            <div class="hero-greeting-badge" style="display:inline-flex; align-items:center; gap:8px; background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.25); color:#f97316; padding:6px 14px; border-radius:30px; font-size:13px; font-weight:600; margin-bottom:15px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; display:inline-block; animation:pulse 2s infinite;"></span> Available for Freelance & Full-time Roles
+            </div>
+            <h1>
+                @(Model.Settings?.HeroHeading ?? "Hi, I'm Daniyal")
+                <span class="sub">@(Model.Settings?.HeroSubheading ?? "A Full Stack Developer Who Builds Real, Working Solutions")</span>
+            </h1>
+            <p>
+                @(Model.Settings?.HeroDescription ?? "I'm a Full Stack Developer specializing in React, ASP.NET MVC, .NET Core, Node.js, and SQL Server. I design and develop responsive websites, dynamic web applications, and desktop software.")
+            </p>
+            <div class="hero-btns">
+                <a href="#Projects" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-folder-open"></i> Explore Projects
+                </a>
+                <a href="#Contact" class="btn-secondry" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-paper-plane"></i> Get In Touch
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-left">
+            <div class="glow"></div>
+            <div class="hero-image">
+                <img src="/Images/@(!string.IsNullOrEmpty(Model.Admin?.Avatar) ? Model.Admin.Avatar : "profile.jpg")" alt="@(Model.Admin?.Name ?? "Daniyal") - Developer" onerror="this.src='/Images/Developer.png'" />
+            </div>
+        </div>
+    </div>
+</Section>

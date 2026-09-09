@@ -1,0 +1,54 @@
+@model Portfolio.Models.ViewModels.AdminDashboardViewModel
+
+<div class="content-box mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="box-title m-0"><i class="fa-solid fa-laptop-code me-2 text-primary"></i>Skills Management</h4>
+            <p class="text-muted m-0" style="font-size:13px;">Manage technical skills stored in SQL Server Database</p>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSkillModal" style="background:#3b82f6; border-color:#3b82f6; color:#fff; font-weight:700;">
+            <i class="fa-solid fa-plus me-1"></i> Add New Skill
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Skill Name</th>
+                    <th>Category</th>
+                    <th>Proficiency</th>
+                    <th>Description</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Skills)
+                {
+                    <tr id="skill-row-@s.SkillID">
+                        <td>
+                            <img src="/Images/@s.Icon" alt="@s.Name" style="width:36px; height:36px; object-fit:contain;" onerror="this.src='/Images/HTML.png'" />
+                        </td>
+                        <td><strong style="color:var(--text-main);">@s.Name</strong></td>
+                        <td><span class="badge bg-secondary">@s.CategoryName</span></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="progress flex-grow-1" style="height:6px; width:80px; background:rgba(255,255,255,0.1);">
+                                    <div class="progress-bar bg-warning" style="width: @(s.Percentage ?? 85)%;"></div>
+                                </div>
+                                <small style="font-weight:700;">@(s.Percentage ?? 85)%</small>
+                            </div>
+                        </td>
+                        <td><small class="text-muted">@s.Description</small></td>
+                        <td class="text-end">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteSkill(@s.SkillID)" title="Delete Skill">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

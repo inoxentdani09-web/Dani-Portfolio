@@ -148,8 +148,18 @@
             <!-- Content Area / Interactive Lesson -->
             <div class="reader-content-pane">
                 <div class="lesson-header">
-                    <h3 id="readerLessonTitle">Module 1: Semantic HTML & Page Architecture</h3>
-                    <span class="lesson-badge"><i class="fa-solid fa-circle-check text-success"></i> 100% Free Access</span>
+                    <div>
+                        <h3 id="readerLessonTitle">Module 1: Semantic HTML & Page Architecture</h3>
+                        <span class="lesson-badge"><i class="fa-solid fa-circle-check text-success"></i> 100% Free Access</span>
+                    </div>
+                    <div class="reader-download-actions">
+                        <button type="button" class="btn-reader-action" onclick="downloadCurrentLessonCode()" title="Download current lesson file">
+                            <i class="fa-solid fa-file-arrow-down text-warning"></i> <span>Download Lesson File</span>
+                        </button>
+                        <button type="button" class="btn-reader-action btn-pack" onclick="downloadFullCourseStarterPack()" title="Download complete course package">
+                            <i class="fa-solid fa-download text-success"></i> <span>Download Complete Course Pack</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="lesson-description" id="readerLessonExplanation">
@@ -159,9 +169,14 @@
                 <div class="code-editor-box">
                     <div class="code-editor-header">
                         <span><i class="fa-solid fa-code me-2"></i>Live Code Example</span>
-                        <button type="button" class="copy-code-btn" onclick="copyReaderCode()">
-                            <i class="fa-regular fa-copy"></i> <span id="copyCodeText">Copy Code</span>
-                        </button>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" class="copy-code-btn" onclick="downloadCurrentLessonCode()">
+                                <i class="fa-solid fa-download"></i> Save File
+                            </button>
+                            <button type="button" class="copy-code-btn" onclick="copyReaderCode()">
+                                <i class="fa-regular fa-copy"></i> <span id="copyCodeText">Copy Code</span>
+                            </button>
+                        </div>
                     </div>
                     <pre class="code-snippet-pre"><code id="readerCodeSnippet" class="language-html"></code></pre>
                 </div>
@@ -169,7 +184,7 @@
                 <div class="interactive-preview-box">
                     <div class="preview-header">
                         <span><i class="fa-solid fa-play me-2"></i>Interactive Output Preview</span>
-                        <small style="color:#94a3b8;">Rendered live in sandbox</small>
+                        <small style="color:#94a3b8;">Rendered live in browser sandbox</small>
                     </div>
                     <div class="preview-frame" id="readerLivePreview">
                         <!-- Rendered HTML preview -->
@@ -180,8 +195,11 @@
 
         <div class="course-modal-footer">
             <button type="button" class="btn-modal-secondary" onclick="closeFreeCourseReader()">Close Reader</button>
+            <a href="https://wa.me/923182315238?text=Hello%20Daniyal,%20I%20have%20a%20question%20about%20your%20free%20web%20development%20course." target="_blank" rel="noopener noreferrer" class="btn-modal-whatsapp" style="background:#25d366; color:#fff; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <i class="fa-brands fa-whatsapp"></i> Ask on WhatsApp
+            </a>
             <a href="#Contact" class="btn-modal-primary" onclick="closeFreeCourseReader()">
-                <i class="fa-solid fa-comments me-1"></i> Ask Daniyal a Question
+                <i class="fa-solid fa-comments me-1"></i> Send Contact Message
             </a>
         </div>
     </div>

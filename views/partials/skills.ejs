@@ -21,9 +21,9 @@
                     <div class="skill-icon">
                         <img src="/Images/<%= skill.icon %>" alt="<%= skill.name %> icon" onerror="this.src='/Images/HTML.png'" />
                     </div>
-                    <div class="d-flex align-items-center justify-content-between w-100 mb-2">
-                        <h3 style="margin:0;"><%= skill.name %></h3>
-                        <span style="font-size:11px; font-weight:700; color:#f97316; background:rgba(249,115,22,0.1); padding:2px 8px; border-radius:12px;">
+                    <div class="skill-header">
+                        <h3><%= skill.name %></h3>
+                        <span class="skill-level-badge">
                             <%= skill.level || 'Advanced' %>
                         </span>
                     </div>

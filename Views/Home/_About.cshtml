@@ -1,0 +1,116 @@
+@model Portfolio.Models.ViewModels.HomeViewModel
+
+<Section id="About">
+    <div class="About-Content animate">
+        <div class="About-Right">
+            <div class="About-image animate">
+                <img src="/Images/AboutME.png" alt="@(Model.Admin?.Name ?? "Daniyal") - About Me" onerror="this.src='/Images/AboutMe.png'" />
+            </div>
+        </div>
+
+        <div class="About-Left animate">
+            <div>
+                <p class="about-title">About Me</p>
+            </div>
+            <div>
+                <h3>@(Model.Settings?.AboutHeading ?? "Who I Am")</h3>
+            </div>
+            <p class="about-p-2 animate">
+                @(Model.Settings?.AboutDescription ?? Model.Admin?.Bio ?? "I'm Daniyal, a Full Stack Developer with a strong passion for building complete, real-world digital solutions. On the front end, I craft clean and responsive interfaces using HTML5, CSS3, Tailwind CSS, JavaScript, and React. On the back end, I build reliable, secure applications using ASP.NET MVC, .NET Core, Entity Framework, and SQL Server.")
+            </p>
+            <div class="bord"></div>
+            <div class="card-about animate">
+                <div class="About-Card animate">
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-palette icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>UI/UX & Frontend</h5>
+                                <p>Modern React, Tailwind & Responsive Interfaces</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-server icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Backend Architecture</h5>
+                                <p>ASP.NET Core, Node.js & RESTful Microservices</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="About-Card animate">
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-database icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Database Modeling</h5>
+                                <p>SQL Server, PostgreSQL & Optimized Queries</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-1 animate">
+                        <div class="About-card-pic">
+                            <div class="About-icon">
+                                <i class="fa-solid fa-laptop-code icon"></i>
+                            </div>
+                            <div class="About-Card-Text">
+                                <h5>Desktop & Tools</h5>
+                                <p>C# Windows Applications & ERP Systems</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Section>
+
+<div class="main-stats-Section">
+    <div class="stats-Section">
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-graduation-cap icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5>@(Model.TotalCourses)+</h5>
+                <p>Learning Courses</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-diagram-project icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5>@(Model.Settings?.CompletedProjects ?? Model.TotalProjects)+</h5>
+                <p>Projects Completed</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-briefcase icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5>@(Model.Settings?.YearsExperience ?? "2+")</h5>
+                <p>Years Experience</p>
+            </div>
+        </div>
+        <div class="About-stats-pic">
+            <div class="About-stats-icon">
+                <i class="fa-solid fa-users icons"></i>
+            </div>
+            <div class="About-stats-text">
+                <h5>@(Model.Settings?.HappyClients ?? 12)+</h5>
+                <p>Happy Clients</p>
+            </div>
+        </div>
+    </div>
+</div>

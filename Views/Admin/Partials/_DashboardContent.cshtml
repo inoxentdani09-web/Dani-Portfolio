@@ -1,0 +1,139 @@
+@model Portfolio.Models.ViewModels.AdminDashboardViewModel
+
+<div class="row g-3 mb-4">
+    <!-- Stat 1: Total Projects -->
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="stat-title">Total Projects</span>
+                    <h3 class="stat-value">@Model.TotalProjects</h3>
+                    <span class="stat-desc text-success"><i class="fa-solid fa-arrow-up"></i> Live in SQL Server</span>
+                </div>
+                <div class="stat-icon" style="background: rgba(249, 115, 22, 0.15); color: #f97316;">
+                    <i class="fa-solid fa-diagram-project"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 2: Skills -->
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="stat-title">Technical Skills</span>
+                    <h3 class="stat-value">@Model.TotalSkills</h3>
+                    <span class="stat-desc" style="color:#3b82f6;"><i class="fa-solid fa-layer-group"></i> Active Tech Stack</span>
+                </div>
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 3: Courses -->
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="stat-title">Active Courses</span>
+                    <h3 class="stat-value">@Model.TotalCourses</h3>
+                    <span class="stat-desc text-success"><i class="fa-solid fa-graduation-cap"></i> Free & Paid</span>
+                </div>
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 4: Inquiries -->
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <span class="stat-title">Client Messages</span>
+                    <h3 class="stat-value">@Model.TotalMessages</h3>
+                    <span class="stat-desc @(Model.UnreadMessagesCount > 0 ? "text-danger" : "text-muted")">
+                        <i class="fa-solid fa-envelope"></i> @Model.UnreadMessagesCount New Unread
+                    </span>
+                </div>
+                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                    <i class="fa-solid fa-comments"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Overview Tables -->
+<div class="row g-4">
+    <!-- Left: Recent Projects -->
+    <div class="col-12 col-lg-7">
+        <div class="content-box">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="box-title m-0"><i class="fa-solid fa-diagram-project me-2 text-warning"></i>Recent Projects</h5>
+                <a href="/Admin/Dashboard?tab=projects" class="btn btn-sm btn-outline-warning">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Category</th>
+                            <th>Tech</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.Projects.Take(5))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="/Images/@p.Image" alt="@p.Title" style="width:36px; height:36px; border-radius:6px; object-fit:cover;" onerror="this.src='/Images/Project-bg.jpeg'" />
+                                        <strong>@p.Title</strong>
+                                    </div>
+                                </td>
+                                <td><span class="badge bg-secondary">@p.Category</span></td>
+                                <td><small class="text-muted">@p.Technalogy</small></td>
+                                <td><small>@p.CreatedAt.ToString("MMM dd, yyyy")</small></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Recent Messages -->
+    <div class="col-12 col-lg-5">
+        <div class="content-box">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="box-title m-0"><i class="fa-solid fa-envelope me-2 text-danger"></i>Recent Inquiries</h5>
+                <a href="/Admin/Dashboard?tab=messages" class="btn btn-sm btn-outline-danger">View All</a>
+            </div>
+            <div class="d-flex flex-column gap-3">
+                @if (!Model.Messages.Any())
+                {
+                    <p class="text-muted text-center py-4">No messages received yet.</p>
+                }
+                @foreach (var m in Model.Messages.Take(4))
+                {
+                    <div class="p-3 rounded" style="background: var(--bg-card); border:1px solid var(--border-color);">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <strong style="color:var(--text-main); font-size:14px;">@m.Name</strong>
+                            <small class="text-muted">@m.SentAt.ToString("MMM dd")</small>
+                        </div>
+                        <div class="text-warning mb-1" style="font-size:12px; font-weight:600;">@m.Subject</div>
+                        <p class="m-0 text-muted" style="font-size:12.5px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+                            @m.MessageText
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
