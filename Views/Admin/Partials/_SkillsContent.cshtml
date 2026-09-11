@@ -1,54 +1,337 @@
 @model Portfolio.Models.ViewModels.AdminDashboardViewModel
 
-<div class="content-box mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="card-box">
+
+    <!-- Header -->
+    <div class="panel-header">
         <div>
-            <h4 class="box-title m-0"><i class="fa-solid fa-laptop-code me-2 text-primary"></i>Skills Management</h4>
-            <p class="text-muted m-0" style="font-size:13px;">Manage technical skills stored in SQL Server Database</p>
+            <h2>Technical Skills Matrix</h2>
+            <p>Manage programming languages, frameworks, databases, and proficiency percentages</p>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSkillModal" style="background:#3b82f6; border-color:#3b82f6; color:#fff; font-weight:700;">
-            <i class="fa-solid fa-plus me-1"></i> Add New Skill
-        </button>
+
+        <div class="d-flex gap-2">
+            <button type="button"
+                    class="btn-primary-action"
+                    onclick="openSkillModal()">
+                <i class="fa-solid fa-plus"></i> Add New Skill
+            </button>
+
+            <a href="/Admin/ExportSkills"
+               class="btn-secondary-action">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
     </div>
 
+    <!-- Mini Stats -->
+    <div class="stats-grid-row"
+         style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:16px;">
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">
+                    Total Skills
+                </span>
+
+                <div class="stat-box-val" style="font-size:18px;">
+                    @Model.Skills.Count
+                </div>
+            </div>
+
+            <i class="fa-solid fa-code"
+               style="color:var(--status-info); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">
+                    Expert / Advanced
+                </span>
+
+                <div class="stat-box-val"
+                     style="font-size:18px; color:var(--brand-primary);">
+                    @Model.Skills.Count(s =>
+                        s.Proficiency >= 88)
+                </div>
+            </div>
+
+            <i class="fa-solid fa-award"
+               style="color:var(--brand-primary); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">
+                    Frontend & Backend
+                </span>
+
+                <div class="stat-box-val"
+                     style="font-size:18px; color:var(--status-success);">
+                    @Model.Skills.Count(s =>
+                        s.CategoryName == "Frontend" ||
+                        s.CategoryName == "Backend")
+                </div>
+            </div>
+
+            <i class="fa-solid fa-layer-group"
+               style="color:var(--status-success); font-size:18px;"></i>
+        </div>
+
+    </div>
+
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+
+        <div class="search-field-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text"
+                   id="skillSearchInput"
+                   placeholder="Search skill name, level, category..."
+                   onkeyup="filterSkillsTable()" />
+        </div>
+
+        <div class="filter-selects-wrapper d-flex gap-2">
+
+            <select id="skillCategoryFilter"
+                    onchange="filterSkillsTable()">
+
+                <option value="all">All Categories</option>
+                <option value="Frontend">Frontend</option>
+                <option value="Backend">Backend</option>
+                <option value="Database">Database</option>
+                <option value="Tools">Tools</option>
+
+            </select>
+
+            <select id="skillLevelFilter"
+                    onchange="filterSkillsTable()">
+
+                <option value="all">All Levels</option>
+                <option value="Expert">Expert</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Beginner">Beginner</option>
+
+            </select>
+
+        </div>
+    </div>
+
+    <!-- Data Table -->
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+
+        <table class="table-custom" id="skillsMainTable">
+
             <thead>
                 <tr>
-                    <th>Icon</th>
-                    <th>Skill Name</th>
+                    <th style="width:40px;">#</th>
+                    <th>Skill & Technology</th>
                     <th>Category</th>
-                    <th>Proficiency</th>
-                    <th>Description</th>
-                    <th class="text-end">Actions</th>
+                    <th>Proficiency / Level</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
                 </tr>
             </thead>
+
             <tbody>
-                @foreach (var s in Model.Skills)
+
+                @if (Model.Skills == null || Model.Skills.Count == 0)
                 {
-                    <tr id="skill-row-@s.SkillID">
-                        <td>
-                            <img src="/Images/@s.Icon" alt="@s.Name" style="width:36px; height:36px; object-fit:contain;" onerror="this.src='/Images/HTML.png'" />
-                        </td>
-                        <td><strong style="color:var(--text-main);">@s.Name</strong></td>
-                        <td><span class="badge bg-secondary">@s.CategoryName</span></td>
-                        <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="progress flex-grow-1" style="height:6px; width:80px; background:rgba(255,255,255,0.1);">
-                                    <div class="progress-bar bg-warning" style="width: @(s.Percentage ?? 85)%;"></div>
-                                </div>
-                                <small style="font-weight:700;">@(s.Percentage ?? 85)%</small>
-                            </div>
-                        </td>
-                        <td><small class="text-muted">@s.Description</small></td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteSkill(@s.SkillID)" title="Delete Skill">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                    <tr>
+                        <td colspan="6"
+                            style="text-align:center; padding:30px; color:var(--text-muted);">
+
+                            <i class="fa-solid fa-laptop-code mb-2"
+                               style="font-size:24px; display:block; opacity:0.5;"></i>
+
+                            No skills registered. Click "Add New Skill" to create one.
+
                         </td>
                     </tr>
                 }
+                else
+                {
+                    var index = 0;
+
+                    foreach (var skill in Model.Skills)
+                    {
+                        index++;
+
+                        var category = skill.CategoryName ?? "";
+                        var level = skill.Proficiency >= 90
+                            ? "Expert"
+                            : skill.Proficiency >= 80
+                                ? "Advanced"
+                                : skill.Proficiency >= 70
+                                    ? "Intermediate"
+                                    : "Beginner";
+
+                        var status = "Published";
+
+                        <tr class="skill-table-row"
+                            data-category="@category.ToLower()"
+                            data-level="@level.ToLower()"
+                            data-search="@($"{skill.Name} {category} {level}".ToLower())">
+
+                            <td style="color:var(--text-muted); font-size:11px;">
+                                @index
+                            </td>
+
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+
+                                    <div style="width:32px; height:32px; border-radius:6px; background:var(--bg-input); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; padding:4px;">
+
+                                        <img src="/Images/@skill.Icon"
+                                             alt="@skill.Name"
+                                             style="max-width:100%; max-height:100%; object-fit:contain;"
+                                             onerror="this.src='/Images/HTML.png'" />
+
+                                    </div>
+
+                                    <div>
+
+                                        <strong style="color:var(--text-main); font-size:13px;">
+                                            @skill.Name
+                                        </strong>
+
+                                        <div style="font-size:11px; color:var(--text-muted); max-width:260px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+
+                                            @(string.IsNullOrWhiteSpace(skill.Description)
+                                                ? "Core technology competency"
+                                                : skill.Description)
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="category-badge">
+                                    @category
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <div style="width:130px;">
+
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+
+                                        <span style="font-size:11px; font-weight:700; color:var(--text-main);">
+                                            @level
+                                        </span>
+
+                                        <span style="font-size:10px; color:var(--brand-primary); font-weight:700;">
+                                            @skill.Proficiency%
+                                        </span>
+
+                                    </div>
+
+                                    <div style="width:100%; height:5px; background:var(--bg-input); border-radius:3px; overflow:hidden;">
+
+                                        <div style="width:@skill.Proficiency%; height:100%; background:var(--brand-primary); border-radius:3px;">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <span class="status-badge status-active">
+                                    @status
+                                </span>
+
+                            </td>
+
+                            <td style="text-align:right;">
+
+                                <div class="action-buttons-group">
+
+                                    <button type="button"
+                                            class="btn-icon-action edit-btn"
+                                            onclick="editSkill(@skill.Id)"
+                                            title="Edit Skill">
+
+                                        <i class="fa-solid fa-pen"></i>
+
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn-icon-action delete-btn"
+                                            onclick="deleteSkill(@skill.Id)"
+                                            title="Delete Skill">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
+
+<script>
+    function filterSkillsTable() {
+
+        const search =
+            (document.getElementById('skillSearchInput')?.value || '')
+                .toLowerCase()
+                .trim();
+
+        const cat =
+            (document.getElementById('skillCategoryFilter')?.value || 'all')
+                .toLowerCase();
+
+        const level =
+            (document.getElementById('skillLevelFilter')?.value || 'all')
+                .toLowerCase();
+
+        const rows = document.querySelectorAll('.skill-table-row');
+
+        rows.forEach(row => {
+
+            const rowSearch =
+                row.getAttribute('data-search') || '';
+
+            const rowCat =
+                row.getAttribute('data-category') || '';
+
+            const rowLevel =
+                row.getAttribute('data-level') || '';
+
+            const matchSearch =
+                !search || rowSearch.includes(search);
+
+            const matchCat =
+                cat === 'all' || rowCat === cat;
+
+            const matchLevel =
+                level === 'all' || rowLevel === level;
+
+            if (matchSearch && matchCat && matchLevel) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+
+        });
+    }
+</script>

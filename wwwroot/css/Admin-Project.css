@@ -24,6 +24,7 @@
     --progress-bg: #233246;
     --scroll: #475569;
 }
+
 body.light-theme {
     --bg: #f3f4f6;
     --panel: #ffffff;
@@ -75,7 +76,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
-/*    padding-bottom: 20px;*/
+    /*    padding-bottom: 20px;*/
     border-bottom: 1px solid var(--border);
 }
 
@@ -111,15 +112,17 @@ body {
     gap: 20px;
     margin-bottom: 30px;
 }
+
 .cards {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: var(--shadow);
-    transition:1s;
-    height:110px;
+    transition: 1s;
+    height: 110px;
     width: 100%;
 }
+
     .cards:hover {
         transform: translateY(-6px);
         border-color: var(--accent);
@@ -131,9 +134,9 @@ body {
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: var(--shadow);
-    transition:2s;
-    height:auto;
-    width:100%;
+    transition: 2s;
+    height: auto;
+    width: 100%;
 }
 
     .card:hover {
@@ -306,9 +309,8 @@ body {
 
 .actions {
     display: flex;
-    align-items:center;
+    align-items: center;
     gap: 8px;
-   
 }
 
 .btn {
@@ -337,8 +339,8 @@ body {
         }
 
     .btn.ghost {
-        width:120px;
-        height:30px;
+        width: 120px;
+        height: 30px;
         background: var(--panel);
         border: 1px solid var(--border);
         color: var(--text);
@@ -474,7 +476,7 @@ body {
 }
 
     .table-link:hover {
-/*        text-decoration: underline;*/
+        /*        text-decoration: underline;*/
     }
 /*==========================
         BADGES
@@ -495,6 +497,7 @@ body {
     font-size: 12px;
     font-weight: 600;
 }
+
 .published {
     background: rgba(34,197,94,.15);
     color: #22c55e;
@@ -504,6 +507,7 @@ body {
     background: rgba(148,163,184,.15);
     color: #94a3b8;
 }
+
 .action-btn {
     background: none;
     border: none;
@@ -795,15 +799,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    border:none;
+    border: none;
 }
 
     .small.primary {
         background: var(--accent);
         color: var(--text);
-        width:150px;
-        height:30px;
-        font-size:13px;
+        width: 150px;
+        height: 30px;
+        font-size: 13px;
     }
 
         .small.primary:hover {
@@ -867,8 +871,7 @@ body {
     color: var(--muted);
     font-size: 13px;
     border-top: 1px solid var(--border);
-    height:10px;
-
+    height: 10px;
 }
 
 /*==========================

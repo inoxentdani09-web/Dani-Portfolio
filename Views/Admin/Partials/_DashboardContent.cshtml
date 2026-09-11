@@ -1,139 +1,767 @@
 @model Portfolio.Models.ViewModels.AdminDashboardViewModel
 
-<div class="row g-3 mb-4">
-    <!-- Stat 1: Total Projects -->
-    <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="stat-title">Total Projects</span>
-                    <h3 class="stat-value">@Model.TotalProjects</h3>
-                    <span class="stat-desc text-success"><i class="fa-solid fa-arrow-up"></i> Live in SQL Server</span>
-                </div>
-                <div class="stat-icon" style="background: rgba(249, 115, 22, 0.15); color: #f97316;">
-                    <i class="fa-solid fa-diagram-project"></i>
-                </div>
+@{
+    var publishedProjectsCount = Model.Projects.Count(p => p.Status == "Published");
+
+    var completedCoursesCount = Model.Courses.Count(c =>
+        c.Status == "Completed" || c.Status == "Published");
+
+    var freeCoursesCount = Model.Courses.Count(c =>
+        c.PriceType.ToLower() == "free" || c.Price.ToLower() == "free");
+}
+
+<!-- Top Metrics Row -->
+<div class="stats-grid-row">
+
+    <!-- Projects -->
+    <div class="stat-box">
+        <div class="stat-box-content">
+            <span class="stat-box-label">Total Projects</span>
+
+            <div class="stat-box-val">
+                @Model.Projects.Count
             </div>
+
+            <div class="stat-box-meta" style="color:var(--status-success);">
+                <i class="fa-solid fa-circle-check"></i>
+                @publishedProjectsCount Published
+            </div>
+        </div>
+
+        <div class="stat-box-icon"
+             style="background:var(--brand-primary-soft); color:var(--brand-primary);">
+            <i class="fa-solid fa-diagram-project"></i>
         </div>
     </div>
 
-    <!-- Stat 2: Skills -->
-    <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="stat-title">Technical Skills</span>
-                    <h3 class="stat-value">@Model.TotalSkills</h3>
-                    <span class="stat-desc" style="color:#3b82f6;"><i class="fa-solid fa-layer-group"></i> Active Tech Stack</span>
-                </div>
-                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
-                    <i class="fa-solid fa-laptop-code"></i>
-                </div>
+
+    <!-- Skills -->
+    <div class="stat-box">
+        <div class="stat-box-content">
+            <span class="stat-box-label">Technical Skills</span>
+
+            <div class="stat-box-val">
+                @Model.Skills.Count
             </div>
+
+            <div class="stat-box-meta" style="color:var(--status-info);">
+                <i class="fa-solid fa-layer-group"></i>
+                Full Stack Technologies
+            </div>
+        </div>
+
+        <div class="stat-box-icon"
+             style="background:var(--status-info-soft); color:var(--status-info);">
+            <i class="fa-solid fa-laptop-code"></i>
         </div>
     </div>
 
-    <!-- Stat 3: Courses -->
-    <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="stat-title">Active Courses</span>
-                    <h3 class="stat-value">@Model.TotalCourses</h3>
-                    <span class="stat-desc text-success"><i class="fa-solid fa-graduation-cap"></i> Free & Paid</span>
-                </div>
-                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
-                    <i class="fa-solid fa-book-open"></i>
-                </div>
+
+    <!-- Courses -->
+    <div class="stat-box">
+        <div class="stat-box-content">
+            <span class="stat-box-label">Courses & Certs</span>
+
+            <div class="stat-box-val">
+                @Model.Courses.Count
             </div>
+
+            <div class="stat-box-meta" style="color:var(--status-success);">
+                <i class="fa-solid fa-certificate"></i>
+                @completedCoursesCount Completed
+            </div>
+        </div>
+
+        <div class="stat-box-icon"
+             style="background:var(--status-success-soft); color:var(--status-success);">
+            <i class="fa-solid fa-graduation-cap"></i>
         </div>
     </div>
 
-    <!-- Stat 4: Inquiries -->
-    <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <span class="stat-title">Client Messages</span>
-                    <h3 class="stat-value">@Model.TotalMessages</h3>
-                    <span class="stat-desc @(Model.UnreadMessagesCount > 0 ? "text-danger" : "text-muted")">
-                        <i class="fa-solid fa-envelope"></i> @Model.UnreadMessagesCount New Unread
-                    </span>
-                </div>
-                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
-                    <i class="fa-solid fa-comments"></i>
-                </div>
+
+    <!-- Enrollments -->
+    <div class="stat-box">
+        <div class="stat-box-content">
+            <span class="stat-box-label">Student Enrollments</span>
+
+            <div class="stat-box-val">
+                @Model.Enrollments.Count
             </div>
+
+            @if (Model.PendingEnrollmentsCount > 0)
+            {
+                <div class="stat-box-meta"
+                     style="color:var(--status-warning); font-weight:700;">
+                    <i class="fa-solid fa-clock"></i>
+                    @Model.PendingEnrollmentsCount Pending Approval
+                </div>
+            }
+            else
+            {
+                <div class="stat-box-meta"
+                     style="color:var(--status-success);">
+                    <i class="fa-solid fa-circle-check"></i>
+                    @Model.ApprovedEnrollmentsCount Approved
+                </div>
+            }
+        </div>
+
+        <div class="stat-box-icon"
+             style="background:var(--status-warning-soft); color:var(--status-warning);">
+            <i class="fa-solid fa-id-card-clip"></i>
         </div>
     </div>
+
+
+    <!-- Messages -->
+    <div class="stat-box">
+        <div class="stat-box-content">
+            <span class="stat-box-label">Client Messages</span>
+
+            <div class="stat-box-val">
+                @Model.Messages.Count
+            </div>
+
+            @if (Model.UnreadMessagesCount > 0)
+            {
+                <div class="stat-box-meta"
+                     style="color:var(--status-danger); font-weight:700;">
+                    <i class="fa-solid fa-bell"></i>
+                    @Model.UnreadMessagesCount Unread Inquiries
+                </div>
+            }
+            else
+            {
+                <div class="stat-box-meta"
+                     style="color:var(--text-muted);">
+                    <i class="fa-solid fa-check-double"></i>
+                    All Inquiries Handled
+                </div>
+            }
+        </div>
+
+        <div class="stat-box-icon"
+             style="background:var(--status-danger-soft); color:var(--status-danger);">
+            <i class="fa-solid fa-envelope"></i>
+        </div>
+    </div>
+
 </div>
 
-<!-- Quick Overview Tables -->
-<div class="row g-4">
-    <!-- Left: Recent Projects -->
-    <div class="col-12 col-lg-7">
-        <div class="content-box">
+
+<!-- Charts & Quick Actions Row -->
+<div class="row g-3 mb-3">
+
+    <!-- Skills Chart -->
+    <div class="col-lg-8">
+
+        <div class="card-box" style="height:100%;">
+
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="box-title m-0"><i class="fa-solid fa-diagram-project me-2 text-warning"></i>Recent Projects</h5>
-                <a href="/Admin/Dashboard?tab=projects" class="btn btn-sm btn-outline-warning">View All</a>
+
+                <div>
+                    <h2 style="font-size:14px;
+                        font-weight:700;
+                        margin:0;
+                        color:var(--text-main);">
+
+                        <i class="fa-solid fa-chart-column me-2"
+                           style="color:var(--brand-primary);"></i>
+
+                        Technical Skills & Mastery Matrix (%)
+
+                    </h2>
+
+                    <p style="font-size:11.5px;
+                        color:var(--text-muted);
+                        margin-top:2px;">
+
+                        Live proficiency rating from database stack
+
+                    </p>
+                </div>
+
+                <span class="badge"
+                      style="background:var(--bg-input);
+                    border:1px solid var(--border-color);
+                    color:var(--text-soft);
+                    font-size:11px;">
+
+                    SQL Synced
+
+                </span>
+
             </div>
+
+            <div style="height:240px; position:relative;">
+                <canvas id="skillsChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+
+        <div class="card-box" style="height:100%;">
+
+            <h2 style="font-size:14px;
+                font-weight:700;
+                margin-bottom:12px;
+                color:var(--text-main);">
+
+                <i class="fa-solid fa-bolt me-2"
+                   style="color:var(--status-warning);"></i>
+
+                Quick Management
+
+            </h2>
+
+
+            <div class="d-flex flex-column gap-2">
+
+                <button type="button"
+                        class="btn text-start p-2 d-flex align-items-center justify-content-between"
+                        onclick="openProjectModal()"
+                        style="background:var(--brand-primary-soft);
+                    border:1px solid rgba(249,115,22,0.25);
+                    color:var(--brand-primary);
+                    border-radius:8px;
+                    font-size:12.5px;
+                    font-weight:600;">
+
+                    <span>
+                        <i class="fa-solid fa-folder-plus me-2"></i>
+                        Add New Project
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"
+                       style="font-size:11px;"></i>
+
+                </button>
+
+
+                <button type="button"
+                        class="btn text-start p-2 d-flex align-items-center justify-content-between"
+                        onclick="openSkillModal()"
+                        style="background:var(--status-info-soft);
+                    border:1px solid rgba(56,189,248,0.25);
+                    color:var(--status-info);
+                    border-radius:8px;
+                    font-size:12.5px;
+                    font-weight:600;">
+
+                    <span>
+                        <i class="fa-solid fa-laptop-code me-2"></i>
+                        Add Technical Skill
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"
+                       style="font-size:11px;"></i>
+
+                </button>
+
+
+                <button type="button"
+                        class="btn text-start p-2 d-flex align-items-center justify-content-between"
+                        onclick="openCourseModal()"
+                        style="background:var(--status-success-soft);
+                    border:1px solid rgba(16,185,129,0.25);
+                    color:var(--status-success);
+                    border-radius:8px;
+                    font-size:12.5px;
+                    font-weight:600;">
+
+                    <span>
+                        <i class="fa-solid fa-graduation-cap me-2"></i>
+                        Add Course & Cert
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"
+                       style="font-size:11px;"></i>
+
+                </button>
+
+
+                <a href="/Admin/Enrollments"
+                   class="btn text-start p-2 d-flex align-items-center justify-content-between"
+                   style="background:var(--status-warning-soft);
+                    border:1px solid rgba(245,158,11,0.25);
+                    color:var(--status-warning);
+                    border-radius:8px;
+                    font-size:12.5px;
+                    font-weight:600;
+                    text-decoration:none;">
+
+                    <span>
+                        <i class="fa-solid fa-user-check me-2"></i>
+                        Verify Student Payments
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"
+                       style="font-size:11px;"></i>
+
+                </a>
+
+
+                <a href="/Admin/Settings"
+                   class="btn text-start p-2 d-flex align-items-center justify-content-between"
+                   style="background:var(--bg-input);
+                    border:1px solid var(--border-color);
+                    color:var(--text-soft);
+                    border-radius:8px;
+                    font-size:12.5px;
+                    font-weight:600;
+                    text-decoration:none;">
+
+                    <span>
+                        <i class="fa-solid fa-sliders me-2"></i>
+                        Site Settings & Accounts
+                    </span>
+
+                    <i class="fa-solid fa-arrow-right"
+                       style="font-size:11px;"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Recent Projects & Recent Messages -->
+<div class="row g-3">
+
+    <!-- Recent Projects -->
+    <div class="col-lg-7">
+
+        <div class="card-box">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h2 style="font-size:14px;
+                    font-weight:700;
+                    margin:0;
+                    color:var(--text-main);">
+
+                    <i class="fa-solid fa-diagram-project me-2"
+                       style="color:var(--brand-primary);"></i>
+
+                    Recent Portfolio Projects
+
+                </h2>
+
+                <a href="/Admin/Projects"
+                   class="btn-secondary-action"
+                   style="padding:4px 10px; font-size:11.5px;">
+
+                    View All
+
+                </a>
+
+            </div>
+
+
             <div class="table-responsive">
-                <table class="table table-hover">
+
+                <table class="table-custom">
+
                     <thead>
                         <tr>
                             <th>Project</th>
                             <th>Category</th>
-                            <th>Tech</th>
-                            <th>Date</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Action</th>
                         </tr>
                     </thead>
+
+
                     <tbody>
-                        @foreach (var p in Model.Projects.Take(5))
+
+                        @if (Model.Projects == null || Model.Projects.Count == 0)
                         {
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img src="/Images/@p.Image" alt="@p.Title" style="width:36px; height:36px; border-radius:6px; object-fit:cover;" onerror="this.src='/Images/Project-bg.jpeg'" />
-                                        <strong>@p.Title</strong>
-                                    </div>
+                                <td colspan="4"
+                                    style="text-align:center;
+                                    padding:20px;
+                                    color:var(--text-muted);">
+
+                                    No projects added yet.
+
                                 </td>
-                                <td><span class="badge bg-secondary">@p.Category</span></td>
-                                <td><small class="text-muted">@p.Technalogy</small></td>
-                                <td><small>@p.CreatedAt.ToString("MMM dd, yyyy")</small></td>
                             </tr>
                         }
+                        else
+                        {
+                            foreach (var project in Model.Projects.Take(5))
+                            {
+                                var projectStatusClass =
+                                    project.Status == "Published"
+                                    ? "status-active"
+                                    : "status-inactive";
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong style="color:var(--text-main);">
+                                            @project.Title
+                                        </strong>
+
+                                        <div style="font-size:11px;
+                                            color:var(--text-muted);">
+
+                                            @project.Technalogy
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="category-badge">
+                                            @project.Category
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="status-badge @projectStatusClass">
+                                            @project.Status
+                                        </span>
+
+                                    </td>
+
+
+                                    <td style="text-align:right;">
+
+                                        <button type="button"
+                                                class="btn-icon-action edit-btn"
+                                                onclick="editProject(@project.ProjectID)"
+                                                title="Edit Project">
+
+                                            <i class="fa-solid fa-pen"></i>
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
                     </tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
 
-    <!-- Right: Recent Messages -->
-    <div class="col-12 col-lg-5">
-        <div class="content-box">
+
+    <!-- Recent Messages -->
+    <div class="col-lg-5">
+
+        <div class="card-box">
+
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="box-title m-0"><i class="fa-solid fa-envelope me-2 text-danger"></i>Recent Inquiries</h5>
-                <a href="/Admin/Dashboard?tab=messages" class="btn btn-sm btn-outline-danger">View All</a>
+
+                <h2 style="font-size:14px;
+                    font-weight:700;
+                    margin:0;
+                    color:var(--text-main);">
+
+                    <i class="fa-solid fa-envelope-open-text me-2"
+                       style="color:var(--status-danger);"></i>
+
+                    Recent Client Messages
+
+                </h2>
+
+                <a href="/Admin/Messages"
+                   class="btn-secondary-action"
+                   style="padding:4px 10px; font-size:11.5px;">
+
+                    View All
+
+                </a>
+
             </div>
-            <div class="d-flex flex-column gap-3">
-                @if (!Model.Messages.Any())
-                {
-                    <p class="text-muted text-center py-4">No messages received yet.</p>
-                }
-                @foreach (var m in Model.Messages.Take(4))
-                {
-                    <div class="p-3 rounded" style="background: var(--bg-card); border:1px solid var(--border-color);">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
-                            <strong style="color:var(--text-main); font-size:14px;">@m.Name</strong>
-                            <small class="text-muted">@m.SentAt.ToString("MMM dd")</small>
-                        </div>
-                        <div class="text-warning mb-1" style="font-size:12px; font-weight:600;">@m.Subject</div>
-                        <p class="m-0 text-muted" style="font-size:12.5px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-                            @m.MessageText
-                        </p>
-                    </div>
-                }
+
+
+            <div class="table-responsive">
+
+                <table class="table-custom">
+
+                    <thead>
+                        <tr>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        @if (Model.Messages == null || Model.Messages.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="3"
+                                    style="text-align:center;
+                                    padding:20px;
+                                    color:var(--text-muted);">
+
+                                    No inquiries yet.
+
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var message in Model.Messages.Take(5))
+                            {
+                                <tr>
+
+                                    <td>
+
+                                        <strong style="color:var(--text-main);
+                                            font-size:12px;">
+
+                                            @message.Name
+
+                                        </strong>
+
+                                        <div style="font-size:10.5px;
+                                            color:var(--text-muted);">
+
+                                            @message.Email
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span style="font-size:11.5px;
+                                            color:var(--text-soft);
+                                            font-weight:500;">
+
+                                            @(message.Subject.Length > 22
+                                                ? message.Subject.Substring(0, 22) + "..."
+                                                : message.Subject)
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @if (!message.IsRead)
+                                        {
+                                            <span class="status-badge status-danger">
+                                                New
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge status-active">
+                                                Read
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initDashboardSkillsChart();
+    });
+
+
+    function initDashboardSkillsChart() {
+
+        const ctx = document.getElementById('skillsChart');
+
+        if (!ctx || !window.Chart) {
+            return;
+        }
+
+
+        const skillsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                        Model.Skills.Select(s => new
+                        {
+                                name = s.Name,
+                                proficiency = s.Proficiency
+                        })
+                        ));
+
+
+        const isLight =
+            document.documentElement.getAttribute('data-theme') === 'light';
+
+
+        const labels =
+            skillsData
+                .slice(0, 8)
+                .map(s => s.name);
+
+
+        const data =
+            skillsData
+                .slice(0, 8)
+                .map(s => s.proficiency);
+
+
+        if (window.skillsChartInstance) {
+            window.skillsChartInstance.destroy();
+        }
+
+
+        window.skillsChartInstance = new Chart(ctx, {
+
+            type: 'bar',
+
+            data: {
+
+                labels: labels.length
+                    ? labels
+                    : [
+                        'HTML5',
+                        'CSS3',
+                        'JavaScript',
+                        'C# .NET',
+                        'ASP.NET Core',
+                        'SQL Server'
+                    ],
+
+                datasets: [{
+
+                    label: 'Proficiency (%)',
+
+                    data: data.length
+                        ? data
+                        : [95, 92, 88, 90, 90, 85],
+
+                    backgroundColor:
+                        isLight
+                            ? 'rgba(234, 88, 12, 0.85)'
+                            : 'rgba(249, 115, 22, 0.8)',
+
+                    borderColor:
+                        isLight
+                            ? '#ea580c'
+                            : '#f97316',
+
+                    borderWidth: 1,
+
+                    borderRadius: 5
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        max: 100,
+
+                        grid: {
+                            color:
+                                isLight
+                                    ? 'rgba(0, 0, 0, 0.06)'
+                                    : 'rgba(255, 255, 255, 0.05)'
+                        },
+
+                        ticks: {
+
+                            color:
+                                isLight
+                                    ? '#64748b'
+                                    : '#94a3b8',
+
+                            font: {
+                                size: 11
+                            }
+
+                        }
+
+                    },
+
+                    x: {
+
+                        grid: {
+                            display: false
+                        },
+
+                        ticks: {
+
+                            color:
+                                isLight
+                                    ? '#334155'
+                                    : '#cbd5e1',
+
+                            font: {
+                                size: 11
+                            }
+
+                        }
+
+                    }
+
+                },
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+</script>

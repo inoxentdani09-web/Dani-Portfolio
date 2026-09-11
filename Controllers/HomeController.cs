@@ -25,12 +25,11 @@ namespace Portfolio.Controllers
             {
                 var admin = await _context.Admins.FirstOrDefaultAsync() ?? new Admin();
                 var settings = await _context.Settings.FirstOrDefaultAsync() ?? new Settings();
-                
+
                 var skills = await _context.Skills
-                    .Where(s => s.Status == "Published")
-                    .OrderBy(s => s.CategoryId)
-                    .ThenBy(s => s.Name)
-                    .ToListAsync();
+    .OrderBy(s => s.CategoryId)
+    .ThenBy(s => s.Name)
+    .ToListAsync();
 
                 var projects = await _context.Projects
                     .Where(p => p.Status == "Published")
@@ -39,9 +38,8 @@ namespace Portfolio.Controllers
                     .ToListAsync();
 
                 var courses = await _context.Courses
-                    .Where(c => c.Status == "Published")
-                    .OrderByDescending(c => c.CreatedAt)
-                    .ToListAsync();
+    .OrderByDescending(c => c.CreatedAt)
+    .ToListAsync();
 
                 var viewModel = new HomeViewModel
                 {
@@ -53,8 +51,8 @@ namespace Portfolio.Controllers
                     TotalProjects = projects.Count,
                     TotalSkills = skills.Count,
                     TotalCourses = courses.Count,
-                    MessageSuccess = (sent == "true") 
-                        ? "Thank you! Your message has been received successfully. I will get back to you shortly." 
+                    MessageSuccess = (sent == "true")
+                        ? "Thank you! Your message has been received successfully. I will get back to you shortly."
                         : null
                 };
 
@@ -96,11 +94,11 @@ namespace Portfolio.Controllers
 
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                 {
-                    return Json(new 
-                    { 
-                        success = true, 
+                    return Json(new
+                    {
+                        success = true,
                         message = "Message submitted successfully! Thank you for reaching out.",
-                        messageId = model.MessageID 
+                        messageId = model.MessageID
                     });
                 }
 
@@ -165,7 +163,7 @@ namespace Portfolio.Controllers
                 }
 
                 _context.CourseEnrollments.Add(model);
-                
+
                 // Increment enrolled count
                 course.EnrolledStudents += 1;
                 _context.Courses.Update(course);
@@ -175,8 +173,8 @@ namespace Portfolio.Controllers
                 return Json(new
                 {
                     success = true,
-                    message = model.Status == "Approved" 
-                        ? "Free access granted! You can begin learning immediately." 
+                    message = model.Status == "Approved"
+                        ? "Free access granted! You can begin learning immediately."
                         : "Enrollment application submitted to Daniyal Khan! Your access will be approved after payment confirmation.",
                     enrollment = model
                 });

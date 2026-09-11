@@ -1,85 +1,311 @@
+
 @model Portfolio.Models.ViewModels.HomeViewModel
 
-<Section id="Projects">
+<section id="Projects">
     <div class="project-bg">
+
         <div class="project-content animate">
             <h1 class="section-title">My Projects</h1>
-            <h1>Projects I've <span>Built</span></h1>
-            <p>From responsive web applications and full-stack eCommerce platforms to desktop software, each project demonstrates clean architecture and reliable execution.</p>
+
+            <h1>
+                Projects I've <span>Built</span>
+            </h1>
+
+            <p>
+                From responsive web applications and full-stack eCommerce
+                platforms to desktop software, each project demonstrates
+                clean architecture and reliable execution.
+            </p>
         </div>
+
 
         <!-- Filter Tabs -->
         <ul class="filter-tabs" id="projectFilterTabs">
-            <li><button class="filter-btn active" data-filter="all">All Projects</button></li>
-            <li><button class="filter-btn" data-filter="E-Commerce">E-Commerce</button></li>
-            <li><button class="filter-btn" data-filter="Portfolio">Portfolio</button></li>
-            <li><button class="filter-btn" data-filter="Dashboard">Dashboard</button></li>
-            <li><button class="filter-btn" data-filter="Dekstop">Desktop Apps</button></li>
+
+            <li>
+                <button class="filter-btn active"
+                        type="button"
+                        data-filter="all">
+                    All Projects
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn"
+                        type="button"
+                        data-filter="E-Commerce">
+                    E-Commerce
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn"
+                        type="button"
+                        data-filter="Portfolio">
+                    Portfolio
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn"
+                        type="button"
+                        data-filter="Dashboard">
+                    Dashboard
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn"
+                        type="button"
+                        data-filter="Dekstop">
+                    Desktop Apps
+                </button>
+            </li>
+
         </ul>
-       
-        <div class="project-container" id="projectsGridContainer">
-            @foreach (var project in Model.Projects)
+
+
+        <!-- Projects Grid -->
+        <div class="project-container"
+             id="projectsGridContainer">
+
+            @if (Model.Projects != null && Model.Projects.Any())
             {
-                <div class="project-card" data-category="@project.Category">
-                    <div style="position:relative; overflow:hidden;">
-                        <img src="/Images/@project.Image" alt="@project.Title" onerror="this.src='/Images/Project-bg.jpeg'">
-                        <span style="position:absolute; top:12px; right:12px; background:#f97316; color:#fff; font-size:10px; font-weight:700; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
-                            @project.Category
-                        </span>
-                    </div>
+                foreach (var project in Model.Projects)
+                {
+                    <div class="project-card"
+                         data-category="@project.Category">
 
-                    <div class="project-info">
-                        <h3>@project.Title</h3>
-                        <p>@project.Description</p>
+                        <div style="position:relative; overflow:hidden;">
 
-                        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;">
-                            <span style="font-size:11px; background:rgba(255,255,255,0.06); color:#cbd5e1; padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.08);">
-                                <i class="fa-solid fa-code" style="color:#f97316; margin-right:4px;"></i> @project.Technalogy
+                            <img src="~/Images/@project.Image"
+                                 alt="@project.Title"
+                                 onerror="this.src='/Images/Project-bg.jpeg'">
+
+                            <span style="
+                                position:absolute;
+                                top:12px;
+                                right:12px;
+                                background:#f97316;
+                                color:#fff;
+                                font-size:10px;
+                                font-weight:700;
+                                padding:4px 10px;
+                                border-radius:20px;
+                                text-transform:uppercase;
+                                letter-spacing:0.5px;
+                                box-shadow:0 4px 10px rgba(0,0,0,0.3);
+                                ">
+                                @project.Category
                             </span>
-                        </div>
-                    </div>
 
-                    <div class="project-btns">
-                        <a href="@(string.IsNullOrEmpty(project.LiveDemo) ? "#" : project.LiveDemo)" class="live-btn" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
-                        </a>
-                        <a href="@(string.IsNullOrEmpty(project.GitHub) ? "#" : project.GitHub)" class="github-btn" target="_blank" rel="noopener noreferrer">
-                            <i class="fa-brands fa-github"></i> Source Code
-                        </a>
+                        </div>
+
+
+                        <div class="project-info">
+
+                            <h3>
+                                @project.Title
+                            </h3>
+
+                            <p>
+                                @project.Description
+                            </p>
+
+
+                            <div style="
+                                margin-top:12px;
+                                display:flex;
+                                flex-wrap:wrap;
+                                gap:6px;
+                                ">
+
+                                @if (!string.IsNullOrWhiteSpace(project.Technalogy))
+                                {
+                                    <span style="
+                                        font-size:11px;
+                                        background:rgba(255,255,255,0.06);
+                                        color:#cbd5e1;
+                                        padding:3px 8px;
+                                        border-radius:6px;
+                                        border:1px solid rgba(255,255,255,0.08);
+                                        ">
+                                        <i class="fa-solid fa-code"
+                                           style="color:#f97316; margin-right:4px;">
+                                        </i>
+
+                                        @project.Technalogy
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="project-btns">
+
+                            @if (!string.IsNullOrWhiteSpace(project.LiveDemo))
+                            {
+                                <a href="@project.LiveDemo"
+                                   class="live-btn"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    Live Demo
+
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#"
+                                   class="live-btn"
+                                   onclick="return false;">
+
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    Live Demo
+
+                                </a>
+                            }
+
+
+                            @if (!string.IsNullOrWhiteSpace(project.GitHub))
+                            {
+                                <a href="@project.GitHub"
+                                   class="github-btn"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+
+                                    <i class="fa-brands fa-github"></i>
+                                    Source Code
+
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#"
+                                   class="github-btn"
+                                   onclick="return false;">
+
+                                    <i class="fa-brands fa-github"></i>
+                                    Source Code
+
+                                </a>
+                            }
+
+                        </div>
+
                     </div>
+                }
+            }
+            else
+            {
+                <div class="project-empty">
+
+                    <i class="fa-solid fa-folder-open"></i>
+
+                    <h3>
+                        No Projects Available
+                    </h3>
+
+                    <p>
+                        Projects will be displayed here once they are published.
+                    </p>
+
                 </div>
             }
+
         </div>
 
+
+        <!-- Admin Management -->
         <div class="project-view">
-            <a asp-controller="Admin" asp-action="Login" class="view-btn" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                <i class="fa-solid fa-gear"></i> Manage Projects in Admin Panel
+
+            <a href="/Admin/Login"
+               class="view-btn"
+               style="
+                text-decoration:none;
+                display:inline-flex;
+                align-items:center;
+                gap:8px;
+                ">
+
+                <i class="fa-solid fa-gear"></i>
+
+                Manage Projects in Admin Panel
+
             </a>
+
         </div>
+
     </div>
-</Section>
+</section>
+
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const projectFilterBtns = document.querySelectorAll('#projectFilterTabs .filter-btn');
-    const projectCards = document.querySelectorAll('#projectsGridContainer .project-card');
 
-    projectFilterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            projectFilterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    document.addEventListener('DOMContentLoaded', function() {
 
-            const filter = btn.getAttribute('data-filter').toLowerCase();
+        const filterBtns =
+            document.querySelectorAll(
+                '#projectFilterTabs .filter-btn'
+            );
 
-            projectCards.forEach(card => {
-                const category = (card.getAttribute('data-category') || '').toLowerCase();
-                if (filter === 'all' || category.includes(filter)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        const projectCards =
+            document.querySelectorAll(
+                '#projectsGridContainer .project-card'
+            );
+
+
+        filterBtns.forEach(function(btn) {
+
+            btn.addEventListener('click', function() {
+
+                filterBtns.forEach(function(b) {
+
+                    b.classList.remove('active');
+
+                });
+
+
+                btn.classList.add('active');
+
+
+                const filter =
+                    (btn.getAttribute('data-filter') || '')
+                        .toLowerCase();
+
+
+                projectCards.forEach(function(card) {
+
+                    const category =
+                        (
+                            card.getAttribute('data-category') || ''
+                        ).toLowerCase();
+
+
+                    if (
+                        filter === 'all' ||
+                        category.includes(filter)
+                    ) {
+
+                        card.style.display = 'flex';
+
+                    }
+                    else {
+
+                        card.style.display = 'none';
+
+                    }
+
+                });
+
             });
+
         });
+
     });
-});
+
 </script>
+

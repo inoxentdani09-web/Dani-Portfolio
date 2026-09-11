@@ -1,65 +1,650 @@
-<div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="background:#111726; border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:16px;">
-            <div class="modal-header" style="border-bottom:1px solid rgba(255,255,255,0.08);">
-                <h5 class="modal-title" id="addCourseModalLabel"><i class="fa-solid fa-plus-circle me-2 text-success"></i>Add New Course to SQL Server</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+@* =========================================================
+   ADD / EDIT COURSE MODAL
+   File: Views/Admin/Partials/_AddCourseModal.cshtml
+   ========================================================= *@
+
+<div id="courseModalOverlay" class="modal-overlay">
+    <div class="course-modal">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div>
+                <h2 id="courseModalTitle">Add Course</h2>
+                <p>Add or update course information</p>
             </div>
-            <form id="addCourseForm" onsubmit="handleAddCourse(event)">
-                <div class="modal-body" style="padding:24px;">
-                    <div class="row g-3">
-                        <div class="col-12 col-md-8">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Course Title *</label>
-                            <input type="text" name="Title" class="form-control" placeholder="e.g. ASP.NET Core & SQL Server Enterprise Masterclass" required style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Category *</label>
-                            <select name="Category" class="form-select" required style="background:#090d16; border:1px solid #1e293b; color:#fff;">
-                                <option value="Backend">Backend</option>
-                                <option value="Frontend">Frontend</option>
-                                <option value="Database">Database</option>
-                                <option value="Fullstack">Fullstack</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Level</label>
-                            <select name="Level" class="form-select" style="background:#090d16; border:1px solid #1e293b; color:#fff;">
-                                <option value="Beginner">Beginner</option>
-                                <option value="Intermediate">Intermediate</option>
-                                <option value="Advanced">Advanced</option>
-                                <option value="All Levels">All Levels</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Price Type</label>
-                            <select name="PriceType" class="form-select" style="background:#090d16; border:1px solid #1e293b; color:#fff;">
-                                <option value="Paid">Paid Course</option>
-                                <option value="Free">Free Course</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Price (e.g. PKR 3,500)</label>
-                            <input type="text" name="Price" class="form-control" value="PKR 3,500" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Duration</label>
-                            <input type="text" name="Duration" class="form-control" value="12 Weeks" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Total Lectures</label>
-                            <input type="text" name="LecturesCount" class="form-control" value="45 Lectures" style="background:#090d16; border:1px solid #1e293b; color:#fff;" />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label" style="font-size:13px; font-weight:600;">Course Description *</label>
-                            <textarea name="Description" class="form-control" rows="3" placeholder="Overview of curriculum, learning objectives, and portfolio milestones..." required style="background:#090d16; border:1px solid #1e293b; color:#fff;"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top:1px solid rgba(255,255,255,0.08);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success" style="background:#10b981; border-color:#10b981; color:#fff; font-weight:700;">Save Course</button>
-                </div>
-            </form>
+
+            <button type="button"
+                    class="modal-close"
+                    onclick="closeCourseModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+
+        <!-- Course Form -->
+        <form method="post"
+              action="/Admin/SaveCourse"
+              id="courseForm">
+
+            <!-- Course ID -->
+            <input type="hidden"
+                   name="CourseID"
+                   id="CourseID"
+                   value="0" />
+
+            <div class="modal-body">
+
+                <!-- =========================
+                     BASIC INFORMATION
+                     ========================= -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Basic Information
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Title -->
+                        <div class="form-group full-width">
+                            <label for="CourseName">
+                                Course Title
+                            </label>
+
+                            <input type="text"
+                                   name="Title"
+                                   id="CourseName"
+                                   class="form-control"
+                                   placeholder="e.g. ASP.NET Core MVC"
+                                   maxlength="200"
+                                   required />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Subtitle -->
+                        <div class="form-group full-width">
+                            <label for="CourseSubtitle">
+                                Subtitle
+                            </label>
+
+                            <input type="text"
+                                   name="Subtitle"
+                                   id="CourseSubtitle"
+                                   class="form-control"
+                                   placeholder="Short description of the course"
+                                   maxlength="255" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label for="CourseCategory">
+                                Category
+                            </label>
+
+                            <select name="Category"
+                                    id="CourseCategory"
+                                    class="form-control"
+                                    required>
+
+                                <option value="Backend">
+                                    Backend
+                                </option>
+
+                                <option value="Frontend">
+                                    Frontend
+                                </option>
+
+                                <option value="Database">
+                                    Database
+                                </option>
+
+                                <option value="Programming">
+                                    Programming
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <!-- Platform -->
+                        <div class="form-group">
+                            <label for="CoursePlatform">
+                                Platform
+                            </label>
+
+                            <select name="Platform"
+                                    id="CoursePlatform"
+                                    class="form-control">
+
+                                <option value="Online">
+                                    Online
+                                </option>
+
+                                <option value="YouTube">
+                                    YouTube
+                                </option>
+
+                                <option value="Udemy">
+                                    Udemy
+                                </option>
+
+                                <option value="Google Meet">
+                                    Google Meet
+                                </option>
+
+                                <option value="Physical">
+                                    Physical
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Language -->
+                        <div class="form-group">
+                            <label for="CourseLanguage">
+                                Language
+                            </label>
+
+                            <input type="text"
+                                   name="Language"
+                                   id="CourseLanguage"
+                                   class="form-control"
+                                   placeholder="Urdu / Hindi"
+                                   maxlength="50" />
+                        </div>
+
+                        <!-- Level -->
+                        <div class="form-group">
+                            <label for="CourseLevel">
+                                Level
+                            </label>
+
+                            <select name="Level"
+                                    id="CourseLevel"
+                                    class="form-control">
+
+                                <option value="Beginner">
+                                    Beginner
+                                </option>
+
+                                <option value="Intermediate">
+                                    Intermediate
+                                </option>
+
+                                <option value="Advanced">
+                                    Advanced
+                                </option>
+
+                                <option value="All Levels">
+                                    All Levels
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     PRICE INFORMATION
+                     ========================= -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-tag"></i>
+                        Pricing
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Price Type -->
+                        <div class="form-group">
+                            <label for="CoursePriceType">
+                                Price Type
+                            </label>
+
+                            <select name="PriceType"
+                                    id="CoursePriceType"
+                                    class="form-control"
+                                    onchange="toggleCoursePriceFields()">
+
+                                <option value="paid">
+                                    Paid
+                                </option>
+
+                                <option value="free">
+                                    Free
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="form-group course-price-field">
+                            <label for="CoursePrice">
+                                Current Price
+                            </label>
+
+                            <input type="text"
+                                   name="Price"
+                                   id="CoursePrice"
+                                   class="form-control"
+                                   placeholder="PKR 3,500"
+                                   maxlength="50" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Original Price -->
+                        <div class="form-group course-price-field">
+                            <label for="CourseOriginalPrice">
+                                Original Price
+                            </label>
+
+                            <input type="text"
+                                   name="OriginalPrice"
+                                   id="CourseOriginalPrice"
+                                   class="form-control"
+                                   placeholder="PKR 6,000"
+                                   maxlength="50" />
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     COURSE DETAILS
+                     ========================= -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        Course Details
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Duration -->
+                        <div class="form-group">
+                            <label for="CourseDuration">
+                                Duration
+                            </label>
+
+                            <input type="text"
+                                   name="Duration"
+                                   id="CourseDuration"
+                                   class="form-control"
+                                   placeholder="8 Weeks"
+                                   maxlength="50"
+                                   required />
+                        </div>
+
+                        <!-- Lectures -->
+                        <div class="form-group">
+                            <label for="CourseLectures">
+                                Lectures
+                            </label>
+
+                            <input type="text"
+                                   name="LecturesCount"
+                                   id="CourseLectures"
+                                   class="form-control"
+                                   placeholder="36 Lectures"
+                                   maxlength="50" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Rating -->
+                        <div class="form-group">
+                            <label for="CourseRating">
+                                Rating
+                            </label>
+
+                            <input type="number"
+                                   name="Rating"
+                                   id="CourseRating"
+                                   class="form-control"
+                                   value="4.9"
+                                   min="0"
+                                   max="5"
+                                   step="0.1" />
+                        </div>
+
+                        <!-- Enrolled Students -->
+                        <div class="form-group">
+                            <label for="CourseStudents">
+                                Enrolled Students
+                            </label>
+
+                            <input type="number"
+                                   name="EnrolledStudents"
+                                   id="CourseStudents"
+                                   class="form-control"
+                                   value="120"
+                                   min="0" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Status -->
+                        <div class="form-group">
+                            <label for="CourseStatus">
+                                Status
+                            </label>
+
+                            <select name="Status"
+                                    id="CourseStatus"
+                                    class="form-control">
+
+                                <option value="Published">
+                                    Published
+                                </option>
+
+                                <option value="Draft">
+                                    Draft
+                                </option>
+
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     LINKS
+                     ========================= -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-link"></i>
+                        Course Links
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Course URL -->
+                        <div class="form-group full-width">
+                            <label for="CourseUrl">
+                                Course URL
+                            </label>
+
+                            <input type="url"
+                                   name="CourseUrl"
+                                   id="CourseUrl"
+                                   class="form-control"
+                                   placeholder="https://example.com/course" />
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <!-- Video URL -->
+                        <div class="form-group full-width">
+                            <label for="CourseVideoUrl">
+                                Video URL
+                            </label>
+
+                            <input type="url"
+                                   name="VideoUrl"
+                                   id="CourseVideoUrl"
+                                   class="form-control"
+                                   placeholder="https://www.youtube.com/watch?v=..." />
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     DESCRIPTION
+                     ========================= -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-align-left"></i>
+                        Description
+                    </div>
+
+                    <div class="form-group full-width">
+
+                        <label for="CourseDescription">
+                            Course Description
+                        </label>
+
+                        <textarea name="Description"
+                                  id="CourseDescription"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Write course description here..."></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     SYLLABUS
+                     ========================= -->
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-list-check"></i>
+                        Syllabus
+                    </div>
+
+                    <div class="form-group full-width">
+
+                        <label for="CourseSyllabus">
+                            Course Syllabus
+                        </label>
+
+                        <textarea name="Syllabus"
+                                  id="CourseSyllabus"
+                                  class="form-control"
+                                  rows="8"
+                                  placeholder="Module 1&#10;Module 2&#10;Module 3&#10;..."></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 MODAL FOOTER
+                 ========================= -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        onclick="closeCourseModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        id="saveCourseBtn">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Course
+
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 </div>
+
+
+<!-- =========================================================
+     COURSE MODAL JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+    function toggleCoursePriceFields() {
+
+        const priceType =
+            document.getElementById("CoursePriceType");
+
+        const priceFields =
+            document.querySelectorAll(".course-price-field");
+
+        if (!priceType) return;
+
+        const isFree =
+            priceType.value.toLowerCase() === "free";
+
+        priceFields.forEach(function (field) {
+
+            field.style.display =
+                isFree ? "none" : "";
+
+        });
+
+        if (isFree) {
+
+            const price =
+                document.getElementById("CoursePrice");
+
+            const originalPrice =
+                document.getElementById("CourseOriginalPrice");
+
+            if (price) price.value = "Free";
+
+            if (originalPrice) originalPrice.value = "";
+
+        }
+    }
+
+
+    function openCourseModal() {
+
+        const modal =
+            document.getElementById("courseModalOverlay");
+
+        const form =
+            document.getElementById("courseForm");
+
+        if (form) {
+            form.reset();
+        }
+
+        const courseId =
+            document.getElementById("CourseID");
+
+        if (courseId) {
+            courseId.value = "0";
+        }
+
+        const title =
+            document.getElementById("courseModalTitle");
+
+        if (title) {
+            title.innerText = "Add Course";
+        }
+
+        const platform =
+            document.getElementById("CoursePlatform");
+
+        if (platform) {
+            platform.value = "Online";
+        }
+
+        const priceType =
+            document.getElementById("CoursePriceType");
+
+        if (priceType) {
+            priceType.value = "paid";
+        }
+
+        toggleCoursePriceFields();
+
+        if (modal) {
+
+            modal.classList.add("show");
+
+            document.body.style.overflow = "hidden";
+        }
+    }
+
+
+    function closeCourseModal() {
+
+        const modal =
+            document.getElementById("courseModalOverlay");
+
+        if (modal) {
+
+            modal.classList.remove("show");
+
+            document.body.style.overflow = "";
+        }
+    }
+
+
+    // Close modal when clicking outside
+    document.addEventListener("click", function (event) {
+
+        const modal =
+            document.getElementById("courseModalOverlay");
+
+        if (!modal) return;
+
+        if (event.target === modal) {
+            closeCourseModal();
+        }
+
+    });
+
+
+    // ESC key
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
+            closeCourseModal();
+        }
+
+    });
+
+
+    // Initial price field state
+    document.addEventListener("DOMContentLoaded", function () {
+
+        toggleCoursePriceFields();
+
+    });
+
+</script>

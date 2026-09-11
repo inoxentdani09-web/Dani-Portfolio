@@ -1,63 +1,316 @@
 @model Portfolio.Models.ViewModels.AdminDashboardViewModel
 
-<div class="content-box mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="card-box">
+    <!-- Header -->
+    <div class="panel-header">
         <div>
-            <h4 class="box-title m-0"><i class="fa-solid fa-diagram-project me-2 text-warning"></i>Projects Management</h4>
-            <p class="text-muted m-0" style="font-size:13px;">Manage portfolio projects stored in SQL Server Database</p>
+            <h2>Projects Management</h2>
+            <p>Manage, showcase, and edit portfolio projects synced with SQL database</p>
         </div>
-        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addProjectModal" style="background:#f97316; border-color:#f97316; color:#fff; font-weight:700;">
-            <i class="fa-solid fa-plus me-1"></i> Add New Project
-        </button>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn-primary-action" onclick="openProjectModal()">
+                <i class="fa-solid fa-plus"></i> Add New Project
+            </button>
+
+            <a href="/Admin/ExportProjects" class="btn-secondary-action">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+            </a>
+        </div>
     </div>
 
+    <!-- Stats -->
+    <div class="stats-grid-row" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:16px;">
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Total Projects</span>
+                <div class="stat-box-val" style="font-size:18px;">
+                    @Model.Projects.Count
+                </div>
+            </div>
+            <i class="fa-solid fa-diagram-project"
+               style="color:var(--brand-primary); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Published</span>
+                <div class="stat-box-val"
+                     style="font-size:18px; color:var(--status-success);">
+                    @Model.Projects.Count(p => p.Status == "Published")
+                </div>
+            </div>
+            <i class="fa-solid fa-circle-check"
+               style="color:var(--status-success); font-size:18px;"></i>
+        </div>
+
+        <div class="stat-box" style="padding:10px 14px;">
+            <div>
+                <span class="stat-box-label" style="font-size:10px;">Draft / In Progress</span>
+                <div class="stat-box-val"
+                     style="font-size:18px; color:var(--status-warning);">
+                    @(Model.Projects.Count - Model.Projects.Count(p => p.Status == "Published"))
+                </div>
+            </div>
+            <i class="fa-solid fa-pen-ruler"
+               style="color:var(--status-warning); font-size:18px;"></i>
+        </div>
+
+    </div>
+
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+
+        <div class="search-field-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input type="text"
+                   id="projectSearchInput"
+                   placeholder="Search project name, stack, category..."
+                   onkeyup="filterProjectsTable()" />
+        </div>
+
+        <div class="filter-selects-wrapper d-flex gap-2">
+
+            <select id="projectCategoryFilter"
+                    onchange="filterProjectsTable()">
+
+                <option value="all">All Categories</option>
+
+                @foreach (var cat in Model.Projects
+                    .Where(p => !string.IsNullOrWhiteSpace(p.Category))
+                    .Select(p => p.Category)
+                    .Distinct()
+                    .OrderBy(c => c))
+                {
+                    <option value="@cat">@cat</option>
+                }
+
+            </select>
+
+            <select id="projectStatusFilter"
+                    onchange="filterProjectsTable()">
+
+                <option value="all">All Statuses</option>
+                <option value="Published">Published</option>
+                <option value="Draft">Draft</option>
+
+            </select>
+
+        </div>
+    </div>
+
+    <!-- Data Table -->
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+
+        <table class="table-custom" id="projectsMainTable">
+
             <thead>
                 <tr>
-                    <th>Image</th>
-                    <th>Title</th>
+                    <th style="width:40px;">#</th>
+                    <th>Project Info</th>
                     <th>Category</th>
-                    <th>Technologies</th>
+                    <th>Tech Stack</th>
                     <th>Status</th>
                     <th>Links</th>
-                    <th class="text-end">Actions</th>
+                    <th style="text-align:right;">Actions</th>
                 </tr>
             </thead>
+
             <tbody>
-                @foreach (var p in Model.Projects)
+
+                @if (Model.Projects == null || Model.Projects.Count == 0)
                 {
-                    <tr id="project-row-@p.ProjectID">
-                        <td>
-                            <img src="/Images/@p.Image" alt="@p.Title" style="width:48px; height:48px; border-radius:8px; object-fit:cover;" onerror="this.src='/Images/Project-bg.jpeg'" />
-                        </td>
-                        <td>
-                            <strong style="color:var(--text-main); display:block;">@p.Title</strong>
-                            <small class="text-muted" style="max-width:200px; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">@p.Description</small>
-                        </td>
-                        <td><span class="badge bg-secondary">@p.Category</span></td>
-                        <td><small style="color:#38bdf8;">@p.Technalogy</small></td>
-                        <td><span class="badge bg-success">@(p.Status ?? "Published")</span></td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                @if (!string.IsNullOrEmpty(p.LiveDemo))
-                                {
-                                    <a href="@p.LiveDemo" target="_blank" class="btn btn-sm btn-outline-info" title="Live Demo"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                                }
-                                @if (!string.IsNullOrEmpty(p.GitHub))
-                                {
-                                    <a href="@p.GitHub" target="_blank" class="btn btn-sm btn-outline-light" title="GitHub"><i class="fa-brands fa-github"></i></a>
-                                }
-                            </div>
-                        </td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteProject(@p.ProjectID)" title="Delete Project">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                    <tr>
+                        <td colspan="7"
+                            style="text-align:center; padding:30px; color:var(--text-muted);">
+
+                            <i class="fa-solid fa-folder-open mb-2"
+                               style="font-size:24px; display:block; opacity:0.5;"></i>
+
+                            No projects found. Click "Add New Project" to create one.
+
                         </td>
                     </tr>
                 }
+                else
+                {
+                    var index = 0;
+
+                    foreach (var project in Model.Projects)
+                    {
+                        index++;
+
+                        var category = project.Category ?? "";
+                        var status = project.Status ?? "";
+                        var title = project.Title ?? "";
+                        var technology = project.Technalogy ?? "";
+
+                        <tr class="project-table-row"
+                            data-category="@category.ToLower()"
+                            data-status="@status.ToLower()"
+                            data-search="@($"{title} {technology} {category}".ToLower())">
+
+                            <td style="color:var(--text-muted); font-size:11px;">
+                                @index
+                            </td>
+
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+
+                                    @if (!string.IsNullOrWhiteSpace(project.Image))
+                                    {
+                                        <img src="/Images/@project.Image"
+                                             alt="@project.Title"
+                                             style="width:36px; height:36px; border-radius:6px; object-fit:cover; border:1px solid var(--border-color);"
+                                             onerror="this.src='/Images/Developer.png'" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width:36px; height:36px; border-radius:6px; background:var(--brand-primary-soft); display:flex; align-items:center; justify-content:center; color:var(--brand-primary); font-size:14px;">
+                                            <i class="fa-solid fa-code"></i>
+                                        </div>
+                                    }
+
+                                    <div>
+                                        <strong style="color:var(--text-main); font-size:13px;">
+                                            @project.Title
+                                        </strong>
+
+                                        <div style="font-size:11px; color:var(--text-muted); max-width:280px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                            @(string.IsNullOrWhiteSpace(project.Description)
+                                                ? "Full stack dynamic web project"
+                                                : project.Description)
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="category-badge">
+                                    @project.Category
+                                </span>
+                            </td>
+
+                            <td>
+                                <span style="font-size:11.5px; color:var(--text-soft);">
+                                    @project.Technalogy
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status-badge @(project.Status == "Published" ? "status-active" : "status-inactive")">
+                                    @project.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <div style="display:inline-flex; gap:6px;">
+
+                                    @if (!string.IsNullOrWhiteSpace(project.GitHub))
+                                    {
+                                        <a href="@project.GitHub"
+                                           target="_blank"
+                                           class="btn-icon-action view-btn"
+                                           title="GitHub Repo"
+                                           style="width:24px; height:24px; font-size:11px;">
+
+                                            <i class="fa-brands fa-github"></i>
+
+                                        </a>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(project.LiveDemo))
+                                    {
+                                        <a href="@project.LiveDemo"
+                                           target="_blank"
+                                           class="btn-icon-action edit-btn"
+                                           title="Live Preview"
+                                           style="width:24px; height:24px; font-size:11px;">
+
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                        </a>
+                                    }
+
+                                </div>
+                            </td>
+
+                            <td style="text-align:right;">
+
+                                <div class="action-buttons-group">
+
+                                    <button type="button"
+                                            class="btn-icon-action edit-btn"
+                                            onclick="editProject(@project.ProjectID)"
+                                            title="Edit Project">
+
+                                        <i class="fa-solid fa-pen"></i>
+
+                                    </button>
+
+                                    <button type="button"
+                                            class="btn-icon-action delete-btn"
+                                            onclick="deleteProject(@project.ProjectID)"
+                                            title="Delete Project">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+
             </tbody>
+
         </table>
+
     </div>
 </div>
+
+<script>
+    function filterProjectsTable() {
+
+        const search =
+            (document.getElementById('projectSearchInput')?.value || '')
+                .toLowerCase()
+                .trim();
+
+        const cat =
+            (document.getElementById('projectCategoryFilter')?.value || 'all')
+                .toLowerCase();
+
+        const status =
+            (document.getElementById('projectStatusFilter')?.value || 'all')
+                .toLowerCase();
+
+        const rows = document.querySelectorAll('.project-table-row');
+
+        rows.forEach(row => {
+
+            const rowSearch = row.getAttribute('data-search') || '';
+            const rowCat = row.getAttribute('data-category') || '';
+            const rowStatus = row.getAttribute('data-status') || '';
+
+            const matchSearch =
+                !search || rowSearch.includes(search);
+
+            const matchCat =
+                cat === 'all' || rowCat === cat;
+
+            const matchStatus =
+                status === 'all' || rowStatus === status;
+
+            row.style.display =
+                matchSearch && matchCat && matchStatus
+                    ? ''
+                    : 'none';
+        });
+    }
+</script>

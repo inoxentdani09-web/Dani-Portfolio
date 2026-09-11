@@ -37,6 +37,7 @@ namespace Portfolio.Models
         [StringLength(50)]
         public string Status { get; set; } = "Published";
 
+        [Column("CreatedDate")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

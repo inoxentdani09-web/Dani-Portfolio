@@ -1,12 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+	  <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Portfolio</RootNamespace>
     <AssemblyName>Portfolio</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Admin\dashboard.ejs" />
+    <None Remove="Views\Admin\login.ejs" />
+    <None Remove="Views\Admin\Partials\add_course_modal.ejs" />
+    <None Remove="Views\Admin\Partials\add_project_modal.ejs" />
+    <None Remove="Views\Admin\Partials\add_skill_modal.ejs" />
+    <None Remove="Views\Admin\Partials\courses_content.ejs" />
+    <None Remove="Views\Admin\Partials\dashboard_content.ejs" />
+    <None Remove="Views\Admin\Partials\enrollments_content.ejs" />
+    <None Remove="Views\Admin\Partials\messages_content.ejs" />
+    <None Remove="Views\Admin\Partials\projects_content.ejs" />
+    <None Remove="Views\Admin\Partials\settings_content.ejs" />
+    <None Remove="Views\Admin\Partials\skills_content.ejs" />
+    <None Remove="Views\layout.ejs" />
+    <None Remove="Views\partials\about.ejs" />
+    <None Remove="Views\partials\contact.ejs" />
+    <None Remove="Views\partials\courses.ejs" />
+    <None Remove="Views\partials\footer.ejs" />
+    <None Remove="Views\partials\hero.ejs" />
+    <None Remove="Views\partials\navbar.ejs" />
+    <None Remove="Views\partials\projects.ejs" />
+    <None Remove="Views\partials\skills.ejs" />
+    <None Remove="Views\partials\techStack.ejs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />

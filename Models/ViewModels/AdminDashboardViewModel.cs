@@ -14,11 +14,16 @@ namespace Portfolio.Models.ViewModels
         public string ActiveTitle { get; set; } = "Dashboard Overview";
 
         public int ProjectsCount => Projects.Count;
+        public int TotalProjects => Projects.Count;
         public int SkillsCount => Skills.Count;
+        public int TotalSkills => Skills.Count;
         public int CoursesCount => Courses.Count;
+        public int TotalCourses => Courses.Count;
         public int MessagesCount => Messages.Count;
+        public int TotalMessages => Messages.Count;
         public int UnreadMessagesCount => Messages.Count(m => !m.IsRead);
         public int EnrollmentsCount => Enrollments.Count;
+        public int TotalEnrollments => Enrollments.Count;
         public int PendingEnrollmentsCount => Enrollments.Count(e => e.Status == "Pending");
         public int ApprovedEnrollmentsCount => Enrollments.Count(e => e.Status == "Approved");
     }

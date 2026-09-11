@@ -1,13 +1,28 @@
+
 @model Portfolio.Models.ViewModels.HomeViewModel
+
 @{
-    ViewData["Title"] = $"{Model.Admin?.Name ?? "Daniyal Khan"} | {Model.Admin?.Title ?? "Full Stack Developer"}";
+    ViewData["Title"] = $"{Model.Admin.Name ?? "Muhammad Daniyal"} | {Model.Admin.Title ?? "Full Stack Developer"}";
 }
 
 <partial name="_Navbar" model="Model" />
+
 <partial name="_Hero" model="Model" />
+
 <partial name="_About" model="Model" />
+
 <partial name="_Skills" model="Model" />
+
 <partial name="_Projects" model="Model" />
+
+<partial name="_TechStack" model="Model" />
+
 <partial name="_Courses" model="Model" />
+
 <partial name="_Contact" model="Model" />
+
 <partial name="_Footer" model="Model" />
+
+<partial name="_WhatsappFloat" model="Model" />
+<partial name="_AiMentor" model="Model" />
+

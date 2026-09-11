@@ -1,63 +1,200 @@
+
 @model Portfolio.Models.ViewModels.HomeViewModel
 
-<Section id="Skills">
+<section id="Skills">
+
     <div class="skill-bg">
+
         <div class="Skill-content animate">
-            <h1 class="section-title">My Skills</h1>
-            <h1>Technologies I <span>Work With</span></h1>
-            <p>As a Full Stack Developer, I work across the entire software development lifecycle — from responsive front-end interfaces to secure backend servers and scalable databases.</p>
+
+            <h1 class="section-title">
+                My Skills
+            </h1>
+
+            <h1>
+                Technologies I <span>Work With</span>
+            </h1>
+
+            <p>
+                As a Full Stack Developer, I work across the entire software development lifecycle
+                — from responsive front-end interfaces to secure backend servers and scalable databases.
+            </p>
+
         </div>
+
 
         <!-- Filter Tabs -->
         <ul class="filter-tabs" id="skillFilterTabs">
-            <li><button class="filter-btn active" data-filter="all">All Tech</button></li>
-            <li><button class="filter-btn" data-filter="Frontend">Frontend</button></li>
-            <li><button class="filter-btn" data-filter="Backend">Backend</button></li>
-            <li><button class="filter-btn" data-filter="Database">Database</button></li>
-            <li><button class="filter-btn" data-filter="Tools">Tools & Desktop</button></li>
+
+            <li>
+                <button class="filter-btn active" data-filter="all">
+                    All Tech
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn" data-filter="Frontend">
+                    Frontend
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn" data-filter="Backend">
+                    Backend
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn" data-filter="Database">
+                    Database
+                </button>
+            </li>
+
+            <li>
+                <button class="filter-btn" data-filter="Tools">
+                    Tools & Desktop
+                </button>
+            </li>
+
         </ul>
 
+
+        <!-- Skills Grid -->
         <div class="Skills-Container" id="skillsGridContainer">
-            @foreach (var skill in Model.Skills)
+
+            @if (Model.Skills != null && Model.Skills.Count > 0)
             {
-                <div class="skill-card animate" data-category="@skill.CategoryName">
-                    <div class="skill-icon">
-                        <img src="/Images/@skill.Icon" alt="@skill.Name icon" onerror="this.src='/Images/HTML.png'" />
+                foreach (var skill in Model.Skills)
+                {
+                    <div class="skill-card animate"
+                         data-category="@(skill.CategoryName ?? skill.CategoryName ?? "")">
+
+                        <div class="skill-icon">
+
+                            <img src="~/Images/@(skill.Icon ?? "HTML.png")"
+                                 alt="@(skill.Name ?? "Skill") icon"
+                                 onerror="this.src='/Images/HTML.png'" />
+
+                        </div>
+
+
+                        <div class="skill-header">
+
+                            <h3>
+                                @skill.Name
+                            </h3>
+
+                            <span class="skill-level-badge">
+
+                                @{
+                                    var level = "Advanced";
+
+                                    if (skill.Proficiency <= 40)
+                                    {
+                                        level = "Beginner";
+                                    }
+                                    else if (skill.Proficiency <= 70)
+                                    {
+                                        level = "Intermediate";
+                                    }
+                                }
+
+                                @level
+
+                            </span>
+
+                        </div>
+
+
+                        <p>
+                            @skill.Description
+                        </p>
+
                     </div>
+                }
+            }
+            else
+            {
+                <div class="skill-card animate">
+
                     <div class="skill-header">
-                        <h3>@skill.Name</h3>
-                        <span class="skill-level-badge">
-                            @(skill.Level ?? "Advanced")
-                        </span>
+                        <h3>No Skills Available</h3>
                     </div>
-                    <p>@skill.Description</p>
+
+                    <p>
+                        Skills will appear here once they are added from the Admin Panel.
+                    </p>
+
                 </div>
             }
+
         </div>
+
     </div>
-</Section>
+
+</section>
+
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const filterBtns = document.querySelectorAll('#skillFilterTabs .filter-btn');
-    const skillCards = document.querySelectorAll('#skillsGridContainer .skill-card');
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    document.addEventListener('DOMContentLoaded', function() {
 
-            const filter = btn.getAttribute('data-filter').toLowerCase();
+        const filterBtns =
+            document.querySelectorAll(
+                '#skillFilterTabs .filter-btn'
+            );
 
-            skillCards.forEach(card => {
-                const category = (card.getAttribute('data-category') || '').toLowerCase();
-                if (filter === 'all' || category.includes(filter)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        const skillCards =
+            document.querySelectorAll(
+                '#skillsGridContainer .skill-card'
+            );
+
+
+        filterBtns.forEach(function(btn) {
+
+            btn.addEventListener('click', function() {
+
+                filterBtns.forEach(function(b) {
+                    b.classList.remove('active');
+                });
+
+                btn.classList.add('active');
+
+
+                const filter =
+                    (btn.getAttribute('data-filter') || '')
+                        .toLowerCase();
+
+
+                skillCards.forEach(function(card) {
+
+                    const category =
+                        (
+                            card.getAttribute('data-category') || ''
+                        ).toLowerCase();
+
+
+                    if (
+                        filter === 'all' ||
+                        category.includes(filter)
+                    ) {
+
+                        card.style.display = 'flex';
+
+                    }
+                    else {
+
+                        card.style.display = 'none';
+
+                    }
+
+                });
+
             });
+
         });
+
     });
-});
+
 </script>
+

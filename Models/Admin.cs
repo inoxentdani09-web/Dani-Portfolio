@@ -7,6 +7,7 @@ namespace Portfolio.Models
     public class Admin
     {
         [Key]
+        [Column("AdminId")]
         public int Id { get; set; } = 1;
 
         [Required]

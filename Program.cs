@@ -21,8 +21,8 @@ builder.Services.AddSession(options =>
 });
 
 // 3. Add MVC Controllers and Views
-builder.Services.AddControllersWithViews()
-    .AddRazorRuntimeCompilation?.Invoke(null!) ?? builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews();
+   
 
 builder.Services.AddHttpContextAccessor();
 

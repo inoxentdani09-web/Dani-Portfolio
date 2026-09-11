@@ -1,143 +1,1035 @@
 @model Portfolio.Models.ViewModels.AdminDashboardViewModel
 
-<div class="row g-4">
-    <!-- Left: Portfolio Content & Dynamic Copy Settings -->
-    <div class="col-12 col-lg-7">
-        <div class="content-box">
-            <h5 class="box-title mb-3"><i class="fa-solid fa-sliders me-2 text-warning"></i>Website Content Settings</h5>
-            
-            <form id="portfolioSettingsForm" onsubmit="handleSettingsUpdate(event)">
-                @Html.AntiForgeryToken()
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Site Title</label>
-                        <input type="text" name="SiteTitle" class="form-control" value="@Model.Settings.SiteTitle" required />
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Tagline</label>
-                        <input type="text" name="Tagline" class="form-control" value="@Model.Settings.Tagline" />
-                    </div>
+@{
+    var admin = Model.Admin ?? new Portfolio.Models.Admin();
+    var settings = Model.Settings ?? new Portfolio.Models.Settings();
+}
 
-                    <div class="col-12">
-                        <label class="form-label">Hero Main Heading</label>
-                        <input type="text" name="HeroHeading" class="form-control" value="@Model.Settings.HeroHeading" />
-                    </div>
+<div class="card-box" style="padding:16px;">
 
-                    <div class="col-12">
-                        <label class="form-label">Hero Subheading</label>
-                        <input type="text" name="HeroSubheading" class="form-control" value="@Model.Settings.HeroSubheading" />
-                    </div>
+   
+    <!-- Header -->
+    <div class="panel-header" style="margin-bottom:12px; padding-bottom:10px;">
+        <div>
+            <h2>
+                <i class="fa-solid fa-sliders text-warning me-2"></i>
+                Portfolio & System Settings
+            </h2>
+            <p>
+                Configure personal profile, public website content, payment collection accounts, and database sync
+            </p>
+        </div>
 
-                    <div class="col-12">
-                        <label class="form-label">Hero Description</label>
-                        <textarea name="HeroDescription" class="form-control" rows="3">@Model.Settings.HeroDescription</textarea>
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">About Heading</label>
-                        <input type="text" name="AboutHeading" class="form-control" value="@Model.Settings.AboutHeading" />
-                    </div>
-
-                    <div class="col-12">
-                        <label class="form-label">About Description</label>
-                        <textarea name="AboutDescription" class="form-control" rows="4">@Model.Settings.AboutDescription</textarea>
-                    </div>
-
-                    <h6 class="mt-4 mb-2 text-warning"><i class="fa-solid fa-credit-card me-2"></i>Payment Accounts (For Student Fee Transfer)</h6>
-
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">JazzCash Number</label>
-                        <input type="text" name="JazzCashNumber" class="form-control" value="@Model.Settings.JazzCashNumber" />
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">JazzCash Account Title</label>
-                        <input type="text" name="JazzCashTitle" class="form-control" value="@Model.Settings.JazzCashTitle" />
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">EasyPaisa Number</label>
-                        <input type="text" name="EasyPaisaNumber" class="form-control" value="@Model.Settings.EasyPaisaNumber" />
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">EasyPaisa Account Title</label>
-                        <input type="text" name="EasyPaisaTitle" class="form-control" value="@Model.Settings.EasyPaisaTitle" />
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Bank Account Number / IBAN</label>
-                        <input type="text" name="BankAccountNumber" class="form-control" value="@Model.Settings.BankAccountNumber" />
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label">Bank Name & Title</label>
-                        <input type="text" name="BankName" class="form-control" value="@Model.Settings.BankName" />
-                    </div>
-
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-warning" style="background:#f97316; border-color:#f97316; color:#fff; font-weight:700;">
-                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Website Settings
-                        </button>
-                    </div>
-                </div>
-            </form>
+        <div class="d-flex align-items-center gap-2">
+            <span class="status-badge status-active">
+                <i class="fa-solid fa-database"></i>
+                PortfolioDB (SQL) Connected
+            </span>
         </div>
     </div>
 
-    <!-- Right: Admin Profile & Credentials -->
-    <div class="col-12 col-lg-5">
-        <div class="content-box">
-            <h5 class="box-title mb-3"><i class="fa-solid fa-user-shield me-2 text-info"></i>Admin Profile & Account</h5>
+    <!-- Settings Navigation Tabs -->
+    <div class="settings-nav-tabs">
 
-            <form id="adminProfileForm" onsubmit="handleProfileUpdate(event)">
-                @Html.AntiForgeryToken()
-                <div class="text-center mb-3">
-                    <img src="/Images/@(!string.IsNullOrEmpty(Model.Admin.Avatar) ? Model.Admin.Avatar : "profile.jpg")" alt="Admin" style="width:90px; height:90px; border-radius:50%; border:3px solid #f97316; object-fit:cover;" onerror="this.src='/Images/Developer.png'" />
-                    <div class="mt-2">
-                        <label class="btn btn-sm btn-outline-secondary">
-                            <i class="fa-solid fa-camera me-1"></i> Change Avatar
-                            <input type="file" name="avatarFile" accept="image/*" style="display:none;" />
-                        </label>
+        <button type="button"
+                class="settings-tab-btn active"
+                onclick="switchSettingsTab('profile', this)">
+            <i class="fa-solid fa-user-gear"></i>
+            Personal Profile
+        </button>
+
+        <button type="button"
+                class="settings-tab-btn"
+                onclick="switchSettingsTab('site', this)">
+            <i class="fa-solid fa-globe"></i>
+            Website Content & Stats
+        </button>
+
+        <button type="button"
+                class="settings-tab-btn"
+                onclick="switchSettingsTab('payment', this)">
+            <i class="fa-solid fa-money-bill-wave"></i>
+            Payment Accounts
+        </button>
+
+        <button type="button"
+                class="settings-tab-btn"
+                onclick="switchSettingsTab('security', this)">
+            <i class="fa-solid fa-lock"></i>
+            Security & Password
+        </button>
+
+        <button type="button"
+                class="settings-tab-btn"
+                onclick="switchSettingsTab('database', this)">
+            <i class="fa-solid fa-server"></i>
+            SQL Database Status
+        </button>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: PERSONAL PROFILE -->
+    <!-- ========================================================= -->
+
+    <div id="settingsTab-profile" class="settings-tab-content">
+
+        <form action="/Admin/UpdateProfile"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div style="display:flex;
+                gap:16px;
+                align-items:center;
+                margin-bottom:14px;
+                background:var(--bg-surface);
+                padding:12px;
+                border-radius:8px;
+                border:1px solid var(--border-color);">
+
+                <img id="settingsProfilePreview"
+                     src="/Images/@(string.IsNullOrWhiteSpace(admin.Avatar) ? "Developer.png" : admin.Avatar)"
+                     alt="Avatar"
+                     style="width:56px;
+                height:56px;
+                border-radius:50%;
+                object-fit:cover;
+                border:2px solid var(--brand-primary);"
+                     onerror="this.src='/Images/Developer.png'" />
+
+                <div>
+                    <div style="font-size:12px;
+                        font-weight:700;
+                        color:var(--text-main);
+                        margin-bottom:2px;">
+                        Profile Photo / Avatar
                     </div>
+
+                    <div style="font-size:11px;
+                        color:var(--text-muted);
+                        margin-bottom:6px;">
+                        Upload a new headshot photo (JPG, PNG, WebP)
+                    </div>
+
+                    <input type="file"
+                           name="avatar"
+                           id="avatarFileInput"
+                           accept="image/*"
+                           onchange="previewAvatar(this)"
+                           style="font-size:11px; color:var(--text-soft);" />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" name="Name" class="form-control" value="@Model.Admin.Name" required />
+            </div>
+
+
+            <div class="modal-form-grid">
+
+                <div class="modal-form-group">
+                    <label>Full Display Name *</label>
+                    <input type="text"
+                           name="name"
+                           class="form-control-compact"
+                           value="@admin.Name"
+                           required />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Professional Title</label>
-                    <input type="text" name="Title" class="form-control" value="@Model.Admin.Title" required />
+                <div class="modal-form-group">
+                    <label>Professional Title *</label>
+                    <input type="text"
+                           name="title"
+                           class="form-control-compact"
+                           value="@admin.Title"
+                           required />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Email Address (Login)</label>
-                    <input type="email" name="Email" class="form-control" value="@Model.Admin.Email" required />
+                <div class="modal-form-group">
+                    <label>Admin Login Email *</label>
+                    <input type="email"
+                           name="email"
+                           class="form-control-compact"
+                           value="@admin.Email"
+                           required />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">New Password (Leave blank to keep current)</label>
-                    <input type="password" name="Password" class="form-control" placeholder="••••••••" />
+                <div class="modal-form-group">
+                    <label>Contact Phone / WhatsApp</label>
+                    <input type="text"
+                           name="phone"
+                           class="form-control-compact"
+                           value="@admin.Phone" />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" name="Phone" class="form-control" value="@Model.Admin.Phone" />
+                <div class="modal-form-group full">
+                    <label>Location / City</label>
+                    <input type="text"
+                           name="address"
+                           class="form-control-compact"
+                           value="@admin.Address" />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">GitHub URL</label>
-                    <input type="url" name="GithubUrl" class="form-control" value="@Model.Admin.GithubUrl" />
+                <div class="modal-form-group full">
+                    <label>About / Bio Summary</label>
+                    <textarea name="bio"
+                              rows="3"
+                              class="form-control-compact">@admin.Bio</textarea>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">LinkedIn URL</label>
-                    <input type="url" name="LinkedinUrl" class="form-control" value="@Model.Admin.LinkedinUrl" />
+
+                <div class="modal-form-group full"
+                     style="margin-top:6px;
+                    border-top:1px solid var(--border-color);
+                    padding-top:10px;">
+
+                    <div style="font-size:12px;
+                        font-weight:700;
+                        color:var(--brand-primary);
+                        margin-bottom:6px;">
+                        Social Profiles & GitHub
+                    </div>
+
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100" style="background:#3b82f6; border-color:#3b82f6; font-weight:700;">
-                    <i class="fa-solid fa-user-check me-1"></i> Update Admin Account
+
+                <div class="modal-form-group">
+                    <label>
+                        <i class="fa-brands fa-github me-1"></i>
+                        GitHub Profile URL
+                    </label>
+
+                    <input type="url"
+                           name="github"
+                           class="form-control-compact"
+                           value="@admin.GithubUrl" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>
+                        <i class="fa-brands fa-linkedin me-1"></i>
+                        LinkedIn Profile URL
+                    </label>
+
+                    <input type="url"
+                           name="linkedin"
+                           class="form-control-compact"
+                           value="@admin.LinkedinUrl" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>
+                        <i class="fa-brands fa-x-twitter me-1"></i>
+                        Twitter / X URL
+                    </label>
+
+                    <input type="url"
+                           name="twitter"
+                           class="form-control-compact"
+                           value="@admin.TwitterUrl" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>
+                        <i class="fa-brands fa-facebook me-1"></i>
+                        Facebook Profile URL
+                    </label>
+
+                    <input type="url"
+                           name="facebook"
+                           class="form-control-compact"
+                           value="@admin.FacebookUrl" />
+                </div>
+
+            </div>
+
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Profile Details
                 </button>
-            </form>
-        </div>
+            </div>
+
+        </form>
+
     </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: WEBSITE CONTENT & STATS -->
+    <!-- ========================================================= -->
+
+    <div id="settingsTab-site"
+         class="settings-tab-content"
+         style="display:none;">
+
+        <form action="/Admin/UpdateSiteSettings" method="post">
+
+            <div class="modal-form-grid">
+
+                <div class="modal-form-group">
+                    <label>Hero Main Heading</label>
+
+                    <input type="text"
+                           name="heroHeading"
+                           class="form-control-compact"
+                           value="@settings.HeroHeading" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Hero Subheading / Tagline</label>
+
+                    <input type="text"
+                           name="heroSubheading"
+                           class="form-control-compact"
+                           value="@settings.HeroSubheading" />
+                </div>
+
+                <div class="modal-form-group full">
+                    <label>Hero Paragraph Description</label>
+
+                    <textarea name="heroDescription"
+                              rows="2"
+                              class="form-control-compact">@settings.HeroDescription</textarea>
+                </div>
+
+                <div class="modal-form-group">
+                    <label>About Section Title</label>
+
+                    <input type="text"
+                           name="aboutHeading"
+                           class="form-control-compact"
+                           value="@settings.AboutHeading" />
+                </div>
+
+                <div class="modal-form-group full">
+                    <label>About Detailed Description</label>
+
+                    <textarea name="aboutDescription"
+                              rows="2"
+                              class="form-control-compact">@settings.AboutDescription</textarea>
+                </div>
+
+
+                <div class="modal-form-group full"
+                     style="margin-top:6px;
+                    border-top:1px solid var(--border-color);
+                    padding-top:8px;">
+
+                    <div style="font-size:12px;
+                        font-weight:700;
+                        color:var(--brand-primary);">
+                        Live Counter Stats
+                    </div>
+
+                </div>
+
+
+                <div class="modal-form-group">
+                    <label>Years of Experience</label>
+
+                    <input type="text"
+                           name="yearsExperience"
+                           class="form-control-compact"
+                           value="@settings.YearsExperience" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Completed Projects Count</label>
+
+                    <input type="number"
+                           name="completedProjects"
+                           class="form-control-compact"
+                           value="@settings.CompletedProjects" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Satisfied Clients Count</label>
+
+                    <input type="number"
+                           name="happyClients"
+                           class="form-control-compact"
+                           value="@settings.HappyClients" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Technologies Count</label>
+
+                    <input type="number"
+                           name="technologiesCount"
+                           class="form-control-compact"
+                           value="@settings.TechnologiesCount" />
+                </div>
+
+
+                <div class="modal-form-group full"
+                     style="margin-top:6px;
+                    border-top:1px solid var(--border-color);
+                    padding-top:8px;">
+
+                    <div style="font-size:12px;
+                        font-weight:700;
+                        color:var(--brand-primary);">
+                        Public Contact Footer
+                    </div>
+
+                </div>
+
+
+                <div class="modal-form-group">
+                    <label>Public Contact Email</label>
+
+                    <input type="email"
+                           name="email"
+                           class="form-control-compact"
+                           value="@settings.Email" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Public Contact Phone</label>
+
+                    <input type="text"
+                           name="phone"
+                           class="form-control-compact"
+                           value="@settings.Phone" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Location</label>
+
+                    <input type="text"
+                           name="location"
+                           class="form-control-compact"
+                           value="@settings.Location" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Working Hours</label>
+
+                    <input type="text"
+                           name="workingHours"
+                           class="form-control-compact"
+                           value="@settings.WorkingHours" />
+                </div>
+
+            </div>
+
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Website Content
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: PAYMENT ACCOUNTS -->
+    <!-- ========================================================= -->
+
+    <div id="settingsTab-payment"
+         class="settings-tab-content"
+         style="display:none;">
+
+        <div style="background:var(--brand-primary-soft);
+            border:1px solid rgba(249,115,22,0.25);
+            border-radius:8px;
+            padding:10px 14px;
+            margin-bottom:12px;
+            font-size:12px;
+            color:var(--text-soft);">
+
+            <i class="fa-solid fa-circle-info me-1"
+               style="color:var(--brand-primary);"></i>
+
+            <strong>Course Fee Collection Accounts:</strong>
+            These payment account numbers will appear on the course enrollment checkout modal for students.
+        </div>
+
+
+        <!-- JazzCash -->
+        <div style="background:var(--bg-surface);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:12px;
+            margin-bottom:10px;">
+
+            <div style="font-size:12px;
+                font-weight:700;
+                color:#ef4444;
+                margin-bottom:8px;
+                display:flex;
+                align-items:center;
+                gap:6px;">
+
+                <span style="background:#ef4444;
+                    color:#fff;
+                    font-size:10px;
+                    padding:2px 6px;
+                    border-radius:4px;">
+                    JazzCash
+                </span>
+
+                Mobile Account
+            </div>
+
+
+            <div class="modal-form-grid">
+
+                <div class="modal-form-group">
+                    <label>JazzCash Mobile Number *</label>
+
+                    <input type="text"
+                           name="jazzCashNumber"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.JazzCashNumber"
+                           required />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Account Title / Name *</label>
+
+                    <input type="text"
+                           name="jazzCashTitle"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.JazzCashTitle"
+                           required />
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- EasyPaisa -->
+        <div style="background:var(--bg-surface);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:12px;
+            margin-bottom:10px;">
+
+            <div style="font-size:12px;
+                font-weight:700;
+                color:#10b981;
+                margin-bottom:8px;
+                display:flex;
+                align-items:center;
+                gap:6px;">
+
+                <span style="background:#10b981;
+                    color:#fff;
+                    font-size:10px;
+                    padding:2px 6px;
+                    border-radius:4px;">
+                    EasyPaisa
+                </span>
+
+                Mobile Account
+            </div>
+
+
+            <div class="modal-form-grid">
+
+                <div class="modal-form-group">
+                    <label>EasyPaisa Mobile Number *</label>
+
+                    <input type="text"
+                           name="easyPaisaNumber"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.EasyPaisaNumber"
+                           required />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Account Title / Name *</label>
+
+                    <input type="text"
+                           name="easyPaisaTitle"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.EasyPaisaTitle"
+                           required />
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Bank -->
+        <div style="background:var(--bg-surface);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:12px;
+            margin-bottom:10px;">
+
+            <div style="font-size:12px;
+                font-weight:700;
+                color:#38bdf8;
+                margin-bottom:8px;
+                display:flex;
+                align-items:center;
+                gap:6px;">
+
+                <span style="background:#38bdf8;
+                    color:#0f172a;
+                    font-size:10px;
+                    padding:2px 6px;
+                    border-radius:4px;
+                    font-weight:800;">
+                    Bank
+                </span>
+
+                Direct Bank Account & IBAN
+            </div>
+
+
+            <div class="modal-form-grid grid-3">
+
+                <div class="modal-form-group">
+                    <label>Bank Name</label>
+
+                    <input type="text"
+                           name="bankName"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.BankName" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Account Number</label>
+
+                    <input type="text"
+                           name="bankAccountNumber"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.BankAccountNumber" />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Account Title</label>
+
+                    <input type="text"
+                           name="bankAccountTitle"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.BankAccountTitle" />
+                </div>
+
+                <div class="modal-form-group full">
+                    <label>IBAN (International / Raast)</label>
+
+                    <input type="text"
+                           name="bankIban"
+                           form="paymentAccountsForm"
+                           class="form-control-compact"
+                           value="@settings.BankIban" />
+                </div>
+
+            </div>
+        </div>
+
+
+        <form id="paymentAccountsForm"
+              action="/Admin/UpdatePaymentAccounts"
+              method="post">
+
+            <div style="margin-top:12px; text-align:right;">
+                <button type="submit" class="btn-primary-action">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Payment Accounts
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: SECURITY -->
+    <!-- ========================================================= -->
+
+    <div id="settingsTab-security"
+         class="settings-tab-content"
+         style="display:none;">
+
+        <div style="max-width:480px;">
+
+            <div id="passwordAlert"
+                 style="display:none;"
+                 class="alert py-2 px-3 mb-3">
+            </div>
+
+
+            <form id="changePasswordForm"
+                  onsubmit="handlePasswordChange(event)">
+
+                <div class="modal-form-group">
+                    <label>Current Password *</label>
+
+                    <input type="password"
+                           id="currentPassword"
+                           class="form-control-compact"
+                           placeholder="Current password"
+                           required />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>New Password *</label>
+
+                    <input type="password"
+                           id="newPassword"
+                           class="form-control-compact"
+                           placeholder="At least 4 characters"
+                           required />
+                </div>
+
+                <div class="modal-form-group">
+                    <label>Confirm New Password *</label>
+
+                    <input type="password"
+                           id="confirmPassword"
+                           class="form-control-compact"
+                           placeholder="Repeat new password"
+                           required />
+                </div>
+
+
+                <div style="margin-top:12px;">
+                    <button type="submit" class="btn-primary-action">
+                        <i class="fa-solid fa-key"></i>
+                        Update Admin Password
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- TAB 5: DATABASE STATUS -->
+    <!-- ========================================================= -->
+
+    <div id="settingsTab-database"
+         class="settings-tab-content"
+         style="display:none;">
+
+        <div style="background:var(--bg-surface);
+            border:1px solid var(--border-color);
+            border-radius:8px;
+            padding:14px;">
+
+            <div style="display:flex;
+                align-items:center;
+                justify-content:space-between;
+                margin-bottom:12px;
+                border-bottom:1px solid var(--border-color);
+                padding-bottom:8px;">
+
+                <div>
+                    <strong style="color:var(--text-main);
+                        font-size:13px;">
+
+                        <i class="fa-solid fa-database text-warning me-1"></i>
+                        Database: PortfolioDB
+
+                    </strong>
+
+                    <div style="font-size:11px;
+                        color:var(--text-muted);">
+                        Relational schema & table state synchronized with SQL Server
+                    </div>
+                </div>
+
+                <span class="status-badge status-active">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Connected & Syncing
+                </span>
+
+            </div>
+
+
+            <div style="display:grid;
+                grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+                gap:10px;
+                margin-bottom:14px;">
+
+                <div style="background:var(--bg-card);
+                    padding:10px;
+                    border-radius:6px;
+                    border:1px solid var(--border-color);
+                    text-align:center;">
+
+                    <div style="font-size:10px;
+                        color:var(--text-muted);
+                        text-transform:uppercase;">
+                        Projects Table
+                    </div>
+
+                    <div style="font-size:16px;
+                        font-weight:800;
+                        color:var(--brand-primary);">
+                        @Model.Projects.Count Records
+                    </div>
+                </div>
+
+
+                <div style="background:var(--bg-card);
+                    padding:10px;
+                    border-radius:6px;
+                    border:1px solid var(--border-color);
+                    text-align:center;">
+
+                    <div style="font-size:10px;
+                        color:var(--text-muted);
+                        text-transform:uppercase;">
+                        Skills Table
+                    </div>
+
+                    <div style="font-size:16px;
+                        font-weight:800;
+                        color:var(--status-info);">
+                        @Model.Skills.Count Records
+                    </div>
+                </div>
+
+
+                <div style="background:var(--bg-card);
+                    padding:10px;
+                    border-radius:6px;
+                    border:1px solid var(--border-color);
+                    text-align:center;">
+
+                    <div style="font-size:10px;
+                        color:var(--text-muted);
+                        text-transform:uppercase;">
+                        Courses Table
+                    </div>
+
+                    <div style="font-size:16px;
+                        font-weight:800;
+                        color:var(--status-success);">
+                        @Model.Courses.Count Records
+                    </div>
+                </div>
+
+
+                <div style="background:var(--bg-card);
+                    padding:10px;
+                    border-radius:6px;
+                    border:1px solid var(--border-color);
+                    text-align:center;">
+
+                    <div style="font-size:10px;
+                        color:var(--text-muted);
+                        text-transform:uppercase;">
+                        Messages Table
+                    </div>
+
+                    <div style="font-size:16px;
+                        font-weight:800;
+                        color:var(--status-warning);">
+                        @Model.Messages.Count Inquiries
+                    </div>
+                </div>
+
+
+                <div style="background:var(--bg-card);
+                    padding:10px;
+                    border-radius:6px;
+                    border:1px solid var(--border-color);
+                    text-align:center;">
+
+                    <div style="font-size:10px;
+                        color:var(--text-muted);
+                        text-transform:uppercase;">
+                        Enrollments Table
+                    </div>
+
+                    <div style="font-size:16px;
+                        font-weight:800;
+                        color:var(--text-main);">
+                        @Model.Enrollments.Count Records
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div style="font-size:11.5px;
+                color:var(--text-soft);
+                line-height:1.6;">
+
+                <strong>Current SQL Relationships:</strong>
+
+                <ul style="margin:4px 0 0 16px; padding:0;">
+
+                    <li>
+                        <code>CourseEnrollments.CourseID → Courses.CourseID</code>
+                    </li>
+
+                    <li>
+                        <code>Admins.Email</code> has a unique database index
+                    </li>
+
+                    <li>
+                        <code>Projects</code>, <code>Skills</code>,
+                        <code>Courses</code>, <code>Messages</code> and
+                        <code>Settings</code> are synced with PortfolioDB
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
 </div>
+
+<script>
+
+    function switchSettingsTab(tabName, btn) {
+
+        document
+            .querySelectorAll('.settings-tab-btn')
+            .forEach(b => b.classList.remove('active'));
+
+        document
+            .querySelectorAll('.settings-tab-content')
+            .forEach(c => c.style.display = 'none');
+
+        btn.classList.add('active');
+
+        const target =
+            document.getElementById('settingsTab-' + tabName);
+
+        if (target) {
+            target.style.display = 'block';
+        }
+    }
+
+
+    function previewAvatar(input) {
+
+        if (input.files && input.files[0]) {
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+
+                const preview =
+                    document.getElementById('settingsProfilePreview');
+
+                if (preview) {
+                    preview.src = e.target.result;
+                }
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    async function handlePasswordChange(e) {
+
+        e.preventDefault();
+
+        const currentPassword =
+            document.getElementById('currentPassword').value;
+
+        const newPassword =
+            document.getElementById('newPassword').value;
+
+        const confirmPassword =
+            document.getElementById('confirmPassword').value;
+
+        const alertEl =
+            document.getElementById('passwordAlert');
+
+
+        if (newPassword !== confirmPassword) {
+
+            alertEl.className =
+                'alert alert-danger py-2 px-3 mb-3';
+
+            alertEl.innerText =
+                'New passwords do not match.';
+
+            alertEl.style.display = 'block';
+
+            return;
+        }
+
+
+        try {
+
+            const res =
+                await fetch('/Admin/ChangePassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        currentPassword,
+                        newPassword,
+                        confirmPassword
+                    })
+                });
+
+            const result =
+                await res.json();
+
+
+            if (result.success) {
+
+                alertEl.className =
+                    'alert alert-success py-2 px-3 mb-3';
+
+                alertEl.innerText =
+                    result.message ||
+                    'Password changed successfully!';
+
+                alertEl.style.display = 'block';
+
+                document
+                    .getElementById('changePasswordForm')
+                    .reset();
+
+            }
+            else {
+
+                alertEl.className =
+                    'alert alert-danger py-2 px-3 mb-3';
+
+                alertEl.innerText =
+                    result.message ||
+                    'Failed to update password.';
+
+                alertEl.style.display = 'block';
+            }
+
+        }
+        catch (err) {
+
+            alertEl.className =
+                'alert alert-danger py-2 px-3 mb-3';
+
+            alertEl.innerText =
+                'Error: ' + err.message;
+
+            alertEl.style.display = 'block';
+        }
+    }
+
+</script>
