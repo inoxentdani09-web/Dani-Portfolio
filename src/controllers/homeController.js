@@ -9,7 +9,18 @@ export const homeController = {
       // Only show Published skills, projects, and active courses to the public
       const skills = db.getSkills().filter(s => (s.status || 'Published').toLowerCase() === 'published');
       const projects = db.getProjects().filter(p => (p.status || 'Published').toLowerCase() === 'published');
-      const courses = db.getCourses().filter(c => (c.status || 'Published').toLowerCase() !== 'draft');
+      
+      // Free courses must appear at the top, followed by Paid courses
+      const courses = db.getCourses()
+        .filter(c => (c.status || 'Published').toLowerCase() !== 'draft')
+        .sort((a, b) => {
+          const aFree = a.price === 'Free' || a.priceType === 'free' || String(a.price).toLowerCase() === 'free';
+          const bFree = b.price === 'Free' || b.priceType === 'free' || String(b.price).toLowerCase() === 'free';
+          if (aFree && !bFree) return -1;
+          if (!aFree && bFree) return 1;
+          return (a.courseID || 0) - (b.courseID || 0);
+        });
+
       const categories = db.getCategories();
       const admin = db.getAdmin();
       const settings = db.getSettings();
